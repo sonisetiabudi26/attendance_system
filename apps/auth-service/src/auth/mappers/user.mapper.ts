@@ -1,0 +1,92 @@
+import { Injectable } from '@nestjs/common';
+
+import { Prisma, User } from '../../prisma/generated/client';
+
+import { UserEntity } from '../entities';
+import {
+  CreateUserModel,
+  UpdateUserModel,
+} from '../contracts';
+
+@Injectable()
+export class UserMapper {
+  toEntity(user: User): UserEntity {
+    return new UserEntity(
+      user.id,
+      user.username,
+      user.email,
+      user.passwordHash,
+      user.roleId,
+      user.statusId,
+      user.lastLoginAt,
+      user.createdAt,
+      user.updatedAt,
+    );
+  }
+
+  toEntities(users: User[]): UserEntity[] {
+    return users.map((user) => this.toEntity(user));
+  }
+
+  toCreateInput(
+    data: CreateUserModel,
+  ): Prisma.UserCreateInput {
+    return {
+      username: data.username,
+      email: data.email,
+      passwordHash: data.passwordHash,
+
+      role: {
+        connect: {
+          id: data.roleId,
+        },
+      },
+
+      status: {
+        connect: {
+          id: data.statusId,
+        },
+      },
+    };
+  }
+
+  toUpdateInput(
+    data: UpdateUserModel,
+  ): Prisma.UserUpdateInput {
+    const update: Prisma.UserUpdateInput = {};
+
+    if (data.username !== undefined) {
+      update.username = data.username;
+    }
+
+    if (data.email !== undefined) {
+      update.email = data.email;
+    }
+
+    if (data.passwordHash !== undefined) {
+      update.passwordHash = data.passwordHash;
+    }
+
+    if (data.roleId !== undefined) {
+      update.role = {
+        connect: {
+          id: data.roleId,
+        },
+      };
+    }
+
+    if (data.statusId !== undefined) {
+      update.status = {
+        connect: {
+          id: data.statusId,
+        },
+      };
+    }
+
+    if (data.lastLoginAt !== undefined) {
+      update.lastLoginAt = data.lastLoginAt;
+    }
+
+    return update;
+  }
+}
