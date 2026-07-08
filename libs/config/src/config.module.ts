@@ -1,13 +1,16 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ObjectSchema } from 'joi';
 
 import configuration from './configuration';
-import { validationSchema } from './env.validation';
 
 @Global()
 @Module({})
 export class AppConfigModule {
-  static forRoot(serviceName: string): DynamicModule {
+  static forRoot(
+    serviceName: string,
+    validationSchema: ObjectSchema,
+  ): DynamicModule {
     return {
       module: AppConfigModule,
       imports: [

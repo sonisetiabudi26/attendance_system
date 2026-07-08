@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common';
 
 import { AppConfigModule } from '@attendance/config';
-import { DatabaseModule } from '@attendance/database';
-import { LoggerModule } from '@attendance/logger';
+
+import { PrismaModule } from './database';
+import { HealthModule } from './health/health.module';
+import { authValidationSchema } from '@attendance/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    AppConfigModule.forRoot('auth-service'),
-    DatabaseModule,
-    LoggerModule,
+    AppConfigModule.forRoot('auth-service',authValidationSchema),
+    PrismaModule,
+    HealthModule,
+    AuthModule
   ],
 })
 export class AuthServiceModule {}

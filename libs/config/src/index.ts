@@ -1,3 +1,4 @@
 export * from './config.module';
-export { default as configuration } from './configuration';
-export * from './env.validation';
+export * from './configuration';
+
+export * from './validation';
