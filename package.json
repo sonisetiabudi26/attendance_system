@@ -21,6 +21,7 @@
     "prisma:validate:auth": "dotenv -e apps/auth-service/.env -- prisma validate --schema apps/auth-service/prisma/schema.prisma",
     "prisma:generate:auth": "dotenv -e apps/auth-service/.env -- prisma generate --schema apps/auth-service/prisma/schema.prisma",
     "prisma:migrate:auth": "dotenv -e apps/auth-service/.env -- prisma migrate dev --schema apps/auth-service/prisma/schema.prisma",
+    "prisma:seed:auth": "dotenv -e apps/auth-service/.env -- tsx apps/auth-service/prisma/seed.ts",
     "prisma:generate:employee": "prisma generate --schema apps/employee-service/prisma/schema.prisma",
     "prisma:migrate:employee": "prisma migrate dev --schema apps/employee-service/prisma/schema.prisma",
     "prisma:generate:attendance": "prisma generate --schema apps/attendance-service/prisma/schema.prisma",
@@ -34,6 +35,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "^6.19.3",
+    "argon2": "^0.44.0",
     "joi": "^18.2.3",
     "prisma": "^6.19.3",
     "reflect-metadata": "^0.2.2",
@@ -62,6 +64,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.23.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
