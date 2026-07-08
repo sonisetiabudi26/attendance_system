@@ -1,8 +1,19 @@
-import { Module } from '@nestjs/common';
-import { ConfigService } from './config.service';
+import { Global, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
+import configuration from './configuration';
+import { validationSchema } from './env.validation';
+
+@Global()
 @Module({
-  providers: [ConfigService],
-  exports: [ConfigService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      expandVariables: true,
+      load: [configuration],
+      validationSchema,
+    }),
+  ],
 })
-export class ConfigModule {}
+export class AppConfigModule {}
