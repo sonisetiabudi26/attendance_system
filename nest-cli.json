@@ -46,6 +46,33 @@
         "tsConfigPath": "apps/auth-service/tsconfig.app.json"
       }
     },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "config": {
+      "type": "library",
+      "root": "libs/config",
+      "entryFile": "index",
+      "sourceRoot": "libs/config/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/config/tsconfig.lib.json"
+      }
+    },
+    "database": {
+      "type": "library",
+      "root": "libs/database",
+      "entryFile": "index",
+      "sourceRoot": "libs/database/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/database/tsconfig.lib.json"
+      }
+    },
     "employee-service": {
       "type": "application",
       "root": "apps/employee-service",
@@ -64,6 +91,24 @@
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
       }
     },
+    "grpc": {
+      "type": "library",
+      "root": "libs/grpc",
+      "entryFile": "index",
+      "sourceRoot": "libs/grpc/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/grpc/tsconfig.lib.json"
+      }
+    },
+    "logger": {
+      "type": "library",
+      "root": "libs/logger",
+      "entryFile": "index",
+      "sourceRoot": "libs/logger/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/logger/tsconfig.lib.json"
+      }
+    },
     "logging-service": {
       "type": "application",
       "root": "apps/logging-service",
@@ -80,6 +125,15 @@
       "sourceRoot": "apps/notification-service/src",
       "compilerOptions": {
         "tsConfigPath": "apps/notification-service/tsconfig.app.json"
+      }
+    },
+    "rabbitmq": {
+      "type": "library",
+      "root": "libs/rabbitmq",
+      "entryFile": "index",
+      "sourceRoot": "libs/rabbitmq/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/rabbitmq/tsconfig.lib.json"
       }
     }
   }
