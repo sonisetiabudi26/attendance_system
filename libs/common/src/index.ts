@@ -1,2 +1,3 @@
 export * from './common.module';
-export * from './common.service';
+export * from './filters';
+export * from './pipes';
