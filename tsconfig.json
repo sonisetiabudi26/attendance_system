@@ -22,40 +22,40 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "attendance/common": [
+      "@attendance/common": [
         "libs/common/src"
       ],
-      "attendance/common/*": [
+      "@attendance/common/*": [
         "libs/common/src/*"
       ],
-      "attendance/config": [
+      "@attendance/config": [
         "libs/config/src"
       ],
-      "attendance/config/*": [
+      "@attendance/config/*": [
         "libs/config/src/*"
       ],
-      "attendance/database": [
+      "@attendance/database": [
         "libs/database/src"
       ],
-      "attendance/database/*": [
+      "@attendance/database/*": [
         "libs/database/src/*"
       ],
-      "attendance/grpc": [
+      "@attendance/grpc": [
         "libs/grpc/src"
       ],
-      "attendance/grpc/*": [
+      "@attendance/grpc/*": [
         "libs/grpc/src/*"
       ],
-      "attendance/logger": [
+      "@attendance/logger": [
         "libs/logger/src"
       ],
-      "attendance/logger/*": [
+      "@attendance/logger/*": [
         "libs/logger/src/*"
       ],
-      "attendance/rabbitmq": [
+      "@attendance/rabbitmq": [
         "libs/rabbitmq/src"
       ],
-      "attendance/rabbitmq/*": [
+      "@attendance/rabbitmq/*": [
         "libs/rabbitmq/src/*"
       ]
     }

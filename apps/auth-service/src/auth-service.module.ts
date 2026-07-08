@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AuthServiceController } from './auth-service.controller';
-import { AuthServiceService } from './auth-service.service';
+
+import { AppConfigModule } from '@attendance/config';
+import { DatabaseModule } from '@attendance/database';
+import { LoggerModule } from '@attendance/logger';
 
 @Module({
-  imports: [],
-  controllers: [AuthServiceController],
-  providers: [AuthServiceService],
+  imports: [
+    AppConfigModule.forRoot('auth-service'),
+    DatabaseModule,
+    LoggerModule,
+  ],
 })
 export class AuthServiceModule {}
