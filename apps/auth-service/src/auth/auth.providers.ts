@@ -1,13 +1,16 @@
 import { Provider } from '@nestjs/common';
 
-import { REFRESH_TOKEN_REPOSITORY, USER_REPOSITORY,ROLE_REPOSITORY,MASTER_STATUS_REPOSITORY } from './constants';
-import { PASSWORD_SERVICE } from './security/constants';
-import { PasswordService } from './security/services';
+import { REFRESH_TOKEN_REPOSITORY, USER_REPOSITORY,ROLE_REPOSITORY,MASTER_STATUS_REPOSITORY,JWT_SERVICE, PASSWORD_SERVICE  } from './constants';
+
+import { PasswordService,JwtService } from './security/services';
 import { UserRepository, RefreshTokenRepository,RoleRepository,MasterStatusRepository } from './repositories';
 import { RefreshTokenMapper, RoleMapper, MasterStatusMapper, UserMapper } from './mappers';
+import { AuthService } from './services/auth.service';
+
 
 export const authProviders: Provider[] = [
-    UserMapper, RefreshTokenMapper,
+    UserMapper, RefreshTokenMapper, RoleMapper,
+    MasterStatusMapper,AuthService,
     {
         provide: USER_REPOSITORY,
         useClass: UserRepository,
@@ -16,13 +19,14 @@ export const authProviders: Provider[] = [
         provide: PASSWORD_SERVICE,
         useClass: PasswordService,
     },
+     {
+        provide: JWT_SERVICE,
+        useClass: JwtService,
+    },
     {
         provide: REFRESH_TOKEN_REPOSITORY,
         useClass: RefreshTokenRepository,
     },
-    RoleMapper,
-    MasterStatusMapper,
-
     {
         provide: ROLE_REPOSITORY,
         useClass: RoleRepository,

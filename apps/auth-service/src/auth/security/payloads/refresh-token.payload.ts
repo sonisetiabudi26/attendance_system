@@ -1,3 +1,3 @@
 export interface RefreshTokenPayload {
-  sub: bigint;
+  sub: string;
 }

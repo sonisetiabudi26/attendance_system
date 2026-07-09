@@ -1,0 +1,155 @@
+import {
+    Inject,
+    Injectable,
+} from '@nestjs/common';
+
+import {
+    USER_REPOSITORY,
+    ROLE_REPOSITORY,
+    MASTER_STATUS_REPOSITORY,
+    REFRESH_TOKEN_REPOSITORY,
+    JWT_SERVICE,
+    PASSWORD_SERVICE
+} from '../constants';
+
+import type {
+    IUserRepository,
+    IRoleRepository,
+    IMasterStatusRepository,
+    IRefreshTokenRepository,
+} from '../interfaces/repository';
+
+import type {
+    IPasswordService,
+    IJwtService,
+} from '../security/interfaces';
+
+import { CreateRefreshTokenContract, LoginContract, LoginResponseContract } from '../contracts';
+import { IAuthService } from '../interfaces/services';
+import { InactiveUserException, InvalidCredentialException, RoleNotFoundException, UserStatusNotFoundException } from '../exceptions';
+
+@Injectable()
+export class AuthService implements IAuthService {
+    constructor(
+        @Inject(USER_REPOSITORY)
+        private readonly userRepository: IUserRepository,
+
+        @Inject(ROLE_REPOSITORY)
+        private readonly roleRepository: IRoleRepository,
+
+        @Inject(MASTER_STATUS_REPOSITORY)
+        private readonly masterStatusRepository: IMasterStatusRepository,
+
+        @Inject(REFRESH_TOKEN_REPOSITORY)
+        private readonly refreshTokenRepository: IRefreshTokenRepository,
+
+        @Inject(PASSWORD_SERVICE)
+        private readonly passwordService: IPasswordService,
+
+        @Inject(JWT_SERVICE)
+        private readonly jwtService: IJwtService,
+    ) { }
+
+    async login(
+        contracts: LoginContract,
+    ): Promise<LoginResponseContract> {
+      
+        const user =
+            await this.userRepository.findByUsernameOrEmail(
+                contracts.usernameOrEmail.toLowerCase(),
+            );
+
+        if (!user) {
+            throw new InvalidCredentialException();
+        }
+
+        const status =
+            await this.masterStatusRepository.findById(
+                user.statusId,
+            );
+
+        if (!status) {
+            throw new UserStatusNotFoundException();
+        }
+
+        if (status.code !== 'ACTIVE') {
+            throw new InactiveUserException();
+        }
+
+        const role =
+            await this.roleRepository.findById(user.roleId);
+
+        if (!role) {
+            throw new RoleNotFoundException();
+        }
+        const passwordValid =
+            await this.passwordService.verify(
+                user.passwordHash,
+                contracts.password,
+            );
+
+        if (!passwordValid) {
+            throw new InvalidCredentialException();
+        }
+
+        const accessToken =
+            await this.jwtService.generateAccessToken({
+                sub: user.id.toString(),
+                role: role.code,
+            });
+            
+        const refreshToken =
+            await this.jwtService.generateRefreshToken({
+                sub: user.id.toString(),
+            });
+
+        const refreshHash =
+            await this.passwordService.hash(
+                refreshToken,
+            );
+
+        await this.refreshTokenRepository.upsert({
+            userId: user.id,
+            tokenHash: refreshHash,
+            deviceType: contracts.deviceType,
+            deviceName: contracts.deviceName,
+            ipAddress: contracts.ipAddress,
+            userAgent: contracts.userAgent,
+            expiresAt: new Date(
+                Date.now() + 7 * 24 * 60 * 60 * 1000,
+            ),
+        } as CreateRefreshTokenContract);
+
+        await this.userRepository.updateLastLogin(
+            user.id,
+        );
+
+        return {
+            accessToken,
+            refreshToken,
+            tokenType: 'Bearer',
+            expiresIn: 900,
+        };
+    }
+
+    async refresh(
+        refreshToken: string,
+    ): Promise<LoginResponseContract> {
+        throw new Error('Not implemented.');
+    }
+
+    async logout(
+        userId: bigint,
+    ): Promise<void> {
+        await this.refreshTokenRepository.deleteByUserId(
+            userId,
+        );
+    }
+
+    //   async changePassword(
+    //     userId: bigint,
+    //     dto: ChangePasswordRequestDto,
+    //   ): Promise<void> {
+    //     throw new Error('Not implemented.');
+    //   }
+}

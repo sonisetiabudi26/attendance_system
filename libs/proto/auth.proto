@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package auth;
+
+enum DeviceType {
+  DEVICE_TYPE_UNSPECIFIED = 0;
+  WEB = 1;
+  ANDROID = 2;
+  IOS = 3;
+  OTHER = 4;
+}
+
+service AuthService {
+
+  rpc Login(LoginRequest)
+      returns(LoginResponse);
+
+  rpc RefreshToken(RefreshTokenRequest)
+      returns(LoginResponse);
+
+  rpc Logout(LogoutRequest)
+      returns(Empty);
+
+  rpc ChangePassword(ChangePasswordRequest)
+      returns(Empty);
+}
+
+message LoginRequest {
+    string usernameOrEmail = 1;
+    string password = 2;
+
+    DeviceType deviceType = 3;
+    string deviceName = 4;
+
+    string ipAddress = 5;
+    string userAgent = 6;
+}
+
+message LoginResponse {
+    string accessToken = 1;
+    string refreshToken = 2;
+    string tokenType = 3;
+    int32 expiresIn = 4;
+}
+
+message RefreshTokenRequest{
+    string refreshToken = 1;
+}
+
+message LogoutRequest{
+    int64 userId = 1;
+}
+
+message ChangePasswordRequest{
+    int64 userId = 1;
+    string oldPassword = 2;
+    string newPassword = 3;
+}
+
+message Empty{}

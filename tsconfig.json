@@ -57,7 +57,8 @@
       ],
       "@attendance/rabbitmq/*": [
         "libs/rabbitmq/src/*"
-      ]
+      ],
+       "@attendance/proto/*": ["libs/proto/*"]
     }
   }
 }

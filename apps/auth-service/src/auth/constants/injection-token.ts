@@ -7,3 +7,5 @@ export const ROLE_REPOSITORY = Symbol('ROLE_REPOSITORY');
 export const MASTER_STATUS_REPOSITORY = Symbol(
   'MASTER_STATUS_REPOSITORY',
 );
+export const PASSWORD_SERVICE = Symbol('PASSWORD_SERVICE');
+export const JWT_SERVICE = Symbol('JWT_SERVICE');

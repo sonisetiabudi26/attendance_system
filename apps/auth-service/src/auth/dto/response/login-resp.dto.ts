@@ -1,2 +1,9 @@
-import { TokenResponseDto } from './token-resp.dto'; 
-export class LoginResponseDto extends TokenResponseDto {}
+export class LoginResponseDto {
+  accessToken: string;
+
+  refreshToken: string;
+
+  tokenType: string;
+
+  expiresIn: number;
+}

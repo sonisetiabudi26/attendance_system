@@ -1,5 +1,5 @@
 export interface AccessTokenPayload {
-  sub: bigint;
+  sub: string;
 
   username: string;
 

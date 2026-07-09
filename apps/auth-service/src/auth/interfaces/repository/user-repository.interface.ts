@@ -27,4 +27,8 @@ export interface IUserRepository {
   ): Promise<void>;
 
   delete(id: bigint): Promise<void>;
+
+  findByUsernameOrEmail(
+    usernameOrEmail: string,
+): Promise<UserEntity | null>;
 }

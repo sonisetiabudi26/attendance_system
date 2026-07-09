@@ -15,6 +15,14 @@ export class MasterStatusRepository
     private readonly mapper: MasterStatusMapper,
   ) {}
 
+  async findById(id: bigint): Promise<MasterStatusEntity | null> {
+    const status = await this.prisma.masterStatus.findUnique({
+      where: { id },
+    });
+
+    return status ? this.mapper.toEntity(status) : null;
+  }
+
   async findDefault(): Promise<MasterStatusEntity | null> {
     const status = await this.prisma.masterStatus.findFirst({
       where: {
@@ -22,10 +30,6 @@ export class MasterStatusRepository
       },
     });
 
-    if (!status) {
-      return null;
-    }
-
-    return this.mapper.toEntity(status);
+    return status ? this.mapper.toEntity(status) : null;
   }
 }

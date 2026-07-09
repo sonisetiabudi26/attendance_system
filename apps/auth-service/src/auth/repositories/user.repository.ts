@@ -107,4 +107,23 @@ export class UserRepository implements IUserRepository {
             where: { id },
         });
     }
+
+    async findByUsernameOrEmail(
+        usernameOrEmail: string,
+    ): Promise<UserEntity | null> {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                OR: [
+                    {
+                        username: usernameOrEmail.toLowerCase(),
+                    },
+                    {
+                        email: usernameOrEmail.toLowerCase(),
+                    },
+                ],
+            },
+        });
+
+        return user ? this.mapper.toEntity(user) : null;
+    }
 }

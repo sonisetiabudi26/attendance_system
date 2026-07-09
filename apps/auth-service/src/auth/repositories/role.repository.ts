@@ -13,17 +13,19 @@ export class RoleRepository implements IRoleRepository {
     private readonly mapper: RoleMapper,
   ) {}
 
-  async findByCode(code: string): Promise<RoleEntity | null> {
+  async findById(id: bigint): Promise<RoleEntity | null> {
     const role = await this.prisma.role.findUnique({
-      where: {
-        code,
-      },
+      where: { id },
     });
 
-    if (!role) {
-      return null;
-    }
+    return role ? this.mapper.toEntity(role) : null;
+  }
 
-    return this.mapper.toEntity(role);
+  async findByCode(code: string): Promise<RoleEntity | null> {
+    const role = await this.prisma.role.findUnique({
+      where: { code },
+    });
+
+    return role ? this.mapper.toEntity(role) : null;
   }
 }
