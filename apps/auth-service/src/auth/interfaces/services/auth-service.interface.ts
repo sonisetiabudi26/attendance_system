@@ -1,4 +1,4 @@
-import { LoginContract, LoginResponseContract } from '../../contracts';
+import { LoginContract, LoginResponseContract,LogoutContract } from '../../contracts';
 import { LoginDto } from '../../dto/request/login-req.dto';
 import { LoginResponseDto } from '../../dto/response/login-resp.dto';
 // import { ChangePasswordRequestDto } from '../dto/request';
@@ -13,7 +13,7 @@ export interface IAuthService {
   ): Promise<LoginResponseContract>;
 
   logout(
-    userId: bigint,
+    contract: LogoutContract,
   ): Promise<void>;
 
 //   changePassword(

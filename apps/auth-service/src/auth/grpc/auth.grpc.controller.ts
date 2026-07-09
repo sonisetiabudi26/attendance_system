@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from '../services/auth.service';
-import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest } from '@attendance/proto/generated/auth';
+import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest, Empty } from '@attendance/proto/generated/auth';
 import { AuthGrpcMapper } from './authgrpc.mapper';
 
 @Controller()
@@ -14,7 +14,7 @@ export class AuthGrpcController {
   async login(
     request: LoginRequest,
   ): Promise<LoginResponse> {
-     
+
     const result = await this.authService.login(
       AuthGrpcMapper.toLoginContract(request),
     );
@@ -36,9 +36,10 @@ export class AuthGrpcController {
   @GrpcMethod('AuthService', 'Logout')
   async logout(
     request: LogoutRequest,
-  ) {
+  ): Promise<Empty> {
+
     await this.authService.logout(
-      BigInt(request.userId),
+      AuthGrpcMapper.toLogoutContract(request),
     );
 
     return {};

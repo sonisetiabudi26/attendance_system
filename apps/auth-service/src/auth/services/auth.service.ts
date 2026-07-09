@@ -24,7 +24,7 @@ import type {
     IJwtService,
 } from '../security/interfaces';
 
-import { CreateRefreshTokenContract, LoginContract, LoginResponseContract } from '../contracts';
+import { CreateRefreshTokenContract, LoginContract, LoginResponseContract, LogoutContract } from '../contracts';
 import { IAuthService } from '../interfaces/services';
 import { InactiveUserException, InvalidCredentialException, RoleNotFoundException, UserStatusNotFoundException } from '../exceptions';
 
@@ -53,7 +53,7 @@ export class AuthService implements IAuthService {
     async login(
         contracts: LoginContract,
     ): Promise<LoginResponseContract> {
-      
+
         const user =
             await this.userRepository.findByUsernameOrEmail(
                 contracts.usernameOrEmail.toLowerCase(),
@@ -97,7 +97,7 @@ export class AuthService implements IAuthService {
                 sub: user.id.toString(),
                 role: role.code,
             });
-            
+
         const refreshToken =
             await this.jwtService.generateRefreshToken({
                 sub: user.id.toString(),
@@ -139,10 +139,11 @@ export class AuthService implements IAuthService {
     }
 
     async logout(
-        userId: bigint,
+        contract: LogoutContract,
     ): Promise<void> {
+
         await this.refreshTokenRepository.deleteByUserId(
-            userId,
+            contract.userId,
         );
     }
 

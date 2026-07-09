@@ -3,3 +3,4 @@ export * from './update-user.input';
 export * from './create-refreshtoken.input';
 export * from './login.input';
 export * from './login-response.input';
+export * from './logout.input';

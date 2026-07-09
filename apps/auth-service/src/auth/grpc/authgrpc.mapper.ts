@@ -1,11 +1,12 @@
 import {
   LoginRequest,
+  LogoutRequest,
   DeviceType as ProtoDeviceType,
 } from '@attendance/proto/generated/auth';
 
 import { DeviceType } from '../../prisma/generated/client';
 
-import { LoginContract } from '../contracts';
+import { LoginContract, LogoutContract } from '../contracts';
 
 export class AuthGrpcMapper {
   static toLoginContract(
@@ -24,7 +25,13 @@ export class AuthGrpcMapper {
       userAgent: request.userAgent,
     };
   }
-
+  static toLogoutContract(
+    request: LogoutRequest,
+  ): LogoutContract {
+    return {
+      userId: BigInt(request.userId),
+    };
+  }
   private static toDeviceType(
     type: ProtoDeviceType,
   ): DeviceType {
