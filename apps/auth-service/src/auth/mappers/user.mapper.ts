@@ -4,8 +4,8 @@ import { Prisma, User } from '../../prisma/generated/client';
 
 import { UserEntity } from '../entities';
 import {
-  CreateUserModel,
-  UpdateUserModel,
+  CreateUserContract,
+  UpdateUserContract,
 } from '../contracts';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class UserMapper {
   }
 
   toCreateInput(
-    data: CreateUserModel,
+    data: CreateUserContract,
   ): Prisma.UserCreateInput {
     return {
       username: data.username,
@@ -51,7 +51,7 @@ export class UserMapper {
   }
 
   toUpdateInput(
-    data: UpdateUserModel,
+    data: UpdateUserContract,
   ): Prisma.UserUpdateInput {
     const update: Prisma.UserUpdateInput = {};
 

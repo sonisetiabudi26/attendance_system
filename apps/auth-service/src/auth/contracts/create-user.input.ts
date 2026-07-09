@@ -1,4 +1,4 @@
-export class CreateUserModel {
+export class CreateUserContract {
   username: string;
 
   email: string;

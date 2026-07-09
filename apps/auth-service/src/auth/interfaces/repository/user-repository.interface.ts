@@ -1,6 +1,6 @@
 import {
-  CreateUserModel,
-  UpdateUserModel,
+  CreateUserContract,
+  UpdateUserContract,
 } from '../../contracts';
 
 import { UserEntity } from '../../entities';
@@ -12,11 +12,11 @@ export interface IUserRepository {
 
   findByUsername(username: string): Promise<UserEntity | null>;
 
-  create(data: CreateUserModel): Promise<UserEntity>;
+  create(data: CreateUserContract): Promise<UserEntity>;
 
   update(
     id: bigint,
-    data: UpdateUserModel,
+    data: UpdateUserContract,
   ): Promise<UserEntity>;
 
   updateLastLogin(id: bigint): Promise<void>;

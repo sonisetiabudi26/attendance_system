@@ -1,1 +1,4 @@
 export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
+export const REFRESH_TOKEN_REPOSITORY = Symbol(
+  'REFRESH_TOKEN_REPOSITORY',
+);

@@ -1,4 +1,4 @@
-export class UpdateUserModel {
+export class UpdateUserContract {
   username?: string;
 
   email?: string;

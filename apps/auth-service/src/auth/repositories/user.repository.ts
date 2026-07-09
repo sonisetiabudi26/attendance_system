@@ -6,8 +6,8 @@ import { UserEntity } from '../entities';
 import { IUserRepository } from '../interfaces';
 import { UserMapper } from '../mappers';
 import {
-    CreateUserModel,
-    UpdateUserModel,
+    CreateUserContract,
+    UpdateUserContract,
 } from '../contracts';
 
 @Injectable()
@@ -53,7 +53,7 @@ export class UserRepository implements IUserRepository {
         return user ? this.mapper.toEntity(user) : null;
     }
 
-    async create(data: CreateUserModel): Promise<UserEntity> {
+    async create(data: CreateUserContract): Promise<UserEntity> {
         const user = await this.prisma.user.create({
             data: {
                 username: data.username,
@@ -69,7 +69,7 @@ export class UserRepository implements IUserRepository {
 
     async update(
         id: bigint,
-        data: UpdateUserModel,
+        data: UpdateUserContract,
     ): Promise<UserEntity> {
         const user = await this.prisma.user.update({
             where: { id },
