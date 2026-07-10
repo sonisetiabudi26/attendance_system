@@ -12,11 +12,11 @@ export interface IJwtService {
     payload: RefreshTokenPayload,
   ): Promise<string>;
 
-  verifyAccessToken(
-    token: string,
-  ): Promise<AccessTokenPayload>;
-
   verifyRefreshToken(
     token: string,
   ): Promise<RefreshTokenPayload>;
+
+  verifyAccessToken(
+        token: string,
+    ): Promise<AccessTokenPayload>;
 }

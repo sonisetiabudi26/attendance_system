@@ -28,6 +28,7 @@ import { CreateRefreshTokenContract, LoginContract, LoginResponseContract, Logou
 import { IAuthService } from '../interfaces/services';
 import { InactiveUserException, InvalidCredentialException, InvalidRefreshTokenException, RoleNotFoundException, UserStatusNotFoundException } from '../exceptions';
 import { RefreshTokenPayload } from '../security/payloads/refresh-token.payload';
+import { VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -139,16 +140,16 @@ export class AuthService implements IAuthService {
     ): Promise<LoginResponseContract> {
         let payload: RefreshTokenPayload;
 
- console.log(1);
+
         payload = await this.jwtService.verifyRefreshToken(refreshToken);
-       
+
         const userId = BigInt(payload.sub);
 
         const savedToken =
             await this.refreshTokenRepository.findByUserId(
                 userId,
             );
-            console.log(savedToken);
+
         if (!savedToken) {
             throw new InvalidRefreshTokenException();
         }
@@ -158,7 +159,7 @@ export class AuthService implements IAuthService {
                 savedToken.tokenHash,
                 refreshToken,
             );
-console.log(2);
+
         if (!valid) {
             throw new InvalidRefreshTokenException();
         }
@@ -166,7 +167,7 @@ console.log(2);
         if (savedToken.expiresAt < new Date()) {
             throw new InvalidRefreshTokenException();
         }
-console.log(3);
+
         const user =
             await this.userRepository.findById(userId);
 
@@ -229,6 +230,22 @@ console.log(3);
         );
     }
 
+    async verifyAccessToken(
+        token: string,
+    ): Promise<VerifyAccessTokenResponse> {
+        const payload =
+            await this.jwtService.verifyAccessToken(
+                token,
+            );
+
+        return {
+            user: {
+                sub: payload.sub,
+                username: payload.username,
+                role: payload.role,
+            },
+        };
+    }
     //   async changePassword(
     //     userId: bigint,
     //     dto: ChangePasswordRequestDto,

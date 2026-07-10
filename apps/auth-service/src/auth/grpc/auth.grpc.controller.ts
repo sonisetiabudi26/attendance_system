@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from '../services/auth.service';
-import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest, Empty } from '@attendance/proto/generated/auth';
+import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest, Empty, VerifyAccessTokenRequest, VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
 import { AuthGrpcMapper } from './authgrpc.mapper';
 
 @Controller()
@@ -56,6 +56,15 @@ export class AuthGrpcController {
     return {};
   }
 
+  @GrpcMethod('AuthService', 'VerifyAccessToken')
+  async verifyAccessToken(
+    request: VerifyAccessTokenRequest,
+  ): Promise<VerifyAccessTokenResponse> {
+    return this.authService.verifyAccessToken(
+      request.accessToken,
+    );
+  }
+  
   // @GrpcMethod('AuthService', 'ChangePassword')
   // async changePassword(
   //   request: ChangePasswordRequest,

@@ -1,10 +1,10 @@
-import { LoginContract, LoginResponseContract,LogoutContract } from '../../contracts';
-import { LoginDto } from '../../dto/request/login-req.dto';
-import { LoginResponseDto } from '../../dto/response/login-resp.dto';
+import { VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
+import { LoginContract, LoginResponseContract, LogoutContract } from '../../contracts';
+
 // import { ChangePasswordRequestDto } from '../dto/request';
 
 export interface IAuthService {
-   login(
+  login(
     contract: LoginContract,
   ): Promise<LoginResponseContract>;
 
@@ -15,9 +15,14 @@ export interface IAuthService {
   logout(
     contract: LogoutContract,
   ): Promise<void>;
+  
+  verifyAccessToken(
+    token: string,
+  ): Promise<VerifyAccessTokenResponse>;
 
-//   changePassword(
-//     userId: bigint,
-//     dto: ChangePasswordRequestDto,
-//   ): Promise<void>;
+
+  //   changePassword(
+  //     userId: bigint,
+  //     dto: ChangePasswordRequestDto,
+  //   ): Promise<void>;
 }
