@@ -1,36 +1,98 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService as NestJwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+
+import {
+  JsonWebTokenError,
+  TokenExpiredError,
+} from 'jsonwebtoken';
 
 import { IJwtService } from '../interfaces';
-import { extend } from 'joi';
+
+import {
+  AccessTokenPayload,
+  RefreshTokenPayload,
+} from '../../security/payloads';
+
+import {
+  InvalidRefreshTokenException,
+} from '../../exceptions';
 
 @Injectable()
 export class JwtService implements IJwtService {
   constructor(
     private readonly jwtService: NestJwtService,
-  ) {}
+    private readonly config: ConfigService,
+  ) { }
 
   async generateAccessToken(
-    payload: Record<string, unknown>,
+    payload: AccessTokenPayload,
   ): Promise<string> {
-    return this.jwtService.signAsync(payload);
+    console.log(
+      'refresh expires:',
+      this.config.getOrThrow('jwt.expiresIn'),
+    );
+    return this.jwtService.signAsync(payload, {
+      expiresIn: this.config.getOrThrow(
+        'jwt.expiresIn',
+      ),
+    });
   }
 
   async generateRefreshToken(
-    payload: Record<string, unknown>,
+    payload: RefreshTokenPayload,
   ): Promise<string> {
-    return this.jwtService.signAsync(payload);
+    console.log(
+      'refresh expires:',
+      this.config.getOrThrow('jwt.refreshExpiresIn'),
+    );
+    return this.jwtService.signAsync(payload, {
+      expiresIn: this.config.getOrThrow('jwt.refreshExpiresIn'),
+    });
   }
 
-  async verifyAccessToken<T extends object>(
+  async verifyAccessToken(
     token: string,
-  ): Promise<T> {
-    return this.jwtService.verifyAsync<T>(token);
-  }
+  ): Promise<AccessTokenPayload> {
+    try {
 
-  async verifyRefreshToken<T extends object>(
-    token: string,
-  ): Promise<T> {
-    return this.jwtService.verifyAsync<T>(token);
+      return await this.jwtService.verifyAsync<AccessTokenPayload>(
+        token,
+      );
+    } catch (error) {
+      if (
+        error instanceof TokenExpiredError ||
+        error instanceof JsonWebTokenError
+      ) {
+        throw new InvalidRefreshTokenException();
+      }
+
+      throw error;
+    }
   }
+  async verifyRefreshToken(
+    token: string,
+  ): Promise<RefreshTokenPayload> {
+    return this.jwtService.verifyAsync<RefreshTokenPayload>(
+      token,
+    );
+  }
+  // async verifyRefreshToken(
+  //   token: string,
+  // ): Promise<RefreshTokenPayload> {
+  //   try {
+  //     return await this.jwtService.verifyAsync<RefreshTokenPayload>(
+  //       token,
+  //     );
+  //   } catch (error) {
+  //     if (
+  //       error instanceof TokenExpiredError ||
+  //       error instanceof JsonWebTokenError
+  //     ) {
+  //       throw new InvalidRefreshTokenException();
+  //     }
+
+  //     throw error;
+  //   }
+  // }
 }

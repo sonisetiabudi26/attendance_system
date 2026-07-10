@@ -29,9 +29,6 @@ import { configuration } from '../../../../libs/config/src';
             useFactory: (config: ConfigService) => ({
                 
                 secret: config.getOrThrow<string>('jwt.secret'),
-                signOptions: {
-                    expiresIn: config.getOrThrow<StringValue>('jwt.expiresIn'),
-                },
             }),
         }),
     ],

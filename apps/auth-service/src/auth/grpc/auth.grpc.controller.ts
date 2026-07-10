@@ -29,8 +29,19 @@ export class AuthGrpcController {
   @GrpcMethod('AuthService', 'RefreshToken')
   async refreshToken(
     request: RefreshTokenRequest,
-  ) {
-    return this.authService.refresh(request.refreshToken);
+  ): Promise<LoginResponse> {
+
+    const result =
+      await this.authService.refresh(
+        request.refreshToken,
+      );
+
+    return {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+      tokenType: result.tokenType,
+      expiresIn: result.expiresIn,
+    };
   }
 
   @GrpcMethod('AuthService', 'Logout')

@@ -1,17 +1,22 @@
+import {
+  AccessTokenPayload,
+  RefreshTokenPayload,
+} from '../payloads';
+
 export interface IJwtService {
   generateAccessToken(
-    payload: Record<string, unknown>,
+    payload: AccessTokenPayload,
   ): Promise<string>;
 
   generateRefreshToken(
-    payload: Record<string, unknown>,
+    payload: RefreshTokenPayload,
   ): Promise<string>;
 
-  verifyAccessToken<T extends object>(
+  verifyAccessToken(
     token: string,
-  ): Promise<T>;
+  ): Promise<AccessTokenPayload>;
 
-  verifyRefreshToken<T extends object>(
+  verifyRefreshToken(
     token: string,
-  ): Promise<T>;
+  ): Promise<RefreshTokenPayload>;
 }

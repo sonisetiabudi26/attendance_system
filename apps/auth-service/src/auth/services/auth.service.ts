@@ -26,7 +26,8 @@ import type {
 
 import { CreateRefreshTokenContract, LoginContract, LoginResponseContract, LogoutContract } from '../contracts';
 import { IAuthService } from '../interfaces/services';
-import { InactiveUserException, InvalidCredentialException, RoleNotFoundException, UserStatusNotFoundException } from '../exceptions';
+import { InactiveUserException, InvalidCredentialException, InvalidRefreshTokenException, RoleNotFoundException, UserStatusNotFoundException } from '../exceptions';
+import { RefreshTokenPayload } from '../security/payloads/refresh-token.payload';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -95,6 +96,7 @@ export class AuthService implements IAuthService {
         const accessToken =
             await this.jwtService.generateAccessToken({
                 sub: user.id.toString(),
+                username: user.username,
                 role: role.code,
             });
 
@@ -135,7 +137,87 @@ export class AuthService implements IAuthService {
     async refresh(
         refreshToken: string,
     ): Promise<LoginResponseContract> {
-        throw new Error('Not implemented.');
+        let payload: RefreshTokenPayload;
+
+ console.log(1);
+        payload = await this.jwtService.verifyRefreshToken(refreshToken);
+       
+        const userId = BigInt(payload.sub);
+
+        const savedToken =
+            await this.refreshTokenRepository.findByUserId(
+                userId,
+            );
+            console.log(savedToken);
+        if (!savedToken) {
+            throw new InvalidRefreshTokenException();
+        }
+
+        const valid =
+            await this.passwordService.verify(
+                savedToken.tokenHash,
+                refreshToken,
+            );
+console.log(2);
+        if (!valid) {
+            throw new InvalidRefreshTokenException();
+        }
+
+        if (savedToken.expiresAt < new Date()) {
+            throw new InvalidRefreshTokenException();
+        }
+console.log(3);
+        const user =
+            await this.userRepository.findById(userId);
+
+        if (!user) {
+            throw new InvalidCredentialException();
+        }
+
+        const role =
+            await this.roleRepository.findById(
+                user.roleId,
+            );
+
+        if (!role) {
+            throw new RoleNotFoundException();
+        }
+
+        const newAccessToken =
+            await this.jwtService.generateAccessToken({
+                sub: user.id.toString(),
+                username: user.username,
+                role: role.code,
+            });
+
+        const newRefreshToken =
+            await this.jwtService.generateRefreshToken({
+                sub: user.id.toString(),
+            });
+
+        const refreshHash =
+            await this.passwordService.hash(
+                newRefreshToken,
+            );
+
+        await this.refreshTokenRepository.upsert({
+            userId: user.id,
+            tokenHash: refreshHash,
+            deviceType: savedToken.deviceType,
+            deviceName: savedToken.deviceName ?? undefined,
+            ipAddress: savedToken.ipAddress ?? undefined,
+            userAgent: savedToken.userAgent ?? undefined,
+            expiresAt: new Date(
+                Date.now() + 7 * 24 * 60 * 60 * 1000,
+            ),
+        });
+
+        return {
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
+            tokenType: 'Bearer',
+            expiresIn: 900,
+        };
     }
 
     async logout(
