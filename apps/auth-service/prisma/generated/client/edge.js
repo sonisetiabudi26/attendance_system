@@ -190,7 +190,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/sonisetiabudi/Documents/attendance-system/apps/auth-service/src/prisma/generated/client",
+      "value": "/Users/sonisetiabudi/Documents/attendance-system/apps/auth-service/prisma/generated/client",
       "fromEnvVar": null
     },
     "config": {
@@ -204,7 +204,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/sonisetiabudi/Documents/attendance-system/apps/auth-service/src/prisma/schema.prisma",
+    "sourceFilePath": "/Users/sonisetiabudi/Documents/attendance-system/apps/auth-service/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
