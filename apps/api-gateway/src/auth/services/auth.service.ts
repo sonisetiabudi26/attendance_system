@@ -1,7 +1,7 @@
 import {
-  Inject,
-  Injectable,
-  OnModuleInit,
+    Inject,
+    Injectable,
+    OnModuleInit,
 } from '@nestjs/common';
 
 import type { ClientGrpc } from '@nestjs/microservices';
@@ -19,37 +19,45 @@ import { VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
 
 @Injectable()
 export class AuthService
-  implements OnModuleInit
-{
-  constructor(
-    @Inject(AUTH_GRPC)
-    private readonly client: ClientGrpc,
-  ) {}
+    implements OnModuleInit {
+    constructor(
+        @Inject(AUTH_GRPC)
+        private readonly client: ClientGrpc,
+    ) { }
 
-  private authService: AuthGrpcService;
+    private authService: AuthGrpcService;
 
-  onModuleInit() {
-    this.authService =
-      this.client.getService<AuthGrpcService>(
-        'AuthService',
-      );
-  }
+    onModuleInit() {
+        this.authService =
+            this.client.getService<AuthGrpcService>(
+                'AuthService',
+            );
+    }
 
-  async login(dto: LoginDto) {
-    return firstValueFrom(
-      this.authService.Login(
-        AuthMapper.toLoginRequest(dto),
-      ),
-    );
-  }
-  async verifyAccessToken(
-  accessToken: string,
-): Promise<VerifyAccessTokenResponse> {
-  return await firstValueFrom(
-    this.authService.VerifyAccessToken({
-      accessToken,
-    }),
-  );
-}
-  
+    async login(dto: LoginDto) {
+        return firstValueFrom(
+            this.authService.Login(
+                AuthMapper.toLoginRequest(dto),
+            ),
+        );
+    }
+    async verifyAccessToken(
+        accessToken: string,
+    ): Promise<VerifyAccessTokenResponse> {
+        return await firstValueFrom(
+            this.authService.VerifyAccessToken({
+                accessToken,
+            }),
+        );
+    }
+    async refresh(
+        refreshToken: string,
+    ) {
+        return await firstValueFrom(
+            this.authService.RefreshToken({
+                refreshToken,
+            }),
+        );
+    }
+
 }
