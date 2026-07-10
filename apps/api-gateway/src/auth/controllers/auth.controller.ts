@@ -10,6 +10,8 @@ import { AuthService } from '../services/auth.service';
 import { LoginDto } from '../dto/login.dto';
 import { Public } from '../decorators/public.decorator';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { UserClaims } from '@attendance/proto/generated/auth';
 
 @Controller('auth')
 export class AuthController {
@@ -35,4 +37,19 @@ export class AuthController {
         );
     }
 
+    @Get("me")
+    me(
+        @CurrentUser() user: UserClaims,
+    ) {
+        return user;
+    }
+
+    @Post("logout")
+    logout(
+        @CurrentUser() user: UserClaims,
+    ) {
+        return this.authService.logout(
+            BigInt(user.sub),
+        );
+    }
 }

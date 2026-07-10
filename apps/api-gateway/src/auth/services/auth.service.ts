@@ -60,4 +60,14 @@ export class AuthService
         );
     }
 
+    async logout(
+        userId: bigint,
+    ): Promise<void> {
+        await firstValueFrom(
+            this.authService.Logout({
+                userId: Number(userId),
+            }),
+        );
+    }
+
 }

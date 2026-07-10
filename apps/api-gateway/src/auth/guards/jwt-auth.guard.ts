@@ -70,7 +70,7 @@ export class JwtAuthGuard
         token,
       );
 
-    request.user = payload;
+    request.user = payload.user;
 
     return true;
   }
