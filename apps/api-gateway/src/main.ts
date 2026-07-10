@@ -1,8 +1,28 @@
 import { NestFactory } from '@nestjs/core';
 import { ApiGatewayModule } from './api-gateway.module';
+import { AppValidationPipe } from '@attendance/common/pipes';
+import {
+  GrpcToHttpExceptionFilter,
+  HttpExceptionFilter,
+  ResponseInterceptor,
+} from '@attendance/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ApiGatewayModule);
-  await app.listen(process.env.port ?? 3000);
+  const app =
+  await NestFactory.create(ApiGatewayModule);
+
+app.useGlobalPipes(
+  new AppValidationPipe(),
+);
+
+app.useGlobalFilters(
+  new GrpcToHttpExceptionFilter(),
+  new HttpExceptionFilter(),
+);
+
+app.useGlobalInterceptors(
+  new ResponseInterceptor(),
+);
+await app.listen(3000);
 }
 bootstrap();

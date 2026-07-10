@@ -21,6 +21,7 @@ export class GrpcExceptionFilter extends BaseRpcExceptionFilter {
 
     return super.catch(
       new RpcException({
+        errorCode: response.error.code,
         code: this.mapStatus(exception.getStatus()),
         message:
           response?.error?.message ??
