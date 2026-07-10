@@ -3,3 +3,7 @@ export const EMPLOYEE_REPOSITORY = Symbol('EMPLOYEE_REPOSITORY');
 export const POSITION_REPOSITORY = Symbol('POSITION_REPOSITORY');
 
 export const LOCATION_REPOSITORY = Symbol('LOCATION_REPOSITORY');
+
+export const AUTH_PACKAGE_NAME = 'AUTH_PACKAGE';
+
+export const AUTH_SERVICE_NAME = 'AuthService';

@@ -9,22 +9,21 @@ import {
 
 import type {
   IEmployeeRepository,
-} from '../repositories/employee.repository';
-
-import type {
   IPositionRepository,
-} from '../repositories/position.repository';
+} from '../repositories';
 
-import {
-  CreateEmployeeInput,
-} from '../contracts';
+import { AuthGrpcClient } from '../grpc/auth.grpc.client';
+
+// import { EmployeePublisher } from '../publishers/employee.publisher';
+
+import { CreateEmployeeInput } from '../contracts';
+
+import { EmployeeEntity } from '../entites/employee.entity';
 
 import {
   EmployeeAlreadyExistsException,
   PositionNotFoundException,
 } from '../exceptions';
-
-import { EmployeeEntity } from '../entites/employee.entity';
 
 @Injectable()
 export class CreateEmployeeService {
@@ -35,13 +34,19 @@ export class CreateEmployeeService {
     @Inject(POSITION_REPOSITORY)
     private readonly positionRepository: IPositionRepository,
 
+    private readonly authGrpcClient: AuthGrpcClient,
+
+    // private readonly employeePublisher: EmployeePublisher,
+
     private readonly prisma: PrismaService,
   ) {}
 
   async execute(
     input: CreateEmployeeInput,
   ): Promise<EmployeeEntity> {
-    // Validasi employee number
+    /**
+     * Validate Employee Number
+     */
     const exists =
       await this.employeeRepository.existsByEmployeeNo(
         this.prisma,
@@ -52,7 +57,9 @@ export class CreateEmployeeService {
       throw new EmployeeAlreadyExistsException();
     }
 
-    // Validasi position
+    /**
+     * Validate Position
+     */
     const position =
       await this.positionRepository.findById(
         this.prisma,
@@ -63,42 +70,73 @@ export class CreateEmployeeService {
       throw new PositionNotFoundException();
     }
 
-    // Transaction
-    return this.prisma.$transaction(
+    /**
+     * Transaction
+     */
+    const employee = await this.prisma.$transaction(
       async (tx) => {
-        const employee =
+        /**
+         * Create Employee
+         */
+        const createdEmployee =
           await this.employeeRepository.create(
             tx,
             input,
           );
 
         /**
-         * TODO
-         *
-         * Auth gRPC
-         *
-         * const user =
-         * await authClient.createUser(...)
+         * Create Login (Auth Service)
          */
+        const authUser =
+          await this.authGrpcClient.createUser({
+            username: input.username,
+            email: input.email,
+            password: input.password,
+            role: 'EMPLOYEE',
+          });
 
         /**
-         * TODO
-         *
-         * await employeeRepository.updateUserId(
-         *    tx,
-         *    employee.id,
-         *    BigInt(user.userId),
-         * )
+         * Save User Id
          */
+        await this.employeeRepository.updateUserId(
+          tx,
+          createdEmployee.id,
+          BigInt(authUser.userId),
+        );
 
         /**
-         * TODO
-         *
-         * RabbitMQ Publish
+         * Return latest data
          */
+        const employee =
+          await this.employeeRepository.findById(
+            tx,
+            createdEmployee.id,
+          );
+
+        if (!employee) {
+          throw new Error(
+            'Employee not found after creation.',
+          );
+        }
 
         return employee;
       },
     );
+
+    /**
+     * Publish Event
+     *
+     * Publish setelah transaction berhasil commit.
+     * Jangan publish di dalam transaction.
+     */
+    // await this.employeePublisher.employeeCreated({
+    //   employeeId: employee.id.toString(),
+    //   employeeNo: employee.employeeNo,
+    //   fullName: employee.fullName,
+    //   positionId: employee.positionId.toString(),
+    //   userId: employee.userId!.toString(),
+    // });
+
+    return employee;
   }
 }
