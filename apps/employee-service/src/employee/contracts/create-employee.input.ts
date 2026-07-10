@@ -1,4 +1,5 @@
 export interface CreateEmployeeInput {
+
   employeeNo: string;
 
   fullName: string;
@@ -8,4 +9,11 @@ export interface CreateEmployeeInput {
   photoUrl?: string;
 
   positionId: bigint;
+
+  username: string;
+
+  email: string;
+
+  password: string;
+
 }

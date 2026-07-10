@@ -1,34 +1,19 @@
 import { Module } from '@nestjs/common';
-import { EmployeeRepository } from './employee/repositories/employee.repository';
 import { EmployeePrismaRepository } from './employee/repositories/employee-prisma.repository';
 import { PrismaModule } from './database/prisma.module';
-
+import { EMPLOYEE_REPOSITORY } from './employee/constants/employee.constant';
 
 @Module({
-
-  imports: [
-
-    PrismaModule,
-
-  ],
+  imports: [PrismaModule],
 
   providers: [
-
     {
-
-      provide: EmployeeRepository,
-
-      useClass: EmployeePrismaRepository,
-
+      provide: EMPLOYEE_REPOSITORY,
+      useClass:
+        EmployeePrismaRepository,
     },
-
   ],
 
-  exports: [
-
-    EmployeeRepository,
-
-  ],
-
+  exports: [EMPLOYEE_REPOSITORY],
 })
 export class EmployeeServiceModule {}

@@ -5,31 +5,33 @@ import {
 } from '../contracts';
 
 import { EmployeeEntity } from '../entites/employee.entity';
-export abstract class EmployeeRepository {
-
-  abstract create(
+export interface IEmployeeRepository {
+  create(
     input: CreateEmployeeInput,
   ): Promise<EmployeeEntity>;
 
-  abstract update(
+  update(
     id: bigint,
     input: UpdateEmployeeInput,
   ): Promise<EmployeeEntity>;
 
-  abstract delete(
+  delete(
     id: bigint,
   ): Promise<void>;
 
-  abstract findById(
+  findById(
     id: bigint,
   ): Promise<EmployeeEntity | null>;
 
-  abstract findByEmployeeNo(
+  findByEmployeeNo(
     employeeNo: string,
   ): Promise<EmployeeEntity | null>;
 
-  abstract findAll(
+  findAll(
     filter: EmployeeFilterInput,
   ): Promise<EmployeeEntity[]>;
 
+  existsByEmployeeNo(
+    employeeNo: string,
+  ): Promise<boolean>;
 }
