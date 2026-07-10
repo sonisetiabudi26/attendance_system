@@ -28,10 +28,7 @@ export class JwtService implements IJwtService {
   async generateAccessToken(
     payload: AccessTokenPayload,
   ): Promise<string> {
-    console.log(
-      'refresh expires:',
-      this.config.getOrThrow('jwt.expiresIn'),
-    );
+   
     return this.jwtService.signAsync(payload, {
       expiresIn: this.config.getOrThrow(
         'jwt.expiresIn',
@@ -42,10 +39,7 @@ export class JwtService implements IJwtService {
   async generateRefreshToken(
     payload: RefreshTokenPayload,
   ): Promise<string> {
-    console.log(
-      'refresh expires:',
-      this.config.getOrThrow('jwt.refreshExpiresIn'),
-    );
+   
     return this.jwtService.signAsync(payload, {
       expiresIn: this.config.getOrThrow('jwt.refreshExpiresIn'),
     });
@@ -70,29 +64,23 @@ export class JwtService implements IJwtService {
       throw error;
     }
   }
+  
   async verifyRefreshToken(
     token: string,
   ): Promise<RefreshTokenPayload> {
-    return this.jwtService.verifyAsync<RefreshTokenPayload>(
-      token,
-    );
-  }
-  // async verifyRefreshToken(
-  //   token: string,
-  // ): Promise<RefreshTokenPayload> {
-  //   try {
-  //     return await this.jwtService.verifyAsync<RefreshTokenPayload>(
-  //       token,
-  //     );
-  //   } catch (error) {
-  //     if (
-  //       error instanceof TokenExpiredError ||
-  //       error instanceof JsonWebTokenError
-  //     ) {
-  //       throw new InvalidRefreshTokenException();
-  //     }
+    try {
+      return await this.jwtService.verifyAsync<RefreshTokenPayload>(
+        token,
+      );
+    } catch (error) {
+      if (
+        error instanceof TokenExpiredError ||
+        error instanceof JsonWebTokenError
+      ) {
+        throw new InvalidRefreshTokenException();
+      }
 
-  //     throw error;
-  //   }
-  // }
+      throw error;
+    }
+  }
 }
