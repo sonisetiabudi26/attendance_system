@@ -64,7 +64,21 @@ export class AuthGrpcController {
       request.accessToken,
     );
   }
-  
+  @GrpcMethod(
+    'AuthService',
+    'ChangePassword',
+  )
+  async changePassword(
+    request: ChangePasswordRequest,
+  ): Promise<Empty> {
+    await this.authService.changePassword(
+      BigInt(request.userId),
+      request.oldPassword,
+      request.newPassword,
+    );
+
+    return {};
+  }
   // @GrpcMethod('AuthService', 'ChangePassword')
   // async changePassword(
   //   request: ChangePasswordRequest,

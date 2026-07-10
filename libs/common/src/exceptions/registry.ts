@@ -5,6 +5,7 @@ import {
     InvalidRefreshTokenException,
     InactiveUserException,
     RoleNotFoundException,
+    InvalidPasswordException
 } from '../../../../apps/auth-service/src/auth/exceptions';
 
 type ExceptionConstructor = new () => HttpException;
@@ -21,4 +22,7 @@ export const ExceptionRegistry: Record<string,ExceptionConstructor> = {
 
     AUTH_ROLE_NOT_FOUND:
         RoleNotFoundException,
+
+    AUTH_INVALID_PASSWORD:
+        InvalidPasswordException,
 };

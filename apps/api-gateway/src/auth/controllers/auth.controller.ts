@@ -12,6 +12,7 @@ import { Public } from '../decorators/public.decorator';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { UserClaims } from '@attendance/proto/generated/auth';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -50,6 +51,17 @@ export class AuthController {
     ) {
         return this.authService.logout(
             BigInt(user.sub),
+        );
+    }
+
+    @Post('change-password')
+    async changePassword(
+        @CurrentUser() user: UserClaims,
+        @Body() dto: ChangePasswordDto,
+    ) {
+        return this.authService.changePassword(
+            Number(user.sub),
+            dto,
         );
     }
 }

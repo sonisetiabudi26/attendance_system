@@ -11,9 +11,19 @@ export class PasswordService implements IPasswordService {
   }
 
   async verify(
-     hash: string,
+    hash: string,
     password: string,
   ): Promise<boolean> {
     return argon2.verify(hash, password);
+  }
+
+  async compare(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return argon2.verify(
+      hashedPassword,
+      plainPassword,
+    );
   }
 }

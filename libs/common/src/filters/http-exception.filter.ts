@@ -22,26 +22,21 @@ export class HttpExceptionFilter
 
     const status = exception.getStatus();
 
-    const body = exception.getResponse();
-
-    const message =
-      typeof body === 'string'
-        ? body
-        : (body as any).message;
-
-    const code =
-      typeof body === 'string'
-        ? HttpStatus[status]
-        : (body as any).errorCode ??
-          HttpStatus[status];
+    const body = exception.getResponse() as any;
 
     response.status(status).json({
       success: false,
       timestamp: new Date().toISOString(),
       path: request.url,
       error: {
-        code,
-        message,
+        code:
+          body.error?.code ??
+          HttpStatus[status],
+
+        message:
+          body.error?.message ??
+          body.message ??
+          exception.message,
       },
     });
   }

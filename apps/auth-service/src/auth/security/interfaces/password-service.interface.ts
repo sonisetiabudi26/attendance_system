@@ -5,4 +5,9 @@ export interface IPasswordService {
     password: string,
     hash: string,
   ): Promise<boolean>;
+
+   compare(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean>;
 }

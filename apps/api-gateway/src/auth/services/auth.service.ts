@@ -16,6 +16,7 @@ import { LoginDto } from '../dto/login.dto';
 
 import { AuthMapper } from '../mappers/auth.mapper';
 import { VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 @Injectable()
 export class AuthService
@@ -66,6 +67,19 @@ export class AuthService
         await firstValueFrom(
             this.authService.Logout({
                 userId: Number(userId),
+            }),
+        );
+    }
+
+    async changePassword(
+        userId: number,
+        dto: ChangePasswordDto,
+    ): Promise<void> {
+        await firstValueFrom(
+            this.authService.ChangePassword({
+                userId,
+                oldPassword: dto.oldPassword,
+                newPassword: dto.newPassword,
             }),
         );
     }

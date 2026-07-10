@@ -26,9 +26,10 @@ import type {
 
 import { CreateRefreshTokenContract, LoginContract, LoginResponseContract, LogoutContract } from '../contracts';
 import { IAuthService } from '../interfaces/services';
-import { InactiveUserException, InvalidCredentialException, InvalidRefreshTokenException, RoleNotFoundException, UserStatusNotFoundException } from '../exceptions';
+import { InactiveUserException, InvalidCredentialException, InvalidPasswordException, InvalidRefreshTokenException, RoleNotFoundException, UserStatusNotFoundException } from '../exceptions';
 import { RefreshTokenPayload } from '../security/payloads/refresh-token.payload';
 import { VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
+import { UserNotFoundException } from '../exceptions/user-notfound.exception';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -246,10 +247,43 @@ export class AuthService implements IAuthService {
             },
         };
     }
-    //   async changePassword(
-    //     userId: bigint,
-    //     dto: ChangePasswordRequestDto,
-    //   ): Promise<void> {
-    //     throw new Error('Not implemented.');
-    //   }
+
+    async changePassword(
+        userId: bigint,
+        oldPassword: string,
+        newPassword: string,
+    ): Promise<void> {
+
+        const user =
+            await this.userRepository.findById(userId);
+       
+        if (!user) {
+            throw new UserNotFoundException();
+        }
+
+        const isValid =
+            await this.passwordService.compare(
+                oldPassword,
+                user.passwordHash,
+            );
+ 
+        if (!isValid) {
+            throw new InvalidPasswordException();
+        }
+
+        const hashedPassword =
+            await this.passwordService.hash(
+                newPassword,
+            );
+ 
+        await this.userRepository.updatePassword(
+            userId,
+            hashedPassword,
+        );
+
+        await this.refreshTokenRepository.deleteByUserId(
+            userId,
+        );
+    }
+   
 }

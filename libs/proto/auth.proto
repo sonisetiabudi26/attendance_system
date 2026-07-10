@@ -75,4 +75,5 @@ message UserClaims {
 message VerifyAccessTokenResponse {
     UserClaims user = 1;
 }
+
 message Empty{}

@@ -15,11 +15,16 @@ export interface IAuthService {
   logout(
     contract: LogoutContract,
   ): Promise<void>;
-  
+
   verifyAccessToken(
     token: string,
   ): Promise<VerifyAccessTokenResponse>;
 
+  changePassword(
+    userId: bigint,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void>;
 
   //   changePassword(
   //     userId: bigint,
