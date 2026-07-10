@@ -8,6 +8,7 @@ import {
 import { AuthService } from '../services/auth.service';
 
 import { LoginDto } from '../dto/login.dto';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -16,11 +17,13 @@ export class AuthController {
     ) { }
 
     @Post('login')
+    @Public()
     login(
         @Body()
         dto: LoginDto,
     ) {
         return this.authService.login(dto);
     }
+   
     
 }

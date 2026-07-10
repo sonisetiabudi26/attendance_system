@@ -50,6 +50,20 @@ export interface ChangePasswordRequest {
   newPassword: string;
 }
 
+export interface VerifyAccessTokenRequest {
+  accessToken: string;
+}
+
+export interface UserClaims {
+  sub: string;
+  username: string;
+  role: string;
+}
+
+export interface VerifyAccessTokenResponse {
+  user?: UserClaims | undefined;
+}
+
 export interface Empty {
 }
 
@@ -350,6 +364,139 @@ export const ChangePasswordRequest: MessageFns<ChangePasswordRequest> = {
   },
 };
 
+function createBaseVerifyAccessTokenRequest(): VerifyAccessTokenRequest {
+  return { accessToken: "" };
+}
+
+export const VerifyAccessTokenRequest: MessageFns<VerifyAccessTokenRequest> = {
+  encode(message: VerifyAccessTokenRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.accessToken !== "") {
+      writer.uint32(10).string(message.accessToken);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): VerifyAccessTokenRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVerifyAccessTokenRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.accessToken = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUserClaims(): UserClaims {
+  return { sub: "", username: "", role: "" };
+}
+
+export const UserClaims: MessageFns<UserClaims> = {
+  encode(message: UserClaims, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sub !== "") {
+      writer.uint32(10).string(message.sub);
+    }
+    if (message.username !== "") {
+      writer.uint32(18).string(message.username);
+    }
+    if (message.role !== "") {
+      writer.uint32(26).string(message.role);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserClaims {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserClaims();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sub = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.username = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.role = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseVerifyAccessTokenResponse(): VerifyAccessTokenResponse {
+  return {};
+}
+
+export const VerifyAccessTokenResponse: MessageFns<VerifyAccessTokenResponse> = {
+  encode(message: VerifyAccessTokenResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.user !== undefined) {
+      UserClaims.encode(message.user, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): VerifyAccessTokenResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseVerifyAccessTokenResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.user = UserClaims.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseEmpty(): Empty {
   return {};
 }
@@ -384,6 +531,8 @@ export interface AuthServiceClient {
   logout(request: LogoutRequest): Observable<Empty>;
 
   changePassword(request: ChangePasswordRequest): Observable<Empty>;
+
+  verifyAccessToken(request: VerifyAccessTokenRequest): Observable<VerifyAccessTokenResponse>;
 }
 
 export interface AuthServiceController {
@@ -394,11 +543,15 @@ export interface AuthServiceController {
   logout(request: LogoutRequest): Promise<Empty> | Observable<Empty> | Empty;
 
   changePassword(request: ChangePasswordRequest): Promise<Empty> | Observable<Empty> | Empty;
+
+  verifyAccessToken(
+    request: VerifyAccessTokenRequest,
+  ): Promise<VerifyAccessTokenResponse> | Observable<VerifyAccessTokenResponse> | VerifyAccessTokenResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["login", "refreshToken", "logout", "changePassword"];
+    const grpcMethods: string[] = ["login", "refreshToken", "logout", "changePassword", "verifyAccessToken"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
@@ -447,6 +600,14 @@ export const AuthServiceDefinition = {
       requestType: ChangePasswordRequest as typeof ChangePasswordRequest,
       requestStream: false,
       responseType: Empty as typeof Empty,
+      responseStream: false,
+      options: {},
+    },
+    verifyAccessToken: {
+      name: "VerifyAccessToken",
+      requestType: VerifyAccessTokenRequest as typeof VerifyAccessTokenRequest,
+      requestStream: false,
+      responseType: VerifyAccessTokenResponse as typeof VerifyAccessTokenResponse,
       responseStream: false,
       options: {},
     },

@@ -23,6 +23,12 @@ service AuthService {
 
   rpc ChangePassword(ChangePasswordRequest)
       returns(Empty);
+
+    rpc VerifyAccessToken(
+        VerifyAccessTokenRequest
+    ) returns (
+        VerifyAccessTokenResponse
+    );
 }
 
 message LoginRequest {
@@ -57,4 +63,16 @@ message ChangePasswordRequest{
     string newPassword = 3;
 }
 
+message VerifyAccessTokenRequest {
+    string accessToken = 1;
+}
+message UserClaims {
+    string sub = 1;
+    string username = 2;
+    string role = 3;
+}
+
+message VerifyAccessTokenResponse {
+    UserClaims user = 1;
+}
 message Empty{}

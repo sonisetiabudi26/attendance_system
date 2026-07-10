@@ -6,6 +6,8 @@ import {
   RefreshTokenRequest,
   LogoutRequest,
   Empty,
+  VerifyAccessTokenRequest,
+  VerifyAccessTokenResponse,
 } from '@attendance/proto/generated/auth';
 
 export interface AuthGrpcService {
@@ -18,7 +20,12 @@ export interface AuthGrpcService {
     request: RefreshTokenRequest,
   ): Observable<LoginResponse>;
 
-  Logout(
+  
+   Logout(
     request: LogoutRequest,
   ): Observable<Empty>;
+
+  VerifyAccessToken(
+    request: VerifyAccessTokenRequest,
+  ): Observable<VerifyAccessTokenResponse>;
 }

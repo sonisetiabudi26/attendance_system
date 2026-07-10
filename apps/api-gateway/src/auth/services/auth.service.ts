@@ -15,6 +15,7 @@ import { AuthGrpcService } from '../../grpc/interfaces/auth.interface';
 import { LoginDto } from '../dto/login.dto';
 
 import { AuthMapper } from '../mappers/auth.mapper';
+import { VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
 
 @Injectable()
 export class AuthService
@@ -41,5 +42,14 @@ export class AuthService
       ),
     );
   }
+  async verifyAccessToken(
+  accessToken: string,
+): Promise<VerifyAccessTokenResponse> {
+  return await firstValueFrom(
+    this.authService.VerifyAccessToken({
+      accessToken,
+    }),
+  );
+}
   
 }
