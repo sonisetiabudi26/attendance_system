@@ -4,7 +4,7 @@ import {
   DeviceType as ProtoDeviceType,
 } from '@attendance/proto/generated/auth';
 
-import { DeviceType } from '../../prisma/generated/client';
+import { DeviceType } from '../../../prisma/generated/client';
 
 import { LoginContract, LogoutContract } from '../contracts';
 

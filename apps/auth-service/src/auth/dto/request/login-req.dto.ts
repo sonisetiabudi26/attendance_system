@@ -7,7 +7,7 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-import { DeviceType } from '../../../prisma/generated/client';
+import { DeviceType } from '../../../../prisma/generated/client';
 
 export class LoginDto {
   @IsString()

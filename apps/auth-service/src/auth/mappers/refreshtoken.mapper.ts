@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { RefreshToken } from '../../prisma/generated/client';
+import { RefreshToken } from '../../../prisma/generated/client';
 
 import { RefreshTokenEntity } from '../entities';
 

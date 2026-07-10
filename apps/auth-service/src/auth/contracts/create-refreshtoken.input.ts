@@ -1,4 +1,4 @@
-import { DeviceType } from '../../prisma/generated/client';
+import { DeviceType } from '../../../prisma/generated/client';
 
 export class CreateRefreshTokenContract {
   userId: bigint;

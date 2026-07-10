@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { MasterStatus } from '../../prisma/generated/client';
+import { MasterStatus } from '../../../prisma/generated/client';
 import { MasterStatusEntity } from '../entities';
 
 @Injectable()
