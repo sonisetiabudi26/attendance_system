@@ -1,13 +1,11 @@
-// dto/request/create-employee.req.dto.ts
-
 import {
+  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
 
 export class CreateEmployeeRequestDto {
-
   @IsString()
   @IsNotEmpty()
   employeeNo: string;
@@ -26,10 +24,14 @@ export class CreateEmployeeRequestDto {
 
   positionId: bigint;
 
+  @IsString()
+  @IsNotEmpty()
   username: string;
 
+  @IsEmail()
   email: string;
 
+  @IsString()
+  @IsNotEmpty()
   password: string;
-
 }

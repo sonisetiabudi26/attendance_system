@@ -41,4 +41,10 @@ export interface IEmployeeRepository {
     db: PrismaClient | Prisma.TransactionClient,
     filter: EmployeeFilterInput,
   ): Promise<EmployeeEntity[]>;
+
+  updateUserId(
+    db: PrismaClient | Prisma.TransactionClient,
+    employeeId: bigint,
+    userId: bigint,
+): Promise<void>;
 }

@@ -1,5 +1,4 @@
 export interface CreateEmployeeInput {
-
   employeeNo: string;
 
   fullName: string;
@@ -15,5 +14,4 @@ export interface CreateEmployeeInput {
   email: string;
 
   password: string;
-
 }
