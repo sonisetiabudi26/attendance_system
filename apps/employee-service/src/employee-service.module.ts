@@ -9,8 +9,7 @@ import { EMPLOYEE_REPOSITORY } from './employee/constants/employee.constant';
   providers: [
     {
       provide: EMPLOYEE_REPOSITORY,
-      useClass:
-        EmployeePrismaRepository,
+      useClass: EmployeePrismaRepository,
     },
   ],
 

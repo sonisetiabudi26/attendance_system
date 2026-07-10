@@ -1,10 +1,21 @@
-import { Injectable } from "@nestjs/common";
-import { BaseRepository } from "../../database/base.repository";
-import { CreateEmployeeInput,EmployeeFilterInput, UpdateEmployeeInput } from "../contracts";
-import { EmployeeEntity } from "../entites/employee.entity";
-import { EmployeeMapper } from "../mappers/employee.mapper";
-import { IEmployeeRepository } from "./employee.repository";
-import { PrismaService } from "../../database/prisma.service";
+import { Injectable } from '@nestjs/common';
+import { Prisma, PrismaClient } from '../../../prisma/generated/client';
+
+import { PrismaService } from '../../database';
+
+import { BaseRepository } from '../../database';
+
+import { IEmployeeRepository } from './employee.repository';
+
+import {
+  CreateEmployeeInput,
+  EmployeeFilterInput,
+  UpdateEmployeeInput,
+} from '../contracts';
+
+import { EmployeeEntity } from '../entites/employee.entity';
+
+import { EmployeeMapper } from '../mappers/employee.mapper';
 
 @Injectable()
 export class EmployeePrismaRepository
@@ -18,10 +29,11 @@ export class EmployeePrismaRepository
   }
 
   async create(
+    db: PrismaClient | Prisma.TransactionClient,
     input: CreateEmployeeInput,
   ): Promise<EmployeeEntity> {
     const employee =
-      await this.prisma.employee.create({
+      await db.employee.create({
         data: {
           employeeNo: input.employeeNo,
           fullName: input.fullName,
@@ -35,23 +47,29 @@ export class EmployeePrismaRepository
   }
 
   async update(
+    db: PrismaClient | Prisma.TransactionClient,
     id: bigint,
     input: UpdateEmployeeInput,
   ): Promise<EmployeeEntity> {
     const employee =
-      await this.prisma.employee.update({
-        where: { id },
+      await db.employee.update({
+        where: {
+          id,
+        },
         data: input,
       });
 
     return EmployeeMapper.toEntity(employee);
   }
 
-  async delete(
+  async softDelete(
+    db: PrismaClient | Prisma.TransactionClient,
     id: bigint,
   ): Promise<void> {
-    await this.prisma.employee.update({
-      where: { id },
+    await db.employee.update({
+      where: {
+        id,
+      },
       data: {
         isDeleted: true,
         deletedAt: new Date(),
@@ -60,10 +78,11 @@ export class EmployeePrismaRepository
   }
 
   async findById(
+    db: PrismaClient | Prisma.TransactionClient,
     id: bigint,
   ): Promise<EmployeeEntity | null> {
     const employee =
-      await this.prisma.employee.findFirst({
+      await db.employee.findFirst({
         where: {
           id,
           isDeleted: false,
@@ -76,10 +95,11 @@ export class EmployeePrismaRepository
   }
 
   async findByEmployeeNo(
+    db: PrismaClient | Prisma.TransactionClient,
     employeeNo: string,
   ): Promise<EmployeeEntity | null> {
     const employee =
-      await this.prisma.employee.findFirst({
+      await db.employee.findFirst({
         where: {
           employeeNo,
           isDeleted: false,
@@ -92,10 +112,11 @@ export class EmployeePrismaRepository
   }
 
   async existsByEmployeeNo(
+    db: PrismaClient | Prisma.TransactionClient,
     employeeNo: string,
   ): Promise<boolean> {
     const count =
-      await this.prisma.employee.count({
+      await db.employee.count({
         where: {
           employeeNo,
           isDeleted: false,
@@ -106,10 +127,11 @@ export class EmployeePrismaRepository
   }
 
   async findAll(
+    db: PrismaClient | Prisma.TransactionClient,
     filter: EmployeeFilterInput,
   ): Promise<EmployeeEntity[]> {
     const employees =
-      await this.prisma.employee.findMany({
+      await db.employee.findMany({
         where: {
           isDeleted: false,
 
@@ -131,8 +153,7 @@ export class EmployeePrismaRepository
           }),
         },
 
-        skip:
-          (filter.page - 1) * filter.limit,
+        skip: (filter.page - 1) * filter.limit,
 
         take: filter.limit,
 
@@ -141,8 +162,6 @@ export class EmployeePrismaRepository
         },
       });
 
-    return employees.map(
-      EmployeeMapper.toEntity,
-    );
+    return employees.map(EmployeeMapper.toEntity);
   }
 }
