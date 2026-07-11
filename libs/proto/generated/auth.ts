@@ -20,8 +20,19 @@ export enum DeviceType {
   UNRECOGNIZED = -1,
 }
 
+export interface CreateUserRequest {
+  username: string;
+  email: string;
+  password: string;
+  role: string;
+}
+
+export interface CreateUserResponse {
+  userId: string;
+}
+
 export interface LoginRequest {
-  usernameOrEmail: string;
+  email: string;
   password: string;
   deviceType: DeviceType;
   deviceName: string;
@@ -69,14 +80,121 @@ export interface Empty {
 
 export const AUTH_PACKAGE_NAME = "auth";
 
+function createBaseCreateUserRequest(): CreateUserRequest {
+  return { username: "", email: "", password: "", role: "" };
+}
+
+export const CreateUserRequest: MessageFns<CreateUserRequest> = {
+  encode(message: CreateUserRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.username !== "") {
+      writer.uint32(10).string(message.username);
+    }
+    if (message.email !== "") {
+      writer.uint32(18).string(message.email);
+    }
+    if (message.password !== "") {
+      writer.uint32(26).string(message.password);
+    }
+    if (message.role !== "") {
+      writer.uint32(34).string(message.role);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateUserRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateUserRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.username = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.email = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.password = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.role = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreateUserResponse(): CreateUserResponse {
+  return { userId: "" };
+}
+
+export const CreateUserResponse: MessageFns<CreateUserResponse> = {
+  encode(message: CreateUserResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateUserResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateUserResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseLoginRequest(): LoginRequest {
-  return { usernameOrEmail: "", password: "", deviceType: 0, deviceName: "", ipAddress: "", userAgent: "" };
+  return { email: "", password: "", deviceType: 0, deviceName: "", ipAddress: "", userAgent: "" };
 }
 
 export const LoginRequest: MessageFns<LoginRequest> = {
   encode(message: LoginRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.usernameOrEmail !== "") {
-      writer.uint32(10).string(message.usernameOrEmail);
+    if (message.email !== "") {
+      writer.uint32(10).string(message.email);
     }
     if (message.password !== "") {
       writer.uint32(18).string(message.password);
@@ -108,7 +226,7 @@ export const LoginRequest: MessageFns<LoginRequest> = {
             break;
           }
 
-          message.usernameOrEmail = reader.string();
+          message.email = reader.string();
           continue;
         }
         case 2: {
@@ -533,6 +651,8 @@ export interface AuthServiceClient {
   changePassword(request: ChangePasswordRequest): Observable<Empty>;
 
   verifyAccessToken(request: VerifyAccessTokenRequest): Observable<VerifyAccessTokenResponse>;
+
+  createUser(request: CreateUserRequest): Observable<CreateUserResponse>;
 }
 
 export interface AuthServiceController {
@@ -547,11 +667,22 @@ export interface AuthServiceController {
   verifyAccessToken(
     request: VerifyAccessTokenRequest,
   ): Promise<VerifyAccessTokenResponse> | Observable<VerifyAccessTokenResponse> | VerifyAccessTokenResponse;
+
+  createUser(
+    request: CreateUserRequest,
+  ): Promise<CreateUserResponse> | Observable<CreateUserResponse> | CreateUserResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["login", "refreshToken", "logout", "changePassword", "verifyAccessToken"];
+    const grpcMethods: string[] = [
+      "login",
+      "refreshToken",
+      "logout",
+      "changePassword",
+      "verifyAccessToken",
+      "createUser",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
@@ -608,6 +739,14 @@ export const AuthServiceDefinition = {
       requestType: VerifyAccessTokenRequest as typeof VerifyAccessTokenRequest,
       requestStream: false,
       responseType: VerifyAccessTokenResponse as typeof VerifyAccessTokenResponse,
+      responseStream: false,
+      options: {},
+    },
+    createUser: {
+      name: "CreateUser",
+      requestType: CreateUserRequest as typeof CreateUserRequest,
+      requestStream: false,
+      responseType: CreateUserResponse as typeof CreateUserResponse,
       responseStream: false,
       options: {},
     },

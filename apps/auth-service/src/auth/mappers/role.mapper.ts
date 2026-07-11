@@ -15,4 +15,9 @@ export class RoleMapper {
       model.updatedAt,
     );
   }
+  toEntities(
+      models: Role[],
+    ) {
+      return models.map((x) => this.toEntity(x));
+    }
 }

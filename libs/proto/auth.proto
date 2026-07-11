@@ -24,15 +24,36 @@ service AuthService {
   rpc ChangePassword(ChangePasswordRequest)
       returns(Empty);
 
-    rpc VerifyAccessToken(
+  rpc VerifyAccessToken(
         VerifyAccessTokenRequest
     ) returns (
         VerifyAccessTokenResponse
     );
+
+   rpc CreateUser(CreateUserRequest)
+      returns(CreateUserResponse);
+}
+
+message CreateUserRequest {
+
+  string username = 1;
+
+  string email = 2;
+
+  string password = 3;
+
+  string role = 4;
+
+}
+
+message CreateUserResponse {
+
+  string userId = 1;
+
 }
 
 message LoginRequest {
-    string usernameOrEmail = 1;
+    string email = 1;
     string password = 2;
 
     DeviceType deviceType = 3;

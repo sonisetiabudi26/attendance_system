@@ -7,13 +7,15 @@ import {
 import { DeviceType } from '../../../prisma/generated/client';
 
 import { LoginContract, LogoutContract } from '../contracts';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class AuthGrpcMapper {
   static toLoginContract(
     request: LoginRequest,
   ): LoginContract {
     return {
-      usernameOrEmail: request.usernameOrEmail,
+      email: request.email,
       password: request.password,
 
       deviceType: this.toDeviceType(

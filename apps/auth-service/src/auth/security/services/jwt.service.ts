@@ -28,7 +28,7 @@ export class JwtService implements IJwtService {
   async generateAccessToken(
     payload: AccessTokenPayload,
   ): Promise<string> {
-   
+
     return this.jwtService.signAsync(payload, {
       expiresIn: this.config.getOrThrow(
         'jwt.expiresIn',
@@ -39,7 +39,7 @@ export class JwtService implements IJwtService {
   async generateRefreshToken(
     payload: RefreshTokenPayload,
   ): Promise<string> {
-   
+
     return this.jwtService.signAsync(payload, {
       expiresIn: this.config.getOrThrow('jwt.refreshExpiresIn'),
     });
@@ -64,7 +64,7 @@ export class JwtService implements IJwtService {
       throw error;
     }
   }
-  
+
   async verifyRefreshToken(
     token: string,
   ): Promise<RefreshTokenPayload> {
@@ -83,6 +83,27 @@ export class JwtService implements IJwtService {
       throw error;
     }
   }
+   getRefreshExpiredDate(): Date {
+    const expires =
+      this.config.get<string>(
+        'JWT_REFRESH_EXPIRES_IN',
+      ) ?? '7d';
 
-  
+    const now = new Date();
+
+    const value = Number.parseInt(expires);
+
+    if (expires.endsWith('d')) {
+      now.setDate(now.getDate() + value);
+    } else if (expires.endsWith('h')) {
+      now.setHours(now.getHours() + value);
+    } else if (expires.endsWith('m')) {
+      now.setMinutes(now.getMinutes() + value);
+    } else if (expires.endsWith('s')) {
+      now.setSeconds(now.getSeconds() + value);
+    }
+
+    return now;
+  }
+
 }

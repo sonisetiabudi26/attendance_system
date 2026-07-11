@@ -1,3 +1,4 @@
+import {LoginUserDto} from './login-user.dto';
 export class LoginResponseDto {
   accessToken: string;
 
@@ -6,4 +7,6 @@ export class LoginResponseDto {
   tokenType: string;
 
   expiresIn: number;
+  
+  user: LoginUserDto;
 }

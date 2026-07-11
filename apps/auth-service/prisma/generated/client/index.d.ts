@@ -1331,6 +1331,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    refreshToken: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    refreshToken?: boolean | UserCountOutputTypeCountRefreshTokenArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRefreshTokenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RefreshTokenWhereInput
+  }
+
+
+  /**
    * Count Type RoleCountOutputType
    */
 
@@ -1677,6 +1708,7 @@ export namespace Prisma {
     role?: boolean | RoleDefaultArgs<ExtArgs>
     status?: boolean | MasterStatusDefaultArgs<ExtArgs>
     refreshToken?: boolean | User$refreshTokenArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1724,6 +1756,7 @@ export namespace Prisma {
     role?: boolean | RoleDefaultArgs<ExtArgs>
     status?: boolean | MasterStatusDefaultArgs<ExtArgs>
     refreshToken?: boolean | User$refreshTokenArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     role?: boolean | RoleDefaultArgs<ExtArgs>
@@ -1739,7 +1772,7 @@ export namespace Prisma {
     objects: {
       role: Prisma.$RolePayload<ExtArgs>
       status: Prisma.$MasterStatusPayload<ExtArgs>
-      refreshToken: Prisma.$RefreshTokenPayload<ExtArgs> | null
+      refreshToken: Prisma.$RefreshTokenPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -2147,7 +2180,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     role<T extends RoleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RoleDefaultArgs<ExtArgs>>): Prisma__RoleClient<$Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     status<T extends MasterStatusDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MasterStatusDefaultArgs<ExtArgs>>): Prisma__MasterStatusClient<$Result.GetResult<Prisma.$MasterStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    refreshToken<T extends User$refreshTokenArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokenArgs<ExtArgs>>): Prisma__RefreshTokenClient<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    refreshToken<T extends User$refreshTokenArgs<ExtArgs> = {}>(args?: Subset<T, User$refreshTokenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2598,6 +2631,11 @@ export namespace Prisma {
      */
     include?: RefreshTokenInclude<ExtArgs> | null
     where?: RefreshTokenWhereInput
+    orderBy?: RefreshTokenOrderByWithRelationInput | RefreshTokenOrderByWithRelationInput[]
+    cursor?: RefreshTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RefreshTokenScalarFieldEnum | RefreshTokenScalarFieldEnum[]
   }
 
   /**
@@ -8451,7 +8489,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
     status?: XOR<MasterStatusScalarRelationFilter, MasterStatusWhereInput>
-    refreshToken?: XOR<RefreshTokenNullableScalarRelationFilter, RefreshTokenWhereInput> | null
+    refreshToken?: RefreshTokenListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -8466,7 +8504,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     role?: RoleOrderByWithRelationInput
     status?: MasterStatusOrderByWithRelationInput
-    refreshToken?: RefreshTokenOrderByWithRelationInput
+    refreshToken?: RefreshTokenOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8484,7 +8522,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
     status?: XOR<MasterStatusScalarRelationFilter, MasterStatusWhereInput>
-    refreshToken?: XOR<RefreshTokenNullableScalarRelationFilter, RefreshTokenWhereInput> | null
+    refreshToken?: RefreshTokenListRelationFilter
   }, "id" | "username" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -8552,10 +8590,10 @@ export namespace Prisma {
 
   export type RefreshTokenWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
-    userId?: bigint | number
     AND?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
     OR?: RefreshTokenWhereInput[]
     NOT?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
+    userId?: BigIntFilter<"RefreshToken"> | bigint | number
     tokenHash?: StringFilter<"RefreshToken"> | string
     deviceType?: EnumDeviceTypeFilter<"RefreshToken"> | $Enums.DeviceType
     deviceName?: StringNullableFilter<"RefreshToken"> | string | null
@@ -8565,7 +8603,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
     updatedAt?: DateTimeFilter<"RefreshToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "userId">
+  }, "id">
 
   export type RefreshTokenOrderByWithAggregationInput = {
     id?: SortOrder
@@ -8846,7 +8884,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     role: RoleCreateNestedOneWithoutUsersInput
     status: MasterStatusCreateNestedOneWithoutUsersInput
-    refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -8859,7 +8897,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -8872,7 +8910,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     status?: MasterStatusUpdateOneRequiredWithoutUsersNestedInput
-    refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8885,7 +8923,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -9309,14 +9347,19 @@ export namespace Prisma {
     isNot?: MasterStatusWhereInput
   }
 
-  export type RefreshTokenNullableScalarRelationFilter = {
-    is?: RefreshTokenWhereInput | null
-    isNot?: RefreshTokenWhereInput | null
+  export type RefreshTokenListRelationFilter = {
+    every?: RefreshTokenWhereInput
+    some?: RefreshTokenWhereInput
+    none?: RefreshTokenWhereInput
   }
 
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type RefreshTokenOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -9718,16 +9761,18 @@ export namespace Prisma {
     connect?: MasterStatusWhereUniqueInput
   }
 
-  export type RefreshTokenCreateNestedOneWithoutUserInput = {
-    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput>
-    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput
-    connect?: RefreshTokenWhereUniqueInput
+  export type RefreshTokenCreateNestedManyWithoutUserInput = {
+    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
+    createMany?: RefreshTokenCreateManyUserInputEnvelope
+    connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
   }
 
-  export type RefreshTokenUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput>
-    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput
-    connect?: RefreshTokenWhereUniqueInput
+  export type RefreshTokenUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
+    createMany?: RefreshTokenCreateManyUserInputEnvelope
+    connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
   }
 
   export type BigIntFieldUpdateOperationsInput = {
@@ -9766,24 +9811,32 @@ export namespace Prisma {
     update?: XOR<XOR<MasterStatusUpdateToOneWithWhereWithoutUsersInput, MasterStatusUpdateWithoutUsersInput>, MasterStatusUncheckedUpdateWithoutUsersInput>
   }
 
-  export type RefreshTokenUpdateOneWithoutUserNestedInput = {
-    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput>
-    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput
-    upsert?: RefreshTokenUpsertWithoutUserInput
-    disconnect?: RefreshTokenWhereInput | boolean
-    delete?: RefreshTokenWhereInput | boolean
-    connect?: RefreshTokenWhereUniqueInput
-    update?: XOR<XOR<RefreshTokenUpdateToOneWithWhereWithoutUserInput, RefreshTokenUpdateWithoutUserInput>, RefreshTokenUncheckedUpdateWithoutUserInput>
+  export type RefreshTokenUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
+    upsert?: RefreshTokenUpsertWithWhereUniqueWithoutUserInput | RefreshTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RefreshTokenCreateManyUserInputEnvelope
+    set?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    disconnect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    delete?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    update?: RefreshTokenUpdateWithWhereUniqueWithoutUserInput | RefreshTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RefreshTokenUpdateManyWithWhereWithoutUserInput | RefreshTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
   }
 
-  export type RefreshTokenUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput>
-    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput
-    upsert?: RefreshTokenUpsertWithoutUserInput
-    disconnect?: RefreshTokenWhereInput | boolean
-    delete?: RefreshTokenWhereInput | boolean
-    connect?: RefreshTokenWhereUniqueInput
-    update?: XOR<XOR<RefreshTokenUpdateToOneWithWhereWithoutUserInput, RefreshTokenUpdateWithoutUserInput>, RefreshTokenUncheckedUpdateWithoutUserInput>
+  export type RefreshTokenUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput> | RefreshTokenCreateWithoutUserInput[] | RefreshTokenUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RefreshTokenCreateOrConnectWithoutUserInput | RefreshTokenCreateOrConnectWithoutUserInput[]
+    upsert?: RefreshTokenUpsertWithWhereUniqueWithoutUserInput | RefreshTokenUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RefreshTokenCreateManyUserInputEnvelope
+    set?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    disconnect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    delete?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
+    update?: RefreshTokenUpdateWithWhereUniqueWithoutUserInput | RefreshTokenUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RefreshTokenUpdateManyWithWhereWithoutUserInput | RefreshTokenUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutRefreshTokenInput = {
@@ -10287,6 +10340,11 @@ export namespace Prisma {
     create: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput>
   }
 
+  export type RefreshTokenCreateManyUserInputEnvelope = {
+    data: RefreshTokenCreateManyUserInput | RefreshTokenCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type RoleUpsertWithoutUsersInput = {
     update: XOR<RoleUpdateWithoutUsersInput, RoleUncheckedUpdateWithoutUsersInput>
     create: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
@@ -10347,39 +10405,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type RefreshTokenUpsertWithoutUserInput = {
+  export type RefreshTokenUpsertWithWhereUniqueWithoutUserInput = {
+    where: RefreshTokenWhereUniqueInput
     update: XOR<RefreshTokenUpdateWithoutUserInput, RefreshTokenUncheckedUpdateWithoutUserInput>
     create: XOR<RefreshTokenCreateWithoutUserInput, RefreshTokenUncheckedCreateWithoutUserInput>
-    where?: RefreshTokenWhereInput
   }
 
-  export type RefreshTokenUpdateToOneWithWhereWithoutUserInput = {
-    where?: RefreshTokenWhereInput
+  export type RefreshTokenUpdateWithWhereUniqueWithoutUserInput = {
+    where: RefreshTokenWhereUniqueInput
     data: XOR<RefreshTokenUpdateWithoutUserInput, RefreshTokenUncheckedUpdateWithoutUserInput>
   }
 
-  export type RefreshTokenUpdateWithoutUserInput = {
-    id?: BigIntFieldUpdateOperationsInput | bigint | number
-    tokenHash?: StringFieldUpdateOperationsInput | string
-    deviceType?: EnumDeviceTypeFieldUpdateOperationsInput | $Enums.DeviceType
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type RefreshTokenUpdateManyWithWhereWithoutUserInput = {
+    where: RefreshTokenScalarWhereInput
+    data: XOR<RefreshTokenUpdateManyMutationInput, RefreshTokenUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type RefreshTokenUncheckedUpdateWithoutUserInput = {
-    id?: BigIntFieldUpdateOperationsInput | bigint | number
-    tokenHash?: StringFieldUpdateOperationsInput | string
-    deviceType?: EnumDeviceTypeFieldUpdateOperationsInput | $Enums.DeviceType
-    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
-    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
-    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type RefreshTokenScalarWhereInput = {
+    AND?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
+    OR?: RefreshTokenScalarWhereInput[]
+    NOT?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
+    id?: BigIntFilter<"RefreshToken"> | bigint | number
+    userId?: BigIntFilter<"RefreshToken"> | bigint | number
+    tokenHash?: StringFilter<"RefreshToken"> | string
+    deviceType?: EnumDeviceTypeFilter<"RefreshToken"> | $Enums.DeviceType
+    deviceName?: StringNullableFilter<"RefreshToken"> | string | null
+    ipAddress?: StringNullableFilter<"RefreshToken"> | string | null
+    userAgent?: StringNullableFilter<"RefreshToken"> | string | null
+    expiresAt?: DateTimeFilter<"RefreshToken"> | Date | string
+    createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
+    updatedAt?: DateTimeFilter<"RefreshToken"> | Date | string
   }
 
   export type UserCreateWithoutRefreshTokenInput = {
@@ -10455,7 +10510,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     status: MasterStatusCreateNestedOneWithoutUsersInput
-    refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRoleInput = {
@@ -10467,7 +10522,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRoleInput = {
@@ -10704,7 +10759,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     role: RoleCreateNestedOneWithoutUsersInput
-    refreshToken?: RefreshTokenCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutStatusInput = {
@@ -10716,7 +10771,7 @@ export namespace Prisma {
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    refreshToken?: RefreshTokenUncheckedCreateNestedOneWithoutUserInput
+    refreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutStatusInput = {
@@ -10745,6 +10800,54 @@ export namespace Prisma {
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutStatusInput>
   }
 
+  export type RefreshTokenCreateManyUserInput = {
+    id?: bigint | number
+    tokenHash: string
+    deviceType: $Enums.DeviceType
+    deviceName?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    expiresAt: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RefreshTokenUpdateWithoutUserInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    deviceType?: EnumDeviceTypeFieldUpdateOperationsInput | $Enums.DeviceType
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RefreshTokenUncheckedUpdateWithoutUserInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    deviceType?: EnumDeviceTypeFieldUpdateOperationsInput | $Enums.DeviceType
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RefreshTokenUncheckedUpdateManyWithoutUserInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    tokenHash?: StringFieldUpdateOperationsInput | string
+    deviceType?: EnumDeviceTypeFieldUpdateOperationsInput | $Enums.DeviceType
+    deviceName?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyRoleInput = {
     id?: bigint | number
     username: string
@@ -10769,7 +10872,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: MasterStatusUpdateOneRequiredWithoutUsersNestedInput
-    refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRoleInput = {
@@ -10781,7 +10884,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutRoleInput = {
@@ -10843,7 +10946,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
-    refreshToken?: RefreshTokenUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutStatusInput = {
@@ -10855,7 +10958,7 @@ export namespace Prisma {
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    refreshToken?: RefreshTokenUncheckedUpdateOneWithoutUserNestedInput
+    refreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutStatusInput = {

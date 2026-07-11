@@ -1,6 +1,7 @@
 import { DeviceType } from '../../../prisma/generated/client';
 
-export class CreateRefreshTokenContract {
+
+export interface CreateRefreshTokenContract {
   userId: bigint;
 
   tokenHash: string;

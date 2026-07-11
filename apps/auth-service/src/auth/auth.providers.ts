@@ -1,39 +1,61 @@
 import { Provider } from '@nestjs/common';
 
-import { REFRESH_TOKEN_REPOSITORY, USER_REPOSITORY,ROLE_REPOSITORY,MASTER_STATUS_REPOSITORY,JWT_SERVICE, PASSWORD_SERVICE  } from './constants';
+import { REFRESH_TOKEN_REPOSITORY, USER_REPOSITORY, ROLE_REPOSITORY, MASTER_STATUS_REPOSITORY, JWT_SERVICE, PASSWORD_SERVICE, PERMISSION_REPOSITORY } from './constants';
 
-import { PasswordService,JwtService } from './security/services';
-import { UserRepository, RefreshTokenRepository,RoleRepository,MasterStatusRepository } from './repositories';
-import { RefreshTokenMapper, RoleMapper, MasterStatusMapper, UserMapper } from './mappers';
-import { AuthService } from './services/auth.service';
+import { PasswordService, JwtService } from './security/services';
+import { MasterStatusRepository } from './repositories';
+import { RefreshTokenMapper, RoleMapper, MasterStatusMapper, UserMapper, PermissionMapper } from './mappers';
+// import { CreateUserService } from './services';
+import { UserPrismaRepository } from './repositories/prisma/user-repo.prisma';
+import { RolePrismaRepository } from './repositories/prisma/role-repo.prisma';
+import { PermissionPrismaRepository } from './repositories/prisma/permission.prisma';
+import { LoginService } from './services/login.service';
+import { RefreshTokenPrismaRepository } from './repositories/prisma/refreshtoken-repo.prisma';
+import { MasterStatusPrismaRepository } from './repositories/prisma/master-status.prisma';
+import { LoginResponseMapper } from './mappers/login-resp.mapper';
+import { AuthGrpcMapper } from './grpc/authgrpc.mapper';
+
 
 
 export const authProviders: Provider[] = [
-    UserMapper, RefreshTokenMapper, RoleMapper,
-    MasterStatusMapper,AuthService,
+    LoginService,
+    //   LogoutService,
+    //   RefreshTokenService,
+    //   VerifyAccessTokenService,
+    //   CreateUserService,
+    //   ChangePasswordService,
+
+    PasswordService,
+    JwtService,
+    UserMapper,
+    RoleMapper,
+    PermissionMapper,
+    RefreshTokenMapper,
+    MasterStatusMapper,
+    LoginResponseMapper,
+    AuthGrpcMapper,
     {
-        provide: USER_REPOSITORY,
-        useClass: UserRepository,
-    },
-    {
-        provide: PASSWORD_SERVICE,
-        useClass: PasswordService,
-    },
-     {
-        provide: JWT_SERVICE,
-        useClass: JwtService,
-    },
-    {
-        provide: REFRESH_TOKEN_REPOSITORY,
-        useClass: RefreshTokenRepository,
-    },
-    {
-        provide: ROLE_REPOSITORY,
-        useClass: RoleRepository,
+        provide: MASTER_STATUS_REPOSITORY,
+        useClass: MasterStatusPrismaRepository,
     },
 
     {
-        provide: MASTER_STATUS_REPOSITORY,
-        useClass: MasterStatusRepository,
+        provide: USER_REPOSITORY,
+        useClass: UserPrismaRepository,
     },
-];
+
+    {
+        provide: ROLE_REPOSITORY,
+        useClass: RolePrismaRepository,
+    },
+
+    {
+        provide: PERMISSION_REPOSITORY,
+        useClass: PermissionPrismaRepository,
+    },
+
+    {
+        provide: REFRESH_TOKEN_REPOSITORY,
+        useClass: RefreshTokenPrismaRepository,
+    },
+]

@@ -19,4 +19,6 @@ export interface IJwtService {
   verifyAccessToken(
         token: string,
     ): Promise<AccessTokenPayload>;
+
+  getRefreshExpiredDate();
 }

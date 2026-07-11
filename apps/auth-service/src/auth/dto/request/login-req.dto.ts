@@ -19,7 +19,7 @@ export class LoginDto {
    @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  usernameOrEmail: string;
+  email: string;
 
   @IsEnum(DeviceType)
   deviceType: DeviceType;

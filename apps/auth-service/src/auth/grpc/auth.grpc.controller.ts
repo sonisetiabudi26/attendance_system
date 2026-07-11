@@ -1,13 +1,15 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { AuthService } from '../services/auth.service';
+// import { LoginService } from '../services/auth.service';
 import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest, Empty, VerifyAccessTokenRequest, VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
 import { AuthGrpcMapper } from './authgrpc.mapper';
+import { LoginService } from '../services/login.service';
 
 @Controller()
 export class AuthGrpcController {
   constructor(
-    private readonly authService: AuthService,
+    // private readonly authService: AuthService,
+    private readonly loginService: LoginService,
   ) { }
 
   @GrpcMethod('AuthService', 'Login')
@@ -15,7 +17,7 @@ export class AuthGrpcController {
     request: LoginRequest,
   ): Promise<LoginResponse> {
 
-    const result = await this.authService.login(
+    const result = await this.loginService.execute(
       AuthGrpcMapper.toLoginContract(request),
     );
 
@@ -26,68 +28,59 @@ export class AuthGrpcController {
       expiresIn: result.expiresIn,
     };
   }
-  @GrpcMethod('AuthService', 'RefreshToken')
-  async refreshToken(
-    request: RefreshTokenRequest,
-  ): Promise<LoginResponse> {
 
-    const result =
-      await this.authService.refresh(
-        request.refreshToken,
-      );
+  // @GrpcMethod('AuthService', 'RefreshToken')
+  // async refreshToken(
+  //   request: RefreshTokenRequest,
+  // ): Promise<LoginResponse> {
 
-    return {
-      accessToken: result.accessToken,
-      refreshToken: result.refreshToken,
-      tokenType: result.tokenType,
-      expiresIn: result.expiresIn,
-    };
-  }
+  //   const result =
+  //     await this.authService.refresh(
+  //       request.refreshToken,
+  //     );
 
-  @GrpcMethod('AuthService', 'Logout')
-  async logout(
-    request: LogoutRequest,
-  ): Promise<Empty> {
+  //   return {
+  //     accessToken: result.accessToken,
+  //     refreshToken: result.refreshToken,
+  //     tokenType: result.tokenType,
+  //     expiresIn: result.expiresIn,
+  //   };
+  // }
 
-    await this.authService.logout(
-      AuthGrpcMapper.toLogoutContract(request),
-    );
+  // @GrpcMethod('AuthService', 'Logout')
+  // async logout(
+  //   request: LogoutRequest,
+  // ): Promise<Empty> {
 
-    return {};
-  }
-
-  @GrpcMethod('AuthService', 'VerifyAccessToken')
-  async verifyAccessToken(
-    request: VerifyAccessTokenRequest,
-  ): Promise<VerifyAccessTokenResponse> {
-    return this.authService.verifyAccessToken(
-      request.accessToken,
-    );
-  }
-  @GrpcMethod(
-    'AuthService',
-    'ChangePassword',
-  )
-  async changePassword(
-    request: ChangePasswordRequest,
-  ): Promise<Empty> {
-    await this.authService.changePassword(
-      BigInt(request.userId),
-      request.oldPassword,
-      request.newPassword,
-    );
-
-    return {};
-  }
-  // @GrpcMethod('AuthService', 'ChangePassword')
-  // async changePassword(
-  //   request: ChangePasswordRequest,
-  // ) {
-  //   await this.authService.changePassword(
-  //     BigInt(request.userId),
-  //     request,
+  //   await this.authService.logout(
+  //     AuthGrpcMapper.toLogoutContract(request),
   //   );
 
   //   return {};
   // }
+
+  // @GrpcMethod('AuthService', 'VerifyAccessToken')
+  // async verifyAccessToken(
+  //   request: VerifyAccessTokenRequest,
+  // ): Promise<VerifyAccessTokenResponse> {
+  //   return this.authService.verifyAccessToken(
+  //     request.accessToken,
+  //   );
+  // }
+  // @GrpcMethod(
+  //   'AuthService',
+  //   'ChangePassword',
+  // )
+  // async changePassword(
+  //   request: ChangePasswordRequest,
+  // ): Promise<Empty> {
+  //   await this.authService.changePassword(
+  //     BigInt(request.userId),
+  //     request.oldPassword,
+  //     request.newPassword,
+  //   );
+
+  //   return {};
+  // }
+ 
 }

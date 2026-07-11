@@ -1,7 +1,7 @@
 import { DeviceType } from '../../../prisma/generated/client';
 
 export interface LoginContract {
-  usernameOrEmail: string;
+  email: string;
   password: string;
 
   deviceType: DeviceType;

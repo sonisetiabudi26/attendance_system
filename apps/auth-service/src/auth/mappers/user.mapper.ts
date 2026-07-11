@@ -1,21 +1,32 @@
 import { Injectable } from '@nestjs/common';
 
-import { Prisma, User } from '../../../prisma/generated/client';
+import { MasterStatus, Prisma, Role, User } from '../../../prisma/generated/client';
 
 import { UserEntity } from '../entities';
 import {
   CreateUserContract,
   UpdateUserContract,
 } from '../contracts';
+import { MasterStatusMapper } from './master-status.mapper';
+import { RoleMapper } from './role.mapper';
 
 @Injectable()
 export class UserMapper {
-  toEntity(user: User): UserEntity {
+  constructor(
+    private readonly roleMapper: RoleMapper,
+    private readonly masterStatusMapper: MasterStatusMapper,
+  ) { }
+  toEntity(user: User & {
+    role: Role;
+    status: MasterStatus;
+  }): UserEntity {
     return new UserEntity(
       user.id,
       user.username,
       user.email,
       user.passwordHash,
+      this.roleMapper.toEntity(user.role),
+      this.masterStatusMapper.toEntity(user.status),
       user.roleId,
       user.statusId,
       user.lastLoginAt,
@@ -24,7 +35,17 @@ export class UserMapper {
     );
   }
 
-  toEntities(users: User[]): UserEntity[] {
+  // toEntities(users: User[]): UserEntity[] {
+  //   return users.map((user) => this.toEntity(user));
+  // }
+  toEntities(
+    users: Prisma.UserGetPayload<{
+      include: {
+        role: true;
+        status: true;
+      };
+    }>[],
+  ): UserEntity[] {
     return users.map((user) => this.toEntity(user));
   }
 
