@@ -37,28 +37,19 @@ export class UpdateCredentialService {
         }
 
         let email = user.email;
-
-        if (contract.email.trim() !== ''||
-            contract.email &&
-            contract.email !== user.email
-        ) {
-
+        const incomingEmail = contract.email.trim().toLowerCase();
+        const currentEmail = user.email.trim().toLowerCase();
+        if (incomingEmail !== currentEmail) {
             const exists =
-                await this.userRepository.findByEmail(
-                    this.prisma,
-                    contract.email,
-                );
-
-            if (exists) {
+                await this.userRepository.findByEmail(this.prisma,incomingEmail);
+            if (exists && exists.id !== user.id) {
                 throw new EmailAlreadyExistsException();
             }
-
-            email = contract.email;
         }
 
         let passwordHash: string | undefined;
 
-       if (contract.password.trim() !== '') {
+        if (contract.password.trim() !== '') {
 
             passwordHash =
                 await this.passwordService.hash(
