@@ -2,6 +2,7 @@ import { PrismaClient, Prisma } from '@prisma/client';
 
 import {
     CreateUserContract,
+    CreateUserRepositoryContract,
     UpdateUserContract,
 } from '../../contracts';
 
@@ -35,7 +36,7 @@ export interface IUserRepository {
 
   create(
     db: PrismaClient | Prisma.TransactionClient,
-    input: CreateUserContract,
+    input: CreateUserRepositoryContract,
   ): Promise<UserEntity>;
 
   update(

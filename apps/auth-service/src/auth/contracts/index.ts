@@ -6,3 +6,4 @@ export * from './verify-access-token.contract';
 export * from './create-refresh-token.contract';
 export * from './login-response.input';
 export * from './logout.contract';
+export * from './createuser-repo.contract';

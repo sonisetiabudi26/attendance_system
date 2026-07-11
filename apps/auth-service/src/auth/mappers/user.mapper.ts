@@ -5,6 +5,7 @@ import { MasterStatus, Prisma, Role, User } from '../../../prisma/generated/clie
 import { UserEntity } from '../entities';
 import {
   CreateUserContract,
+  CreateUserRepositoryContract,
   UpdateUserContract,
 } from '../contracts';
 import { MasterStatusMapper } from './master-status.mapper';
@@ -50,7 +51,7 @@ export class UserMapper {
   }
 
   toCreateInput(
-    data: CreateUserContract,
+    data: CreateUserRepositoryContract,
   ): Prisma.UserCreateInput {
     return {
       username: data.username,

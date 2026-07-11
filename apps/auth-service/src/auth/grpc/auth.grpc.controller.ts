@@ -1,15 +1,17 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 // import { LoginService } from '../services/auth.service';
-import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest, Empty, VerifyAccessTokenRequest, VerifyAccessTokenResponse } from '@attendance/proto/generated/auth';
+import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest, Empty, VerifyAccessTokenRequest, VerifyAccessTokenResponse, CreateUserRequest, CreateUserResponse } from '@attendance/proto/generated/auth';
 import { AuthGrpcMapper } from './authgrpc.mapper';
-import { LoginService } from '../services/login.service';
+
+import { CreateUserService,LoginService } from '../services';
 
 @Controller()
 export class AuthGrpcController {
   constructor(
     // private readonly authService: AuthService,
     private readonly loginService: LoginService,
+    private readonly createUserService: CreateUserService,
   ) { }
 
   @GrpcMethod('AuthService', 'Login')
@@ -29,6 +31,19 @@ export class AuthGrpcController {
     };
   }
 
+  @GrpcMethod('AuthService', 'CreateUser')
+  async createUser(
+    request: CreateUserRequest,
+  ): Promise<CreateUserResponse> {
+
+    const contract =
+      AuthGrpcMapper.toCreateUserContract(request);
+
+    const user =
+      await this.createUserService.execute(contract);
+
+    return AuthGrpcMapper.toCreateUserResponse(user);
+  }
   // @GrpcMethod('AuthService', 'RefreshToken')
   // async refreshToken(
   //   request: RefreshTokenRequest,
@@ -82,5 +97,5 @@ export class AuthGrpcController {
 
   //   return {};
   // }
- 
+
 }

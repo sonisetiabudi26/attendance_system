@@ -3,9 +3,7 @@ import { Provider } from '@nestjs/common';
 import { REFRESH_TOKEN_REPOSITORY, USER_REPOSITORY, ROLE_REPOSITORY, MASTER_STATUS_REPOSITORY, JWT_SERVICE, PASSWORD_SERVICE, PERMISSION_REPOSITORY } from './constants';
 
 import { PasswordService, JwtService } from './security/services';
-import { MasterStatusRepository } from './repositories';
 import { RefreshTokenMapper, RoleMapper, MasterStatusMapper, UserMapper, PermissionMapper } from './mappers';
-// import { CreateUserService } from './services';
 import { UserPrismaRepository } from './repositories/prisma/user-repo.prisma';
 import { RolePrismaRepository } from './repositories/prisma/role-repo.prisma';
 import { PermissionPrismaRepository } from './repositories/prisma/permission.prisma';
@@ -14,6 +12,7 @@ import { RefreshTokenPrismaRepository } from './repositories/prisma/refreshtoken
 import { MasterStatusPrismaRepository } from './repositories/prisma/master-status.prisma';
 import { LoginResponseMapper } from './mappers/login-resp.mapper';
 import { AuthGrpcMapper } from './grpc/authgrpc.mapper';
+import { CreateUserService } from './services';
 
 
 
@@ -22,7 +21,7 @@ export const authProviders: Provider[] = [
     //   LogoutService,
     //   RefreshTokenService,
     //   VerifyAccessTokenService,
-    //   CreateUserService,
+      CreateUserService,
     //   ChangePasswordService,
 
     PasswordService,

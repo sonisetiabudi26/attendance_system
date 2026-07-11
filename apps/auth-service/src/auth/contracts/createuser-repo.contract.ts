@@ -1,7 +1,7 @@
-export interface CreateUserContract {
+export interface CreateUserRepositoryContract {
   username: string;
   email: string;
-  password: string;
+  passwordHash: string;
   roleId: bigint;
   statusId: bigint;
 }

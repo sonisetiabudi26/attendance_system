@@ -1,4 +1,6 @@
 import {
+  CreateUserRequest,
+  CreateUserResponse,
   LoginRequest,
   LogoutRequest,
   DeviceType as ProtoDeviceType,
@@ -6,8 +8,9 @@ import {
 
 import { DeviceType } from '../../../prisma/generated/client';
 
-import { LoginContract, LogoutContract } from '../contracts';
+import { CreateUserContract, LoginContract, LogoutContract } from '../contracts';
 import { Injectable } from '@nestjs/common';
+import { UserEntity } from '../entities';
 
 @Injectable()
 export class AuthGrpcMapper {
@@ -51,4 +54,28 @@ export class AuthGrpcMapper {
         return DeviceType.OTHER;
     }
   }
+  static toCreateUserContract(
+  request: CreateUserRequest,
+): CreateUserContract {
+  return {
+    username: request.username,
+    email: request.email,
+    password: request.password,
+    roleId: BigInt(request.roleId),
+    statusId: BigInt(request.statusId),
+  };
+}
+
+  // ===========================
+  // RESPONSE
+  // ===========================
+
+ static toCreateUserResponse(
+  user: UserEntity,
+): CreateUserResponse {
+  return {
+    userId: user.id.toString(),
+  };
+}
+
 }

@@ -54,9 +54,9 @@ export class UserPrismaRepository
     ): Promise<UserEntity | null> {
         const user = await db.user.findUnique({
             where: { email },
-           include: USER_INCLUDE,
+            include: USER_INCLUDE,
         });
-         if (!user) {
+        if (!user) {
             return null;
         }
 
@@ -96,6 +96,11 @@ export class UserPrismaRepository
         const model =
             await db.user.create({
                 data: this.mapper.toCreateInput(contract),
+
+                include: {
+                    role: true,
+                    status: true,
+                },
             });
         return this.mapper.toEntity(model);
     }
@@ -109,8 +114,8 @@ export class UserPrismaRepository
             await db.user.update({
                 where: {
                     id: userId,
-                },include: USER_INCLUDE,
-                
+                }, include: USER_INCLUDE,
+
                 data: this.mapper.toUpdateInput(input),
             });
         return this.mapper.toEntity(model);

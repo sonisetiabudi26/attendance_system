@@ -1,75 +1,98 @@
-// import { Inject, Injectable } from "@nestjs/common";
-// import type { IRoleRepository, IUserRepository } from "../interfaces/repository";
-// import { ROLE_REPOSITORY, USER_REPOSITORY } from "../constants";
-// import { PasswordService } from "../security";
-// import { PrismaService } from "../../database/prisma.service";
-// import { UserEntity } from "../entities";
-// import { CreateUserContract } from "../contracts";
-// import { RoleNotFoundException } from "../exceptions";
+import {
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 
-// @Injectable()
-// export class CreateUserService {
-//   constructor(
-//     @Inject(USER_REPOSITORY)
-//     private readonly userRepository: IUserRepository,
+import { PrismaService } from '../../database/prisma.service';
 
-//     @Inject(ROLE_REPOSITORY)
-//     private readonly roleRepository: IRoleRepository,
+import {
+  USER_REPOSITORY,
+  ROLE_REPOSITORY,
+  MASTER_STATUS_REPOSITORY,
+} from '../constants';
 
-//     private readonly passwordService: PasswordService,
+import type {
+  IUserRepository,
+  IRoleRepository,
+  IMasterStatusRepository,
+} from '../repositories/interface';
 
-//     private readonly prisma: PrismaService,
-//   ) {}
+import { PasswordService } from '../security/services';
 
-//   async execute(
-//     input: CreateUserContract,
-//   ): Promise<UserEntity> {
+import { CreateUserContract } from '../contracts';
 
-//     const usernameExists =
-//       await this.userRepository.existsByUsername(
-//         this.prisma,
-//         input.username,
-//       );
+import {
+  EmailAlreadyExistsException,
+  RoleNotFoundException,
+  UserStatusNotFoundException,
+} from '../exceptions';
 
-//     if (usernameExists) {
-//     //   throw new UsernameAlreadyExistsException();
-//     }
+import { UserEntity } from '../entities';
 
-//     const emailExists =
-//       await this.userRepository.existsByEmail(
-//         this.prisma,
-//         input.email,
-//       );
+@Injectable()
+export class CreateUserService {
+  constructor(
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: IUserRepository,
 
-//     if (emailExists) {
-//     //   throw new EmailAlreadyExistsException();
-//     }
+    @Inject(ROLE_REPOSITORY)
+    private readonly roleRepository: IRoleRepository,
 
-//     const role =
-//       await this.roleRepository.findByCode(
-//         this.prisma,
-//         input.roleId,
-//       );
+    @Inject(MASTER_STATUS_REPOSITORY)
+    private readonly statusRepository: IMasterStatusRepository,
 
-//     if (!role) {
-//       throw new RoleNotFoundException();
-//     }
+    private readonly passwordService: PasswordService,
 
-//     const passwordHash =
-//       await this.passwordService.hash(
-//         input.passwordHash,
-//       );
+    private readonly prisma: PrismaService,
+  ) {}
 
-//     return this.prisma.$transaction(async (tx) => {
+  async execute(
+    contract: CreateUserContract,
+  ): Promise<UserEntity> {
+    
+    const emailExists =
+      await this.userRepository.existsByEmail(
+        this.prisma,
+        contract.email,
+      );
 
-//       return this.userRepository.create(tx, {
-//         username: input.username,
-//         email: input.email,
-//         passwordHash,
-//         roleId: role.id,
-//         statusId: BigInt(1),
-//       });
+    if (emailExists) {
+      throw new EmailAlreadyExistsException();
+    }
 
-//     });
-//   }
-// }
+    const role =
+      await this.roleRepository.findById(
+        this.prisma,
+        contract.roleId,
+      );
+
+    if (!role) {
+      throw new RoleNotFoundException();
+    }
+
+    const status =
+      await this.statusRepository.findById(
+        this.prisma,
+        contract.statusId,
+      );
+
+    if (!status) {
+      throw new UserStatusNotFoundException();
+    }
+
+    const passwordHash =
+      await this.passwordService.hash(
+        contract.password,
+      );
+
+    return this.prisma.$transaction(async (tx) => {
+      return this.userRepository.create(
+        tx,
+        {
+          ...contract,
+          passwordHash,
+        },
+      );
+    });
+  }
+}
