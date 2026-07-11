@@ -21,41 +21,19 @@ export class EmployeeGrpcController {
   ) { }
 
   @GrpcMethod('EmployeeService', 'CreateEmployee')
-  async createEmployee(
-    request: CreateEmployeeRequest,
-  ): Promise<CreateEmployeeResponse> {
-    const contract =
-      EmployeeGrpcMapper.toCreateEmployeeContract(
-        request,
-      );
+  async createEmployee(request: CreateEmployeeRequest): Promise<CreateEmployeeResponse> {
+    const contract = EmployeeGrpcMapper.toCreateEmployeeContract(request);
 
-    const employee =
-      await this.createEmployeeService.execute(
-        contract,
-      );
-
-    return EmployeeGrpcMapper.toCreateEmployeeResponse(
-      employee,
-    );
+    const employee = await this.createEmployeeService.execute(contract);
+    return EmployeeGrpcMapper.toCreateEmployeeResponse(employee);
   }
 
-  @GrpcMethod('EmployeeService', 'UpdateEmployee') async updateEmployee(
-    request: UpdateEmployeeRequest,
-  ): Promise<UpdateEmployeeResponse> {
+  @GrpcMethod('EmployeeService', 'UpdateEmployee') async updateEmployee(request: UpdateEmployeeRequest): Promise<UpdateEmployeeResponse> {
 
-    const employee =
-      await this.updateEmployeeService.execute(
-
-        EmployeeGrpcMapper
-          .toUpdateEmployeeContract(
-            request,
-          ),
+    const employee = await this.updateEmployeeService.execute(
+        EmployeeGrpcMapper.toUpdateEmployeeContract(request),
       );
-
-    return EmployeeGrpcMapper
-      .toUpdateEmployeeResponse(
-        employee,
-      );
+    return EmployeeGrpcMapper.toUpdateEmployeeResponse(employee);
 
   }
 }

@@ -1,3 +1,4 @@
+import { UpdateCredentialRequest, UpdateCredentialResponse } from '@attendance/proto/generated/auth';
 import { Observable } from 'rxjs';
 
 export interface CreateUserRequest {
@@ -15,5 +16,10 @@ export interface IAuthGrpcService {
   createUser(
     request: CreateUserRequest,
   ): Observable<CreateUserResponse>;
+
+  updateCredential(
+    request: UpdateCredentialRequest,
+): Observable<UpdateCredentialResponse>;
 }
+
 

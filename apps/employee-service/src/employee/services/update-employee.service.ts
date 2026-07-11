@@ -6,6 +6,7 @@ import { UpdateEmployeeContract } from "../contracts";
 import { EmployeeEntity } from "../entites/employee.entity";
 import { LocationNotFoundException, PositionNotFoundException } from "../exceptions";
 import { EmployeeNotFoundException } from "../exceptions/employee-notfound.exception";
+import { AuthGrpcClient } from "../grpc/auth.grpc.client";
 
 @Injectable()
 export class UpdateEmployeeService {
@@ -26,8 +27,7 @@ export class UpdateEmployeeService {
 
         private readonly prisma: PrismaService,
 
-        // TODO
-        // private readonly authGrpcClient: AuthGrpcClient,
+        private readonly authGrpcClient: AuthGrpcClient,
 
     ) { }
 
@@ -71,50 +71,36 @@ export class UpdateEmployeeService {
 
         // =====================================
         //
-        // TODO
         //
         // Auth Service
         //
         // =====================================
-
-        /*
-        
         await this.authGrpcClient
         .updateCredential({
-        
             userId:
                 employee.userId!.toString(),
-        
             email:
                 contract.email,
-        
             password:
-                contract.password,
+                contract.password??'',
         
         });
         
-        */
+        
 
         await this.prisma.$transaction(
 
             async (tx) => {
                 await this.employeeRepository.update(
-
                     tx,
-
                     employee.id,
-
                     contract,
-
                 );
                 const currentLocations =
                     await this.employeeLocationRepository
                         .findByEmployeeId(
-
                             tx,
-
                             employee.id,
-
                         );
                 const currentIds =
                     currentLocations.map(
@@ -126,47 +112,27 @@ export class UpdateEmployeeService {
 
                 const toInsert =
                     incomingIds.filter(
-
-                        id =>
-
-                            !currentIds.includes(id),
-
+                        id =>!currentIds.includes(id),
                     );
                 const toDelete =
                     currentIds.filter(
-
-                        id =>
-
-                            !incomingIds.includes(id),
-
+                        id =>!incomingIds.includes(id),
                     );
                 if (toDelete.length) {
-
                     await this.employeeLocationRepository
                         .deleteByEmployeeAndLocationIds(
-
                             tx,
-
                             employee.id,
-
                             toDelete,
-
                         );
-
                 }
                 if (toInsert.length) {
-
                     await this.employeeLocationRepository
                         .createMany(
-
                             tx,
-
                             employee.id,
-
                             toInsert,
-
                         );
-
                 }
             });
         return (

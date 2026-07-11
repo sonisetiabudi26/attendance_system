@@ -21,16 +21,16 @@ import {
 } from './auth.grpc.interface';
 import { EmailAlreadyExistsException } from 'apps/auth-service/src/auth/exceptions';
 import { status } from '@grpc/grpc-js';
+import { UpdateCredentialRequest, UpdateCredentialResponse } from '@attendance/proto/generated/auth';
 @Injectable()
 export class AuthGrpcClient
-  implements OnModuleInit
-{
+  implements OnModuleInit {
   private authService: IAuthGrpcService;
 
   constructor(
     @Inject(AUTH_GRPC_CLIENT)
     private readonly client: ClientGrpc,
-  ) {}
+  ) { }
 
   onModuleInit() {
     this.authService =
@@ -42,7 +42,7 @@ export class AuthGrpcClient
   async createUser(
     request: CreateUserRequest,
   ): Promise<CreateUserResponse> {
-     try {
+    try {
 
       return await firstValueFrom(
         this.authService.createUser(request),
@@ -58,11 +58,22 @@ export class AuthGrpcClient
 
       throw error;
     }
-  
+
   }
-//   async updateCredential(
-//     request: UpdateCredentialRequest,
-// ): Promise<UpdateCredentialResponse> {
-//     throw new Error('Not implemented');
-// }
+  async updateCredential(
+    request: UpdateCredentialRequest,
+  ): Promise<UpdateCredentialResponse> {
+
+    return firstValueFrom(
+      this.authService.updateCredential(
+        request,
+      ),
+    );
+
+  }
+  //   async updateCredential(
+  //     request: UpdateCredentialRequest,
+  // ): Promise<UpdateCredentialResponse> {
+  //     throw new Error('Not implemented');
+  // }
 }

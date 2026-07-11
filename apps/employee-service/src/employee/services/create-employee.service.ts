@@ -116,15 +116,10 @@ export class CreateEmployeeService {
             await this.employeeRepository.create(
               tx,{
                 userId: BigInt(authUser.userId),
-
                 employeeNo: contract.employeeNo,
-
                 fullName: contract.fullName,
-
                 phone: contract.phone,
-
                 photoUrl: contract.photoUrl,
-
                 positionId: contract.positionId,
               }
               
