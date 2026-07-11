@@ -1,4 +1,4 @@
-export interface CreateEmployeeInput {
+export interface CreateEmployeeRepoContract {
   employeeNo: string;
 
   fullName: string;
@@ -9,9 +9,4 @@ export interface CreateEmployeeInput {
 
   positionId: bigint;
 
-  username: string;
-
-  email: string;
-
-  password: string;
 }

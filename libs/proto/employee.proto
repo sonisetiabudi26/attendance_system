@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+package employee;
+
+service EmployeeService {
+
+  rpc CreateEmployee(CreateEmployeeRequest)
+      returns (CreateEmployeeResponse);
+
+  rpc GetEmployee(GetEmployeeRequest)
+      returns (EmployeeResponse);
+
+  rpc ListEmployee(ListEmployeeRequest)
+      returns (ListEmployeeResponse);
+
+  rpc UpdateEmployee(UpdateEmployeeRequest)
+      returns (EmployeeResponse);
+
+  rpc DeleteEmployee(DeleteEmployeeRequest)
+      returns (DeleteEmployeeResponse);
+
+  rpc ListPosition(ListPositionRequest)
+      returns (ListPositionResponse);
+
+  rpc ListLocation(ListLocationRequest)
+      returns (ListLocationResponse);
+}
+
+message CreateEmployeeRequest {
+
+  string employeeNo = 1;
+
+  string fullName = 2;
+
+  string email = 3;
+
+  string password = 4;
+
+  string phone = 5;
+
+  string photoUrl = 6;
+
+  string positionId = 7;
+
+  repeated string locationIds = 8;
+}
+
+message CreateEmployeeResponse {
+
+  string employeeId = 1;
+}
+
+message GetEmployeeRequest {
+
+  string employeeId = 1;
+
+}
+
+message UpdateEmployeeRequest {
+
+  string employeeId = 1;
+
+  string fullName = 2;
+
+  string phone = 3;
+
+  string photoUrl = 4;
+
+  string positionId = 5;
+}
+
+message DeleteEmployeeRequest {
+
+  string employeeId = 1;
+
+}
+
+message DeleteEmployeeResponse {
+
+  bool success = 1;
+
+}
+
+message ListEmployeeRequest {
+
+}
+
+message EmployeeResponse {
+
+  string employeeId = 1;
+
+  string userId = 2;
+
+  string employeeNo = 3;
+
+  string fullName = 4;
+
+  string phone = 5;
+
+  string photoUrl = 6;
+
+  PositionResponse position = 7;
+
+  repeated LocationResponse locations = 8;
+}
+
+message ListEmployeeResponse {
+
+  repeated EmployeeResponse employees = 1;
+
+}
+
+message ListPositionRequest {
+
+}
+
+message PositionResponse {
+
+  string id = 1;
+
+  string code = 2;
+
+  string name = 3;
+
+}
+
+message ListPositionResponse {
+
+  repeated PositionResponse positions = 1;
+
+}
+
+message ListLocationRequest {
+
+}
+
+message LocationResponse {
+
+  string id = 1;
+
+  string locationName = 2;
+
+  string address = 3;
+
+  double latitude = 4;
+
+  double longitude = 5;
+
+  int32 radius = 6;
+
+}
+
+message ListLocationResponse {
+
+  repeated LocationResponse locations = 1;
+
+}

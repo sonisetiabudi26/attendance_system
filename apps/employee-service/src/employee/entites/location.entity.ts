@@ -1,21 +1,26 @@
+import { Prisma } from "../../../prisma/generated/client";
+
+
 export class LocationEntity {
-  id: bigint;
+  constructor(
+    public readonly id: bigint,
 
-  locationName: string;
+    public locationName: string,
 
-  address?: string;
+    public address: string | null,
 
-  latitude?: number;
+    public latitude: Prisma.Decimal | null,
 
-  longitude?: number;
+    public longitude: Prisma.Decimal | null,
 
-  radius: number;
+    public radius: number,
 
-  createdBy?: bigint;
+    public createdBy: bigint | null,
 
-  updatedBy?: bigint;
+    public updatedBy: bigint | null,
 
-  createdAt: Date;
+    public readonly createdAt: Date,
 
-  updatedAt: Date;
+    public updatedAt: Date,
+  ) {}
 }

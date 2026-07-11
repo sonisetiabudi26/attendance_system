@@ -1,29 +1,33 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { PrismaService } from '../../database';
+import { PrismaService } from '../../database/prisma.service';
 
 import {
+  EMPLOYEE_LOCATION_REPOSITORY,
   EMPLOYEE_REPOSITORY,
+  LOCATION_REPOSITORY,
   POSITION_REPOSITORY,
 } from '../constants/employee.constant';
 
-import type {
-  IEmployeeRepository,
-  IPositionRepository,
-} from '../repositories';
-
-import { AuthGrpcClient } from '../grpc/auth.grpc.client';
-
-// import { EmployeePublisher } from '../publishers/employee.publisher';
-
-import { CreateEmployeeInput } from '../contracts';
+import {
+  CreateEmployeeContract,
+  CreateEmployeeRepoContract
+} from '../contracts';
 
 import { EmployeeEntity } from '../entites/employee.entity';
 
 import {
   EmployeeAlreadyExistsException,
+  LocationNotFoundException,
   PositionNotFoundException,
 } from '../exceptions';
+
+import type {
+  IEmployeeLocationRepository,
+  IEmployeeRepository,
+  ILocationRepository,
+  IPositionRepository,
+} from '../repositories/interface';
 
 @Injectable()
 export class CreateEmployeeService {
@@ -31,111 +35,101 @@ export class CreateEmployeeService {
     @Inject(EMPLOYEE_REPOSITORY)
     private readonly employeeRepository: IEmployeeRepository,
 
+    @Inject(EMPLOYEE_LOCATION_REPOSITORY)
+    private readonly employeeLocationRepository: IEmployeeLocationRepository,
+
     @Inject(POSITION_REPOSITORY)
     private readonly positionRepository: IPositionRepository,
 
-    private readonly authGrpcClient: AuthGrpcClient,
-
-    // private readonly employeePublisher: EmployeePublisher,
+    @Inject(LOCATION_REPOSITORY)
+    private readonly locationRepository: ILocationRepository,
 
     private readonly prisma: PrismaService,
   ) {}
 
   async execute(
-    input: CreateEmployeeInput,
+    contract: CreateEmployeeContract,
   ): Promise<EmployeeEntity> {
-    /**
-     * Validate Employee Number
-     */
+
+    // ==========================================================
+    // VALIDATE EMPLOYEE NUMBER
+    // ==========================================================
+
     const exists =
       await this.employeeRepository.existsByEmployeeNo(
         this.prisma,
-        input.employeeNo,
+        contract.employeeNo,
       );
 
     if (exists) {
       throw new EmployeeAlreadyExistsException();
     }
 
-    /**
-     * Validate Position
-     */
+    // ==========================================================
+    // VALIDATE POSITION
+    // ==========================================================
+
     const position =
       await this.positionRepository.findById(
         this.prisma,
-        input.positionId,
+        contract.positionId,
       );
 
     if (!position) {
       throw new PositionNotFoundException();
     }
 
-    /**
-     * Transaction
-     */
-    const employee = await this.prisma.$transaction(
-      async (tx) => {
-        /**
-         * Create Employee
-         */
-        const createdEmployee =
-          await this.employeeRepository.create(
-            tx,
-            input,
-          );
+    // ==========================================================
+    // VALIDATE LOCATION
+    // ==========================================================
 
-        /**
-         * Create Login (Auth Service)
-         */
-        const authUser =
-          await this.authGrpcClient.createUser({
-            username: input.username,
-            email: input.email,
-            password: input.password,
-            role: 'EMPLOYEE',
-          });
-
-        /**
-         * Save User Id
-         */
-        await this.employeeRepository.updateUserId(
-          tx,
-          createdEmployee.id,
-          BigInt(authUser.userId),
+    for (const locationId of contract.locationIds) {
+      const location =
+        await this.locationRepository.findById(
+          this.prisma,
+          locationId,
         );
 
-        /**
-         * Return latest data
-         */
-        const employee =
-          await this.employeeRepository.findById(
-            tx,
-            createdEmployee.id,
-          );
+      if (!location) {
+        throw new LocationNotFoundException();
+      }
+    }
 
-        if (!employee) {
-          throw new Error(
-            'Employee not found after creation.',
-          );
-        }
+    // ==========================================================
+    // CREATE EMPLOYEE
+    // ==========================================================
 
-        return employee;
-      },
-    );
+    const employee =
+      await this.prisma.$transaction(
+        async (tx) => {
+          const employee =
+            await this.employeeRepository.create(
+              tx,
+              contract,
+            );
 
-    /**
-     * Publish Event
-     *
-     * Publish setelah transaction berhasil commit.
-     * Jangan publish di dalam transaction.
-     */
-    // await this.employeePublisher.employeeCreated({
-    //   employeeId: employee.id.toString(),
-    //   employeeNo: employee.employeeNo,
-    //   fullName: employee.fullName,
-    //   positionId: employee.positionId.toString(),
-    //   userId: employee.userId!.toString(),
-    // });
+          // ==========================================
+          // CREATE EMPLOYEE LOCATION
+          // ==========================================
+
+          let isDefault = true;
+
+          for (const locationId of contract.locationIds) {
+            await this.employeeLocationRepository.create(
+              tx,
+              {
+                employeeId: employee.id,
+                locationId,
+                isDefault,
+              },
+            );
+
+            isDefault = false;
+          }
+
+          return employee;
+        },
+      );
 
     return employee;
   }

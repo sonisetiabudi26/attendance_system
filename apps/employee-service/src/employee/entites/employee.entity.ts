@@ -1,23 +1,34 @@
+import { PositionEntity } from './position.entity';
+import { LocationEntity } from './location.entity';
+
+ 
 export class EmployeeEntity {
-  id: bigint;
+  constructor(
+    public readonly id: bigint,
 
-  userId?: bigint;
+    public userId: bigint | null,
 
-  employeeNo: string;
+    public employeeNo: string,
 
-  fullName: string;
+    public fullName: string,
 
-  phone?: string;
+    public phone: string | null,
 
-  photoUrl?: string;
+    public photoUrl: string | null,
 
-  positionId: bigint;
+    public positionId: bigint,
 
-  isDeleted: boolean;
+    public isDeleted: boolean,
 
-  createdAt: Date;
+    public readonly createdAt: Date,
 
-  updatedAt: Date;
+    public updatedAt: Date,
 
-  deletedAt?: Date | null;
+    public deletedAt: Date | null,
+
+    public position?: PositionEntity,
+
+    public employeeLocations?: LocationEntity[],
+  ) {}
+
 }

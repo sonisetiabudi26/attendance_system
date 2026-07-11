@@ -1,15 +1,17 @@
 export class PositionEntity {
-  id: bigint;
+  constructor(
+    public readonly id: bigint,
 
-  code: string;
+    public code: string,
 
-  name: string;
+    public name: string,
 
-  createdBy?: bigint;
+    public createdBy: bigint | null,
 
-  updatedBy?: bigint;
+    public updatedBy: bigint | null,
 
-  createdAt: Date;
+    public readonly createdAt: Date,
 
-  updatedAt: Date;
+    public updatedAt: Date,
+  ) {}
 }

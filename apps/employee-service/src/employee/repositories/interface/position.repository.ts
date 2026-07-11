@@ -1,7 +1,9 @@
-import { Prisma, PrismaClient } from '../../../prisma/generated/client';
-import { PositionEntity } from '../entites/position.entity';
+import { Prisma, PrismaClient } from '@prisma/client';
+
+import { PositionEntity } from '../../entites/position.entity';
 
 export interface IPositionRepository {
+
   findById(
     db: PrismaClient | Prisma.TransactionClient,
     id: bigint,

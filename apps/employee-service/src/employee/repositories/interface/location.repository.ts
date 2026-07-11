@@ -1,7 +1,9 @@
-import { Prisma, PrismaClient } from '../../../prisma/generated/client';
-import { LocationEntity } from '../entites/location.entity';
+import { Prisma, PrismaClient } from '@prisma/client';
+
+import { LocationEntity } from '../../entites/location.entity';
 
 export interface ILocationRepository {
+
   findById(
     db: PrismaClient | Prisma.TransactionClient,
     id: bigint,

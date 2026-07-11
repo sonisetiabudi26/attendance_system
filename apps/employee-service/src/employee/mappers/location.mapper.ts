@@ -1,25 +1,33 @@
+import { Injectable } from '@nestjs/common';
+
 import { Location } from '../../../prisma/generated/client';
+
 import { LocationEntity } from '../entites/location.entity';
 
+@Injectable()
 export class LocationMapper {
-  static toEntity(
-    location: Location,
+  toEntity(
+    model: Location,
   ): LocationEntity {
-    return {
-      id: location.id,
-      locationName: location.locationName,
-      address: location.address ?? undefined,
-      latitude: location.latitude
-        ? Number(location.latitude)
-        : undefined,
-      longitude: location.longitude
-        ? Number(location.longitude)
-        : undefined,
-      radius: location.radius,
-      createdBy: location.createdBy ?? undefined,
-      updatedBy: location.updatedBy ?? undefined,
-      createdAt: location.createdAt,
-      updatedAt: location.updatedAt,
-    };
+    return new LocationEntity(
+      model.id,
+      model.locationName,
+      model.address,
+      model.latitude,
+      model.longitude,
+      model.radius,
+      model.createdBy,
+      model.updatedBy,
+      model.createdAt,
+      model.updatedAt,
+    );
+  }
+
+  toEntities(
+    models: Location[],
+  ): LocationEntity[] {
+    return models.map((model) =>
+      this.toEntity(model),
+    );
   }
 }

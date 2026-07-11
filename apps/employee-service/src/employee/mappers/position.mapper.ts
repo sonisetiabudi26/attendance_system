@@ -1,18 +1,30 @@
+import { Injectable } from '@nestjs/common';
+
 import { MasterPosition } from '../../../prisma/generated/client';
+
 import { PositionEntity } from '../entites/position.entity';
 
+@Injectable()
 export class PositionMapper {
-  static toEntity(
-    position: MasterPosition,
+  toEntity(
+    model: MasterPosition,
   ): PositionEntity {
-    return {
-      id: position.id,
-      code: position.code,
-      name: position.name,
-      createdBy: position.createdBy ?? undefined,
-      updatedBy: position.updatedBy ?? undefined,
-      createdAt: position.createdAt,
-      updatedAt: position.updatedAt,
-    };
+    return new PositionEntity(
+      model.id,
+      model.code,
+      model.name,
+      model.createdBy,
+      model.updatedBy,
+      model.createdAt,
+      model.updatedAt,
+    );
+  }
+
+  toEntities(
+    models: MasterPosition[],
+  ): PositionEntity[] {
+    return models.map((model) =>
+      this.toEntity(model),
+    );
   }
 }

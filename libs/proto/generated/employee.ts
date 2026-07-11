@@ -5,7 +5,1036 @@
 // source: employee.proto
 
 /* eslint-disable */
+import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
 
-export const protobufPackage = "";
+export const protobufPackage = "employee";
 
-export const _PACKAGE_NAME = "";
+export interface CreateEmployeeRequest {
+  employeeNo: string;
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+  photoUrl: string;
+  positionId: string;
+  locationIds: string[];
+}
+
+export interface CreateEmployeeResponse {
+  employeeId: string;
+}
+
+export interface GetEmployeeRequest {
+  employeeId: string;
+}
+
+export interface UpdateEmployeeRequest {
+  employeeId: string;
+  fullName: string;
+  phone: string;
+  photoUrl: string;
+  positionId: string;
+}
+
+export interface DeleteEmployeeRequest {
+  employeeId: string;
+}
+
+export interface DeleteEmployeeResponse {
+  success: boolean;
+}
+
+export interface ListEmployeeRequest {
+}
+
+export interface EmployeeResponse {
+  employeeId: string;
+  userId: string;
+  employeeNo: string;
+  fullName: string;
+  phone: string;
+  photoUrl: string;
+  position?: PositionResponse | undefined;
+  locations: LocationResponse[];
+}
+
+export interface ListEmployeeResponse {
+  employees: EmployeeResponse[];
+}
+
+export interface ListPositionRequest {
+}
+
+export interface PositionResponse {
+  id: string;
+  code: string;
+  name: string;
+}
+
+export interface ListPositionResponse {
+  positions: PositionResponse[];
+}
+
+export interface ListLocationRequest {
+}
+
+export interface LocationResponse {
+  id: string;
+  locationName: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  radius: number;
+}
+
+export interface ListLocationResponse {
+  locations: LocationResponse[];
+}
+
+export const EMPLOYEE_PACKAGE_NAME = "employee";
+
+function createBaseCreateEmployeeRequest(): CreateEmployeeRequest {
+  return {
+    employeeNo: "",
+    fullName: "",
+    email: "",
+    password: "",
+    phone: "",
+    photoUrl: "",
+    positionId: "",
+    locationIds: [],
+  };
+}
+
+export const CreateEmployeeRequest: MessageFns<CreateEmployeeRequest> = {
+  encode(message: CreateEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeNo !== "") {
+      writer.uint32(10).string(message.employeeNo);
+    }
+    if (message.fullName !== "") {
+      writer.uint32(18).string(message.fullName);
+    }
+    if (message.email !== "") {
+      writer.uint32(26).string(message.email);
+    }
+    if (message.password !== "") {
+      writer.uint32(34).string(message.password);
+    }
+    if (message.phone !== "") {
+      writer.uint32(42).string(message.phone);
+    }
+    if (message.photoUrl !== "") {
+      writer.uint32(50).string(message.photoUrl);
+    }
+    if (message.positionId !== "") {
+      writer.uint32(58).string(message.positionId);
+    }
+    for (const v of message.locationIds) {
+      writer.uint32(66).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateEmployeeRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateEmployeeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeNo = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fullName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.email = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.password = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.phone = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.photoUrl = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.positionId = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.locationIds.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseCreateEmployeeResponse(): CreateEmployeeResponse {
+  return { employeeId: "" };
+}
+
+export const CreateEmployeeResponse: MessageFns<CreateEmployeeResponse> = {
+  encode(message: CreateEmployeeResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeId !== "") {
+      writer.uint32(10).string(message.employeeId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateEmployeeResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateEmployeeResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetEmployeeRequest(): GetEmployeeRequest {
+  return { employeeId: "" };
+}
+
+export const GetEmployeeRequest: MessageFns<GetEmployeeRequest> = {
+  encode(message: GetEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeId !== "") {
+      writer.uint32(10).string(message.employeeId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetEmployeeRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetEmployeeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateEmployeeRequest(): UpdateEmployeeRequest {
+  return { employeeId: "", fullName: "", phone: "", photoUrl: "", positionId: "" };
+}
+
+export const UpdateEmployeeRequest: MessageFns<UpdateEmployeeRequest> = {
+  encode(message: UpdateEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeId !== "") {
+      writer.uint32(10).string(message.employeeId);
+    }
+    if (message.fullName !== "") {
+      writer.uint32(18).string(message.fullName);
+    }
+    if (message.phone !== "") {
+      writer.uint32(26).string(message.phone);
+    }
+    if (message.photoUrl !== "") {
+      writer.uint32(34).string(message.photoUrl);
+    }
+    if (message.positionId !== "") {
+      writer.uint32(42).string(message.positionId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateEmployeeRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateEmployeeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fullName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.phone = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.photoUrl = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.positionId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDeleteEmployeeRequest(): DeleteEmployeeRequest {
+  return { employeeId: "" };
+}
+
+export const DeleteEmployeeRequest: MessageFns<DeleteEmployeeRequest> = {
+  encode(message: DeleteEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeId !== "") {
+      writer.uint32(10).string(message.employeeId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteEmployeeRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteEmployeeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseDeleteEmployeeResponse(): DeleteEmployeeResponse {
+  return { success: false };
+}
+
+export const DeleteEmployeeResponse: MessageFns<DeleteEmployeeResponse> = {
+  encode(message: DeleteEmployeeResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.success !== false) {
+      writer.uint32(8).bool(message.success);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DeleteEmployeeResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteEmployeeResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.success = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseListEmployeeRequest(): ListEmployeeRequest {
+  return {};
+}
+
+export const ListEmployeeRequest: MessageFns<ListEmployeeRequest> = {
+  encode(_: ListEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListEmployeeRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListEmployeeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEmployeeResponse(): EmployeeResponse {
+  return { employeeId: "", userId: "", employeeNo: "", fullName: "", phone: "", photoUrl: "", locations: [] };
+}
+
+export const EmployeeResponse: MessageFns<EmployeeResponse> = {
+  encode(message: EmployeeResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeId !== "") {
+      writer.uint32(10).string(message.employeeId);
+    }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
+    if (message.employeeNo !== "") {
+      writer.uint32(26).string(message.employeeNo);
+    }
+    if (message.fullName !== "") {
+      writer.uint32(34).string(message.fullName);
+    }
+    if (message.phone !== "") {
+      writer.uint32(42).string(message.phone);
+    }
+    if (message.photoUrl !== "") {
+      writer.uint32(50).string(message.photoUrl);
+    }
+    if (message.position !== undefined) {
+      PositionResponse.encode(message.position, writer.uint32(58).fork()).join();
+    }
+    for (const v of message.locations) {
+      LocationResponse.encode(v!, writer.uint32(66).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EmployeeResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEmployeeResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.employeeNo = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.fullName = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.phone = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.photoUrl = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.position = PositionResponse.decode(reader, reader.uint32());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.locations.push(LocationResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseListEmployeeResponse(): ListEmployeeResponse {
+  return { employees: [] };
+}
+
+export const ListEmployeeResponse: MessageFns<ListEmployeeResponse> = {
+  encode(message: ListEmployeeResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.employees) {
+      EmployeeResponse.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListEmployeeResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListEmployeeResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employees.push(EmployeeResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseListPositionRequest(): ListPositionRequest {
+  return {};
+}
+
+export const ListPositionRequest: MessageFns<ListPositionRequest> = {
+  encode(_: ListPositionRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListPositionRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListPositionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBasePositionResponse(): PositionResponse {
+  return { id: "", code: "", name: "" };
+}
+
+export const PositionResponse: MessageFns<PositionResponse> = {
+  encode(message: PositionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.code !== "") {
+      writer.uint32(18).string(message.code);
+    }
+    if (message.name !== "") {
+      writer.uint32(26).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PositionResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePositionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.code = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseListPositionResponse(): ListPositionResponse {
+  return { positions: [] };
+}
+
+export const ListPositionResponse: MessageFns<ListPositionResponse> = {
+  encode(message: ListPositionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.positions) {
+      PositionResponse.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListPositionResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListPositionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.positions.push(PositionResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseListLocationRequest(): ListLocationRequest {
+  return {};
+}
+
+export const ListLocationRequest: MessageFns<ListLocationRequest> = {
+  encode(_: ListLocationRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListLocationRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListLocationRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseLocationResponse(): LocationResponse {
+  return { id: "", locationName: "", address: "", latitude: 0, longitude: 0, radius: 0 };
+}
+
+export const LocationResponse: MessageFns<LocationResponse> = {
+  encode(message: LocationResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.locationName !== "") {
+      writer.uint32(18).string(message.locationName);
+    }
+    if (message.address !== "") {
+      writer.uint32(26).string(message.address);
+    }
+    if (message.latitude !== 0) {
+      writer.uint32(33).double(message.latitude);
+    }
+    if (message.longitude !== 0) {
+      writer.uint32(41).double(message.longitude);
+    }
+    if (message.radius !== 0) {
+      writer.uint32(48).int32(message.radius);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LocationResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLocationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.locationName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 33) {
+            break;
+          }
+
+          message.latitude = reader.double();
+          continue;
+        }
+        case 5: {
+          if (tag !== 41) {
+            break;
+          }
+
+          message.longitude = reader.double();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.radius = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseListLocationResponse(): ListLocationResponse {
+  return { locations: [] };
+}
+
+export const ListLocationResponse: MessageFns<ListLocationResponse> = {
+  encode(message: ListLocationResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.locations) {
+      LocationResponse.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListLocationResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListLocationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.locations.push(LocationResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+export interface EmployeeServiceClient {
+  createEmployee(request: CreateEmployeeRequest): Observable<CreateEmployeeResponse>;
+
+  getEmployee(request: GetEmployeeRequest): Observable<EmployeeResponse>;
+
+  listEmployee(request: ListEmployeeRequest): Observable<ListEmployeeResponse>;
+
+  updateEmployee(request: UpdateEmployeeRequest): Observable<EmployeeResponse>;
+
+  deleteEmployee(request: DeleteEmployeeRequest): Observable<DeleteEmployeeResponse>;
+
+  listPosition(request: ListPositionRequest): Observable<ListPositionResponse>;
+
+  listLocation(request: ListLocationRequest): Observable<ListLocationResponse>;
+}
+
+export interface EmployeeServiceController {
+  createEmployee(
+    request: CreateEmployeeRequest,
+  ): Promise<CreateEmployeeResponse> | Observable<CreateEmployeeResponse> | CreateEmployeeResponse;
+
+  getEmployee(request: GetEmployeeRequest): Promise<EmployeeResponse> | Observable<EmployeeResponse> | EmployeeResponse;
+
+  listEmployee(
+    request: ListEmployeeRequest,
+  ): Promise<ListEmployeeResponse> | Observable<ListEmployeeResponse> | ListEmployeeResponse;
+
+  updateEmployee(
+    request: UpdateEmployeeRequest,
+  ): Promise<EmployeeResponse> | Observable<EmployeeResponse> | EmployeeResponse;
+
+  deleteEmployee(
+    request: DeleteEmployeeRequest,
+  ): Promise<DeleteEmployeeResponse> | Observable<DeleteEmployeeResponse> | DeleteEmployeeResponse;
+
+  listPosition(
+    request: ListPositionRequest,
+  ): Promise<ListPositionResponse> | Observable<ListPositionResponse> | ListPositionResponse;
+
+  listLocation(
+    request: ListLocationRequest,
+  ): Promise<ListLocationResponse> | Observable<ListLocationResponse> | ListLocationResponse;
+}
+
+export function EmployeeServiceControllerMethods() {
+  return function (constructor: Function) {
+    const grpcMethods: string[] = [
+      "createEmployee",
+      "getEmployee",
+      "listEmployee",
+      "updateEmployee",
+      "deleteEmployee",
+      "listPosition",
+      "listLocation",
+    ];
+    for (const method of grpcMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("EmployeeService", method)(constructor.prototype[method], method, descriptor);
+    }
+    const grpcStreamMethods: string[] = [];
+    for (const method of grpcStreamMethods) {
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("EmployeeService", method)(constructor.prototype[method], method, descriptor);
+    }
+  };
+}
+
+export const EMPLOYEE_SERVICE_NAME = "EmployeeService";
+
+export type EmployeeServiceDefinition = typeof EmployeeServiceDefinition;
+export const EmployeeServiceDefinition = {
+  name: "EmployeeService",
+  fullName: "employee.EmployeeService",
+  methods: {
+    createEmployee: {
+      name: "CreateEmployee",
+      requestType: CreateEmployeeRequest as typeof CreateEmployeeRequest,
+      requestStream: false,
+      responseType: CreateEmployeeResponse as typeof CreateEmployeeResponse,
+      responseStream: false,
+      options: {},
+    },
+    getEmployee: {
+      name: "GetEmployee",
+      requestType: GetEmployeeRequest as typeof GetEmployeeRequest,
+      requestStream: false,
+      responseType: EmployeeResponse as typeof EmployeeResponse,
+      responseStream: false,
+      options: {},
+    },
+    listEmployee: {
+      name: "ListEmployee",
+      requestType: ListEmployeeRequest as typeof ListEmployeeRequest,
+      requestStream: false,
+      responseType: ListEmployeeResponse as typeof ListEmployeeResponse,
+      responseStream: false,
+      options: {},
+    },
+    updateEmployee: {
+      name: "UpdateEmployee",
+      requestType: UpdateEmployeeRequest as typeof UpdateEmployeeRequest,
+      requestStream: false,
+      responseType: EmployeeResponse as typeof EmployeeResponse,
+      responseStream: false,
+      options: {},
+    },
+    deleteEmployee: {
+      name: "DeleteEmployee",
+      requestType: DeleteEmployeeRequest as typeof DeleteEmployeeRequest,
+      requestStream: false,
+      responseType: DeleteEmployeeResponse as typeof DeleteEmployeeResponse,
+      responseStream: false,
+      options: {},
+    },
+    listPosition: {
+      name: "ListPosition",
+      requestType: ListPositionRequest as typeof ListPositionRequest,
+      requestStream: false,
+      responseType: ListPositionResponse as typeof ListPositionResponse,
+      responseStream: false,
+      options: {},
+    },
+    listLocation: {
+      name: "ListLocation",
+      requestType: ListLocationRequest as typeof ListLocationRequest,
+      requestStream: false,
+      responseType: ListLocationResponse as typeof ListLocationResponse,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
+
+export interface MessageFns<T> {
+  encode(message: T, writer?: BinaryWriter): BinaryWriter;
+  decode(input: BinaryReader | Uint8Array, length?: number): T;
+}

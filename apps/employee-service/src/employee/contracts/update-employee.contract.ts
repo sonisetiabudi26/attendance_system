@@ -1,4 +1,4 @@
-export interface UpdateEmployeeInput {
+export interface UpdateEmployeeContract {
   fullName?: string;
 
   phone?: string;
