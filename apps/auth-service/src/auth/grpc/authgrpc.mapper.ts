@@ -61,8 +61,7 @@ export class AuthGrpcMapper {
     username: request.username,
     email: request.email,
     password: request.password,
-    roleId: BigInt(request.roleId),
-    statusId: BigInt(request.statusId),
+   
   };
 }
 

@@ -38,8 +38,7 @@ message CreateUserRequest {
   string username = 1;
   string email = 2;
   string password = 3;
-  int64 roleId = 4;
-  int64 statusId = 5;
+ 
 }
 
 message CreateUserResponse {

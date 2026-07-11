@@ -24,8 +24,6 @@ export interface CreateUserRequest {
   username: string;
   email: string;
   password: string;
-  roleId: number;
-  statusId: number;
 }
 
 export interface CreateUserResponse {
@@ -82,7 +80,7 @@ export interface Empty {
 export const AUTH_PACKAGE_NAME = "auth";
 
 function createBaseCreateUserRequest(): CreateUserRequest {
-  return { username: "", email: "", password: "", roleId: 0, statusId: 0 };
+  return { username: "", email: "", password: "" };
 }
 
 export const CreateUserRequest: MessageFns<CreateUserRequest> = {
@@ -95,12 +93,6 @@ export const CreateUserRequest: MessageFns<CreateUserRequest> = {
     }
     if (message.password !== "") {
       writer.uint32(26).string(message.password);
-    }
-    if (message.roleId !== 0) {
-      writer.uint32(32).int64(message.roleId);
-    }
-    if (message.statusId !== 0) {
-      writer.uint32(40).int64(message.statusId);
     }
     return writer;
   },
@@ -134,22 +126,6 @@ export const CreateUserRequest: MessageFns<CreateUserRequest> = {
           }
 
           message.password = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.roleId = longToNumber(reader.int64());
-          continue;
-        }
-        case 5: {
-          if (tag !== 40) {
-            break;
-          }
-
-          message.statusId = longToNumber(reader.int64());
           continue;
         }
       }

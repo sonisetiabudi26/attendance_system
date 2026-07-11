@@ -61,9 +61,9 @@ export class CreateUserService {
     }
 
     const role =
-      await this.roleRepository.findById(
+      await this.roleRepository.findByCode(
         this.prisma,
-        contract.roleId,
+        'EMPLOYEE'
       );
 
     if (!role) {
@@ -71,9 +71,9 @@ export class CreateUserService {
     }
 
     const status =
-      await this.statusRepository.findById(
+      await this.statusRepository.findByCode(
         this.prisma,
-        contract.statusId,
+        'ACTIVE',
       );
 
     if (!status) {
@@ -89,8 +89,11 @@ export class CreateUserService {
       return this.userRepository.create(
         tx,
         {
-          ...contract,
-          passwordHash,
+         username: contract.username,
+        email: contract.email,
+        passwordHash,
+        roleId: role.id,
+        statusId: status.id,
         },
       );
     });

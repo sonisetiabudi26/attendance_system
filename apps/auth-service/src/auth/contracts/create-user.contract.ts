@@ -2,6 +2,5 @@ export interface CreateUserContract {
   username: string;
   email: string;
   password: string;
-  roleId: bigint;
-  statusId: bigint;
+  
 }
