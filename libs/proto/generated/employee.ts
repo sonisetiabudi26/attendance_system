@@ -30,14 +30,6 @@ export interface GetEmployeeRequest {
   employeeId: string;
 }
 
-export interface UpdateEmployeeRequest {
-  employeeId: string;
-  fullName: string;
-  phone: string;
-  photoUrl: string;
-  positionId: string;
-}
-
 export interface DeleteEmployeeRequest {
   employeeId: string;
 }
@@ -91,6 +83,21 @@ export interface LocationResponse {
 
 export interface ListLocationResponse {
   locations: LocationResponse[];
+}
+
+export interface UpdateEmployeeRequest {
+  employeeId: string;
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+  photoUrl: string;
+  positionId: string;
+  locationIds: string[];
+}
+
+export interface UpdateEmployeeResponse {
+  employeeId: string;
 }
 
 export const EMPLOYEE_PACKAGE_NAME = "employee";
@@ -280,87 +287,6 @@ export const GetEmployeeRequest: MessageFns<GetEmployeeRequest> = {
           }
 
           message.employeeId = reader.string();
-          continue;
-        }
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skip(tag & 7);
-    }
-    return message;
-  },
-};
-
-function createBaseUpdateEmployeeRequest(): UpdateEmployeeRequest {
-  return { employeeId: "", fullName: "", phone: "", photoUrl: "", positionId: "" };
-}
-
-export const UpdateEmployeeRequest: MessageFns<UpdateEmployeeRequest> = {
-  encode(message: UpdateEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.employeeId !== "") {
-      writer.uint32(10).string(message.employeeId);
-    }
-    if (message.fullName !== "") {
-      writer.uint32(18).string(message.fullName);
-    }
-    if (message.phone !== "") {
-      writer.uint32(26).string(message.phone);
-    }
-    if (message.photoUrl !== "") {
-      writer.uint32(34).string(message.photoUrl);
-    }
-    if (message.positionId !== "") {
-      writer.uint32(42).string(message.positionId);
-    }
-    return writer;
-  },
-
-  decode(input: BinaryReader | Uint8Array, length?: number): UpdateEmployeeRequest {
-    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
-    const end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateEmployeeRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1: {
-          if (tag !== 10) {
-            break;
-          }
-
-          message.employeeId = reader.string();
-          continue;
-        }
-        case 2: {
-          if (tag !== 18) {
-            break;
-          }
-
-          message.fullName = reader.string();
-          continue;
-        }
-        case 3: {
-          if (tag !== 26) {
-            break;
-          }
-
-          message.phone = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 34) {
-            break;
-          }
-
-          message.photoUrl = reader.string();
-          continue;
-        }
-        case 5: {
-          if (tag !== 42) {
-            break;
-          }
-
-          message.positionId = reader.string();
           continue;
         }
       }
@@ -901,6 +827,166 @@ export const ListLocationResponse: MessageFns<ListLocationResponse> = {
   },
 };
 
+function createBaseUpdateEmployeeRequest(): UpdateEmployeeRequest {
+  return {
+    employeeId: "",
+    fullName: "",
+    email: "",
+    password: "",
+    phone: "",
+    photoUrl: "",
+    positionId: "",
+    locationIds: [],
+  };
+}
+
+export const UpdateEmployeeRequest: MessageFns<UpdateEmployeeRequest> = {
+  encode(message: UpdateEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeId !== "") {
+      writer.uint32(10).string(message.employeeId);
+    }
+    if (message.fullName !== "") {
+      writer.uint32(18).string(message.fullName);
+    }
+    if (message.email !== "") {
+      writer.uint32(26).string(message.email);
+    }
+    if (message.password !== "") {
+      writer.uint32(34).string(message.password);
+    }
+    if (message.phone !== "") {
+      writer.uint32(42).string(message.phone);
+    }
+    if (message.photoUrl !== "") {
+      writer.uint32(50).string(message.photoUrl);
+    }
+    if (message.positionId !== "") {
+      writer.uint32(58).string(message.positionId);
+    }
+    for (const v of message.locationIds) {
+      writer.uint32(66).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateEmployeeRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateEmployeeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.fullName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.email = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.password = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.phone = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.photoUrl = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.positionId = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.locationIds.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateEmployeeResponse(): UpdateEmployeeResponse {
+  return { employeeId: "" };
+}
+
+export const UpdateEmployeeResponse: MessageFns<UpdateEmployeeResponse> = {
+  encode(message: UpdateEmployeeResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeId !== "") {
+      writer.uint32(10).string(message.employeeId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateEmployeeResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateEmployeeResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 export interface EmployeeServiceClient {
   createEmployee(request: CreateEmployeeRequest): Observable<CreateEmployeeResponse>;
 
@@ -908,7 +994,7 @@ export interface EmployeeServiceClient {
 
   listEmployee(request: ListEmployeeRequest): Observable<ListEmployeeResponse>;
 
-  updateEmployee(request: UpdateEmployeeRequest): Observable<EmployeeResponse>;
+  updateEmployee(request: UpdateEmployeeRequest): Observable<UpdateEmployeeResponse>;
 
   deleteEmployee(request: DeleteEmployeeRequest): Observable<DeleteEmployeeResponse>;
 
@@ -930,7 +1016,7 @@ export interface EmployeeServiceController {
 
   updateEmployee(
     request: UpdateEmployeeRequest,
-  ): Promise<EmployeeResponse> | Observable<EmployeeResponse> | EmployeeResponse;
+  ): Promise<UpdateEmployeeResponse> | Observable<UpdateEmployeeResponse> | UpdateEmployeeResponse;
 
   deleteEmployee(
     request: DeleteEmployeeRequest,
@@ -1003,7 +1089,7 @@ export const EmployeeServiceDefinition = {
       name: "UpdateEmployee",
       requestType: UpdateEmployeeRequest as typeof UpdateEmployeeRequest,
       requestStream: false,
-      responseType: EmployeeResponse as typeof EmployeeResponse,
+      responseType: UpdateEmployeeResponse as typeof UpdateEmployeeResponse,
       responseStream: false,
       options: {},
     },

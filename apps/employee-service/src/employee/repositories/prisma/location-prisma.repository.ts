@@ -60,4 +60,19 @@ export class LocationPrismaRepository
 
     return this.mapper.toEntities(rows);
   }
+  async findByIds(
+    db: PrismaClient | Prisma.TransactionClient,
+    locationIds: bigint[],
+): Promise<LocationEntity[]> {
+
+    const rows = await db.location.findMany({
+        where: {
+            id: {
+                in: locationIds,
+            },
+        },
+    });
+
+    return this.mapper.toEntities(rows);
+}
 }

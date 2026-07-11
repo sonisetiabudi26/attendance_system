@@ -16,3 +16,4 @@ export interface IAuthGrpcService {
     request: CreateUserRequest,
   ): Observable<CreateUserResponse>;
 }
+

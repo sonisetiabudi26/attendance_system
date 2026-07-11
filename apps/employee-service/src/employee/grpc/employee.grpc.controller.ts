@@ -4,17 +4,21 @@ import { GrpcMethod } from '@nestjs/microservices';
 import {
   CreateEmployeeRequest,
   CreateEmployeeResponse,
+  UpdateEmployeeRequest,
+  UpdateEmployeeResponse,
 } from '@attendance/proto/generated/employee';
 
 import { CreateEmployeeService } from '../services/create-employee.service';
 
 import { EmployeeGrpcMapper } from './employee.grpc.mapper';
+import { UpdateEmployeeService } from '../services/update-employee.service';
 
 @Controller()
 export class EmployeeGrpcController {
   constructor(
     private readonly createEmployeeService: CreateEmployeeService,
-  ) {}
+    private readonly updateEmployeeService: UpdateEmployeeService,
+  ) { }
 
   @GrpcMethod('EmployeeService', 'CreateEmployee')
   async createEmployee(
@@ -33,5 +37,25 @@ export class EmployeeGrpcController {
     return EmployeeGrpcMapper.toCreateEmployeeResponse(
       employee,
     );
+  }
+
+  @GrpcMethod('EmployeeService', 'UpdateEmployee') async updateEmployee(
+    request: UpdateEmployeeRequest,
+  ): Promise<UpdateEmployeeResponse> {
+
+    const employee =
+      await this.updateEmployeeService.execute(
+
+        EmployeeGrpcMapper
+          .toUpdateEmployeeContract(
+            request,
+          ),
+      );
+
+    return EmployeeGrpcMapper
+      .toUpdateEmployeeResponse(
+        employee,
+      );
+
   }
 }

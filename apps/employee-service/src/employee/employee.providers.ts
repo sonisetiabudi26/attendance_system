@@ -6,11 +6,12 @@ import { EmployeePrismaRepository, LocationPrismaRepository, PositionPrismaRepos
 import { EmployeeLocationPrismaRepository } from './repositories/prisma/employee-loc-prisma.repository';
 import { EmployeeLocationMapper, EmployeeMapper, LocationMapper, PositionMapper } from './mappers';
 import { EmployeeGrpcMapper } from './grpc/employee.grpc.mapper';
+import { UpdateEmployeeService } from './services/update-employee.service';
 
 
 
 export const employeeProviders: Provider[] = [
-    CreateEmployeeService,EmployeeGrpcMapper,AuthGrpcClient,
+    CreateEmployeeService,EmployeeGrpcMapper,AuthGrpcClient,UpdateEmployeeService,
     EmployeeMapper,LocationMapper,LocationMapper,EmployeeLocationMapper,PositionMapper,
     {
       provide: EMPLOYEE_REPOSITORY,

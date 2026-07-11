@@ -1,9 +1,19 @@
 export interface UpdateEmployeeContract {
-  fullName?: string;
 
-  phone?: string;
+    employeeId: bigint;
 
-  photoUrl?: string;
+    fullName: string;
 
-  positionId?: bigint;
+    email: string;
+
+    password?: string;
+
+    phone?: string;
+
+    photoUrl?: string;
+
+    positionId: bigint;
+
+    locationIds: bigint[];
+
 }

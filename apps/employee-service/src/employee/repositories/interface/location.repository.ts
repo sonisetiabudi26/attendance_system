@@ -12,4 +12,9 @@ export interface ILocationRepository {
   findAll(
     db: PrismaClient | Prisma.TransactionClient,
   ): Promise<LocationEntity[]>;
+
+  findByIds(
+     db: PrismaClient | Prisma.TransactionClient,
+    locationIds: bigint[],
+): Promise<LocationEntity[]>;
 }

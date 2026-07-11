@@ -50,4 +50,5 @@ export interface IEmployeeRepository {
     db: PrismaClient | Prisma.TransactionClient,
     employeeId: bigint,
   ): Promise<void>;
+
 }

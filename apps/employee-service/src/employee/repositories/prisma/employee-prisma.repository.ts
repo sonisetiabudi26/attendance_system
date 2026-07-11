@@ -38,6 +38,16 @@ export class EmployeePrismaRepository
     },
     include: {
       position: true,
+       employeeLocations: {
+
+        include: {
+
+            location: true,
+
+        },
+
+    },
+
     },
   });
 
@@ -77,9 +87,14 @@ async findByUserId(
       userId,
       isDeleted: false,
     },
-    include: {
-      position: true,
-    },
+     include: {
+        position: true,
+        employeeLocations: {
+          include: {
+            location: true,
+          },
+        },
+      },
   });
 
   if (!employee) {
@@ -126,6 +141,16 @@ async update(
     data: this.mapper.toUpdateInput(contract),
     include: {
       position: true,
+       employeeLocations: {
+
+        include: {
+
+            location: true,
+
+        },
+
+    },
+
     },
   });
 

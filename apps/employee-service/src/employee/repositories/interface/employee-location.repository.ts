@@ -24,4 +24,36 @@ export interface IEmployeeLocationRepository {
     db: PrismaClient | Prisma.TransactionClient,
     employeeId: bigint,
   ): Promise<void>;
+
+
+// deleteMany(
+//     db:PrismaClient | Prisma.TransactionClient,
+//     employeeId: bigint,
+//     locationIds: bigint[],
+// ): Promise<void>;
+
+// createMany(
+//     db: PrismaClient | Prisma.TransactionClient,
+//     employeeId: bigint,
+//     locationIds: bigint[],
+// ): Promise<void>;
+
+
+deleteByEmployeeAndLocationIds(
+   db: PrismaClient | Prisma.TransactionClient,
+  employeeId: bigint,
+  locationIds: bigint[],
+): Promise<void>;
+
+createMany(
+   db: PrismaClient | Prisma.TransactionClient,
+  employeeId: bigint,
+  locationIds: bigint[],
+): Promise<void>;
+syncLocations(
+     db: PrismaClient | Prisma.TransactionClient,
+    employeeId: bigint,
+    locationIds: bigint[]
+): Promise<void>
+
 }

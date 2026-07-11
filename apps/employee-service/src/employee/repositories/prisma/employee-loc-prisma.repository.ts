@@ -45,11 +45,50 @@ export class EmployeeLocationPrismaRepository
         where: {
           employeeId,
         },
+        include: {
+        location: true,
+      },
       });
 
     return this.mapper.toEntities(rows);
   }
 
+ async deleteByEmployeeAndLocationIds(
+  db: PrismaClient | Prisma.TransactionClient,
+  employeeId: bigint,
+  locationIds: bigint[],
+): Promise<void> {
+
+  await db.employeeLocation.deleteMany({
+
+    where: {
+      employeeId,
+      locationId: {
+        in: locationIds,
+      },
+    },
+  });
+}
+async createMany(
+ db: PrismaClient | Prisma.TransactionClient,
+  employeeId: bigint,
+  locationIds: bigint[],
+): Promise<void> {
+
+  if (!locationIds.length) {
+    return;
+  }
+
+  await db.employeeLocation.createMany({
+
+    data: locationIds.map(locationId => ({
+      employeeId,
+      locationId,
+    })),
+
+    skipDuplicates: true,
+  });
+}
   async create(
     db: PrismaClient | Prisma.TransactionClient,
     contract: CreateEmployeeLocationContract,
@@ -72,4 +111,10 @@ export class EmployeeLocationPrismaRepository
       },
     });
   }
+
+  async syncLocations(
+    tx: Prisma.TransactionClient,
+    employeeId: bigint,
+    locationIds: bigint[],
+): Promise<void>{}
 }
