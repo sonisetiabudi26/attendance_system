@@ -32,6 +32,9 @@ service AuthService {
 
    rpc CreateUser(CreateUserRequest)
       returns(CreateUserResponse);
+
+   rpc UpdateCredential(UpdateCredentialRequest)
+       returns(UpdateCredentialResponse);
 }
 
 message CreateUserRequest {
@@ -88,6 +91,22 @@ message UserClaims {
 
 message VerifyAccessTokenResponse {
     UserClaims user = 1;
+}
+
+message UpdateCredentialRequest {
+
+  string userId = 1;
+
+   string email = 2;
+
+   string password = 3;
+
+}
+
+message UpdateCredentialResponse {
+
+  string userId = 1;
+
 }
 
 message Empty{}

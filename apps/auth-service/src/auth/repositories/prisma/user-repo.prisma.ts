@@ -121,4 +121,34 @@ export class UserPrismaRepository
         return this.mapper.toEntity(model);
 
     }
+
+    async updateCredential(
+    db: PrismaClient | Prisma.TransactionClient,
+    userId: bigint,
+    email?: string,
+    passwordHash?: string,
+): Promise<UserEntity> {
+
+    const user =
+        await db.user.update({
+
+            where: {
+                id: userId,
+            },
+
+            data:
+                this.mapper.toUpdateCredentialInput(
+                    email,
+                    passwordHash,
+                ),
+
+            include: {
+                role: true,
+                status: true,
+            },
+
+        });
+
+    return this.mapper.toEntity(user);
+}
 }

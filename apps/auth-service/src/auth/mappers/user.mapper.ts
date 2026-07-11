@@ -111,4 +111,22 @@ export class UserMapper {
 
     return update;
   }
+
+  toUpdateCredentialInput(
+    email?: string,
+    passwordHash?: string,
+): Prisma.UserUpdateInput {
+
+    const data: Prisma.UserUpdateInput = {};
+
+    if (email !== undefined) {
+        data.email = email;
+    }
+
+    if (passwordHash !== undefined) {
+        data.passwordHash = passwordHash;
+    }
+
+    return data;
+}
 }

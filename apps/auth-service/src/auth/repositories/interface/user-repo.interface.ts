@@ -44,4 +44,11 @@ export interface IUserRepository {
     userId :  bigint,
     input: UpdateUserContract,
   ): Promise<UserEntity>;
+
+  updateCredential(
+   db: PrismaClient | Prisma.TransactionClient,
+    userId: bigint,
+    email?: string,
+    passwordHash?: string,
+): Promise<UserEntity>;
 }

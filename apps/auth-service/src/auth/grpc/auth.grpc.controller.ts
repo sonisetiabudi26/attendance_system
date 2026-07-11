@@ -1,10 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 // import { LoginService } from '../services/auth.service';
-import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest, Empty, VerifyAccessTokenRequest, VerifyAccessTokenResponse, CreateUserRequest, CreateUserResponse } from '@attendance/proto/generated/auth';
+import { LoginRequest, LoginResponse, RefreshTokenRequest, LogoutRequest, ChangePasswordRequest, Empty, VerifyAccessTokenRequest, VerifyAccessTokenResponse, CreateUserRequest, CreateUserResponse, UpdateCredentialRequest, UpdateCredentialResponse } from '@attendance/proto/generated/auth';
 import { AuthGrpcMapper } from './authgrpc.mapper';
 
-import { CreateUserService,LoginService } from '../services';
+import { CreateUserService, LoginService } from '../services';
+import { UpdateCredentialService } from '../services/update-credential.service';
 
 @Controller()
 export class AuthGrpcController {
@@ -12,6 +13,8 @@ export class AuthGrpcController {
     // private readonly authService: AuthService,
     private readonly loginService: LoginService,
     private readonly createUserService: CreateUserService,
+    private readonly updateCredentialService: UpdateCredentialService,
+
   ) { }
 
   @GrpcMethod('AuthService', 'Login')
@@ -43,6 +46,29 @@ export class AuthGrpcController {
       await this.createUserService.execute(contract);
 
     return AuthGrpcMapper.toCreateUserResponse(user);
+  }
+
+  @GrpcMethod(
+    'AuthService',
+    'UpdateCredential',
+  )
+  async updateCredential(
+    request: UpdateCredentialRequest,
+  ): Promise<UpdateCredentialResponse> {
+
+    const user =
+      await this.updateCredentialService.execute(
+
+        AuthGrpcMapper.toUpdateCredentialContract(
+          request,
+        ),
+
+      );
+
+    return AuthGrpcMapper.toUpdateCredentialResponse(
+      user,
+    );
+
   }
   // @GrpcMethod('AuthService', 'RefreshToken')
   // async refreshToken(

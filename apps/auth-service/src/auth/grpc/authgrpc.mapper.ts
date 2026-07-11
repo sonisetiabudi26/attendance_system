@@ -4,6 +4,8 @@ import {
   LoginRequest,
   LogoutRequest,
   DeviceType as ProtoDeviceType,
+  UpdateCredentialRequest,
+  UpdateCredentialResponse,
 } from '@attendance/proto/generated/auth';
 
 import { DeviceType } from '../../../prisma/generated/client';
@@ -11,6 +13,7 @@ import { DeviceType } from '../../../prisma/generated/client';
 import { CreateUserContract, LoginContract, LogoutContract } from '../contracts';
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from '../entities';
+import { UpdateCredentialContract } from '../contracts/update-credential.contract';
 
 @Injectable()
 export class AuthGrpcMapper {
@@ -55,26 +58,51 @@ export class AuthGrpcMapper {
     }
   }
   static toCreateUserContract(
-  request: CreateUserRequest,
-): CreateUserContract {
-  return {
-    username: request.username,
-    email: request.email,
-    password: request.password,
-   
-  };
-}
+    request: CreateUserRequest,
+  ): CreateUserContract {
+    return {
+      username: request.username,
+      email: request.email,
+      password: request.password,
+
+    };
+  }
 
   // ===========================
   // RESPONSE
   // ===========================
 
- static toCreateUserResponse(
-  user: UserEntity,
-): CreateUserResponse {
-  return {
-    userId: user.id.toString(),
-  };
-}
+  static toCreateUserResponse(
+    user: UserEntity,
+  ): CreateUserResponse {
+    return {
+      userId: user.id.toString(),
+    };
+  }
+  static toUpdateCredentialContract(
+    request: UpdateCredentialRequest,
+  ): UpdateCredentialContract {
 
+    return {
+
+      userId: BigInt(request.userId),
+
+      email: request.email || '',
+
+      password: request.password || '',
+
+    };
+
+  }
+  static toUpdateCredentialResponse(
+    user: UserEntity,
+  ): UpdateCredentialResponse {
+
+    return {
+
+      userId: user.id.toString(),
+
+    };
+
+  }
 }

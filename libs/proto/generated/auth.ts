@@ -74,6 +74,16 @@ export interface VerifyAccessTokenResponse {
   user?: UserClaims | undefined;
 }
 
+export interface UpdateCredentialRequest {
+  userId: string;
+  email: string;
+  password: string;
+}
+
+export interface UpdateCredentialResponse {
+  userId: string;
+}
+
 export interface Empty {
 }
 
@@ -603,6 +613,102 @@ export const VerifyAccessTokenResponse: MessageFns<VerifyAccessTokenResponse> = 
   },
 };
 
+function createBaseUpdateCredentialRequest(): UpdateCredentialRequest {
+  return { userId: "", email: "", password: "" };
+}
+
+export const UpdateCredentialRequest: MessageFns<UpdateCredentialRequest> = {
+  encode(message: UpdateCredentialRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.email !== "") {
+      writer.uint32(18).string(message.email);
+    }
+    if (message.password !== "") {
+      writer.uint32(26).string(message.password);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateCredentialRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateCredentialRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.email = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.password = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseUpdateCredentialResponse(): UpdateCredentialResponse {
+  return { userId: "" };
+}
+
+export const UpdateCredentialResponse: MessageFns<UpdateCredentialResponse> = {
+  encode(message: UpdateCredentialResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UpdateCredentialResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateCredentialResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseEmpty(): Empty {
   return {};
 }
@@ -641,6 +747,8 @@ export interface AuthServiceClient {
   verifyAccessToken(request: VerifyAccessTokenRequest): Observable<VerifyAccessTokenResponse>;
 
   createUser(request: CreateUserRequest): Observable<CreateUserResponse>;
+
+  updateCredential(request: UpdateCredentialRequest): Observable<UpdateCredentialResponse>;
 }
 
 export interface AuthServiceController {
@@ -659,6 +767,10 @@ export interface AuthServiceController {
   createUser(
     request: CreateUserRequest,
   ): Promise<CreateUserResponse> | Observable<CreateUserResponse> | CreateUserResponse;
+
+  updateCredential(
+    request: UpdateCredentialRequest,
+  ): Promise<UpdateCredentialResponse> | Observable<UpdateCredentialResponse> | UpdateCredentialResponse;
 }
 
 export function AuthServiceControllerMethods() {
@@ -670,6 +782,7 @@ export function AuthServiceControllerMethods() {
       "changePassword",
       "verifyAccessToken",
       "createUser",
+      "updateCredential",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
@@ -735,6 +848,14 @@ export const AuthServiceDefinition = {
       requestType: CreateUserRequest as typeof CreateUserRequest,
       requestStream: false,
       responseType: CreateUserResponse as typeof CreateUserResponse,
+      responseStream: false,
+      options: {},
+    },
+    updateCredential: {
+      name: "UpdateCredential",
+      requestType: UpdateCredentialRequest as typeof UpdateCredentialRequest,
+      requestStream: false,
+      responseType: UpdateCredentialResponse as typeof UpdateCredentialResponse,
       responseStream: false,
       options: {},
     },
