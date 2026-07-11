@@ -8,6 +8,8 @@ import { StringValue } from 'ms';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configuration } from '../../../../libs/config/src';
 import { EmployeeGrpcController } from './grpc/employee.grpc.controller';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { join } from 'path';
 
 @Module({
     controllers: [EmployeeGrpcController],
@@ -15,13 +17,27 @@ import { EmployeeGrpcController } from './grpc/employee.grpc.controller';
         PrismaModule,
         ConfigModule.forRoot({
             isGlobal: true,
-             envFilePath:[
+            envFilePath: [
                 'apps/employee-service/.env'
             ],
             load: [
                 configuration,
             ],
         }),
+        ClientsModule.register([
+            {
+                name: 'AUTH_GRPC_CLIENT',
+                transport: Transport.GRPC,
+                options: {
+                    package: 'auth',
+                    protoPath: join(
+                        process.cwd(),
+                        'libs/proto/auth.proto',
+                    ),
+                    url: 'localhost:50051',
+                },
+            },
+        ]),
     ],
     providers: [
         ...employeeProviders,

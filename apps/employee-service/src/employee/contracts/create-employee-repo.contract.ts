@@ -1,4 +1,7 @@
 export interface CreateEmployeeRepoContract {
+
+  userId:bigint;
+
   employeeNo: string;
 
   fullName: string;

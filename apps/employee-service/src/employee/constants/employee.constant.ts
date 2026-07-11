@@ -18,3 +18,5 @@ export const AUTH_PACKAGE_NAME = 'EmployeeService';
 
 export const AUTH_SERVICE_NAME = 'AuthService';
 
+export const AUTH_GRPC_CLIENT = 'AUTH_GRPC_CLIENT';
+

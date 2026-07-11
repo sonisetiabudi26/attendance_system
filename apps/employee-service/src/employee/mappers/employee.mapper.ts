@@ -7,6 +7,7 @@ import {
 
 import {
   CreateEmployeeContract,
+  CreateEmployeeRepoContract,
   UpdateEmployeeContract,
 } from '../contracts';
 
@@ -56,9 +57,10 @@ export class EmployeeMapper {
   }
 
   toCreateInput(
-    contract: CreateEmployeeContract,
+    contract: CreateEmployeeRepoContract,
   ): Prisma.EmployeeCreateInput {
     return {
+      userId: contract.userId,
       employeeNo: contract.employeeNo,
       fullName: contract.fullName,
       phone: contract.phone,

@@ -9,6 +9,7 @@ import type { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 import {
+  AUTH_GRPC_CLIENT,
   AUTH_PACKAGE_NAME,
   AUTH_SERVICE_NAME,
 } from '../constants/employee.constant';
@@ -18,7 +19,8 @@ import {
   CreateUserResponse,
   IAuthGrpcService,
 } from './auth.grpc.interface';
-
+import { EmailAlreadyExistsException } from 'apps/auth-service/src/auth/exceptions';
+import { status } from '@grpc/grpc-js';
 @Injectable()
 export class AuthGrpcClient
   implements OnModuleInit
@@ -26,7 +28,7 @@ export class AuthGrpcClient
   private authService: IAuthGrpcService;
 
   constructor(
-    @Inject(AUTH_PACKAGE_NAME)
+    @Inject(AUTH_GRPC_CLIENT)
     private readonly client: ClientGrpc,
   ) {}
 
@@ -40,8 +42,22 @@ export class AuthGrpcClient
   async createUser(
     request: CreateUserRequest,
   ): Promise<CreateUserResponse> {
-    return firstValueFrom(
-      this.authService.createUser(request),
-    );
+     try {
+
+      return await firstValueFrom(
+        this.authService.createUser(request),
+      );
+
+    } catch (error: any) {
+
+      console.log(error);
+
+      if (error.code === status.ALREADY_EXISTS) {
+        throw new EmailAlreadyExistsException();
+      }
+
+      throw error;
+    }
+  
   }
 }

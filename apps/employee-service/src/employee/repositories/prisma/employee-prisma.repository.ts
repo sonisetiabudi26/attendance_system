@@ -7,6 +7,7 @@ import {
 
 import {
   CreateEmployeeContract,
+  CreateEmployeeRepoContract,
   UpdateEmployeeContract,
 } from '../../contracts';
 
@@ -102,7 +103,7 @@ async existsByEmployeeNo(
 }
 async create(
   db: PrismaClient | Prisma.TransactionClient,
-  contract: CreateEmployeeContract,
+  contract: CreateEmployeeRepoContract,
 ): Promise<EmployeeEntity> {
   const employee = await db.employee.create({
     data: this.mapper.toCreateInput(contract),

@@ -28,6 +28,7 @@ import type {
   ILocationRepository,
   IPositionRepository,
 } from '../repositories/interface';
+import { AuthGrpcClient } from '../grpc/auth.grpc.client';
 
 @Injectable()
 export class CreateEmployeeService {
@@ -45,6 +46,7 @@ export class CreateEmployeeService {
     private readonly locationRepository: ILocationRepository,
 
     private readonly prisma: PrismaService,
+    private readonly authGrpcClient: AuthGrpcClient,
   ) {}
 
   async execute(
@@ -95,6 +97,14 @@ export class CreateEmployeeService {
       }
     }
 
+    const authUser =
+    await this.authGrpcClient.createUser({
+        username: contract.employeeNo,
+        email: contract.email,
+        password: contract.password,
+        role: 'EMPLOYEE'
+    });
+
     // ==========================================================
     // CREATE EMPLOYEE
     // ==========================================================
@@ -104,8 +114,20 @@ export class CreateEmployeeService {
         async (tx) => {
           const employee =
             await this.employeeRepository.create(
-              tx,
-              contract,
+              tx,{
+                userId: BigInt(authUser.userId),
+
+                employeeNo: contract.employeeNo,
+
+                fullName: contract.fullName,
+
+                phone: contract.phone,
+
+                photoUrl: contract.photoUrl,
+
+                positionId: contract.positionId,
+              }
+              
             );
 
           // ==========================================

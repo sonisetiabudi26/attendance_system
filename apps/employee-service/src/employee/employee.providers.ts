@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-// import { AuthGrpcClient } from './grpc/auth.grpc.client';
+import { AuthGrpcClient } from './grpc/auth.grpc.client';
 import { CreateEmployeeService } from './services/create-employee.service';
 import { EMPLOYEE_LOCATION_REPOSITORY, EMPLOYEE_MAPPER, EMPLOYEE_REPOSITORY, LOCATION_REPOSITORY, POSITION_REPOSITORY } from './constants/employee.constant';
 import { EmployeePrismaRepository, LocationPrismaRepository, PositionPrismaRepository } from './repositories';
@@ -10,7 +10,7 @@ import { EmployeeGrpcMapper } from './grpc/employee.grpc.mapper';
 
 
 export const employeeProviders: Provider[] = [
-    CreateEmployeeService,EmployeeGrpcMapper,
+    CreateEmployeeService,EmployeeGrpcMapper,AuthGrpcClient,
     EmployeeMapper,LocationMapper,LocationMapper,EmployeeLocationMapper,PositionMapper,
     {
       provide: EMPLOYEE_REPOSITORY,
