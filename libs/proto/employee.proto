@@ -27,6 +27,7 @@ service EmployeeService {
 
   rpc GetEmployees(GetEmployeesRequest)
       returns(GetEmployeesResponse);
+  
 }
 
 message CreateEmployeeRequest {
