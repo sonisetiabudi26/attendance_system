@@ -1,65 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from "@nestjs/common";
 
-import {
-  EmployeeLocation,
-  Prisma,
-} from '../../../prisma/generated/client';
+import { EmployeeLocation } from "../../../prisma/generated/client";
 
-import {
-  CreateEmployeeLocationContract,
-  UpdateEmployeeLocationContract,
-} from '../contracts';
+import { LOCATION_MAPPER } from "../constants/employee.constant";
 
-import { EmployeeLocationEntity } from '../entites/employee-location.entity';
+import { EmployeeLocationEntity } from "../entites/employee-location.entity";
+
+import { LocationMapper } from "./location.mapper";
 
 @Injectable()
 export class EmployeeLocationMapper {
-  toEntity(
-    model: EmployeeLocation,
-  ): EmployeeLocationEntity {
+  constructor(
+    @Inject(LOCATION_MAPPER)
+    private readonly locationMapper: LocationMapper
+  ) {}
+
+  toDomain(data: any): EmployeeLocationEntity {
     return new EmployeeLocationEntity(
-      model.id,
-      model.employeeId,
-      model.locationId,
-      model.isDefault,
-      model.createdAt,
-      model.updatedAt,
+      BigInt(data.id),
+      BigInt(data.employeeId),
+      BigInt(data.locationId),
+      data.isDefault,
+      data.createdAt,
+      data.location ? this.locationMapper.toDomain(data.location) : undefined
     );
   }
 
-  toEntities(
-    models: EmployeeLocation[],
-  ): EmployeeLocationEntity[] {
-    return models.map((model) =>
-      this.toEntity(model),
-    );
-  }
-
-  toCreateInput(
-    contract: CreateEmployeeLocationContract,
-  ): Prisma.EmployeeLocationCreateInput {
+  toPersistence(entity: EmployeeLocationEntity): Partial<EmployeeLocation> {
     return {
-      isDefault: contract.isDefault ?? false,
-
-      employee: {
-        connect: {
-          id: contract.employeeId,
-        },
-      },
-
-      location: {
-        connect: {
-          id: contract.locationId,
-        },
-      },
-    };
-  }
-
-  toUpdateInput(
-    contract: UpdateEmployeeLocationContract,
-  ): Prisma.EmployeeLocationUpdateInput {
-    return {
-      isDefault: contract.isDefault,
+      employeeId: entity.employeeId,
+      locationId: entity.locationId,
+      isDefault: entity.isDefault,
     };
   }
 }

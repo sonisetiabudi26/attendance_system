@@ -1,54 +1,45 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from "../../../../prisma/generated/client";
 
-import {
-  CreateEmployeeContract,
-  CreateEmployeeRepoContract,
-  UpdateEmployeeContract,
-} from '../../contracts';
+import { EmployeeEntity } from "../../entites/employee.entity";
 
-import { EmployeeEntity } from '../../entites/employee.entity';
+import { GetEmployeesContract } from "../../contracts";
 
 export interface IEmployeeRepository {
+  create(
+     db: PrismaClient | Prisma.TransactionClient,
+    employee: EmployeeEntity
+  ): Promise<EmployeeEntity>;
+
+  update(
+     db: PrismaClient | Prisma.TransactionClient,
+    employee: EmployeeEntity
+  ): Promise<EmployeeEntity>;
+
   findById(
     db: PrismaClient | Prisma.TransactionClient,
-    id: bigint,
+    id: bigint
   ): Promise<EmployeeEntity | null>;
 
   findByEmployeeNo(
     db: PrismaClient | Prisma.TransactionClient,
-    employeeNo: string,
+    employeeNo: string
   ): Promise<EmployeeEntity | null>;
 
-  findByUserId(
+  findAll(
     db: PrismaClient | Prisma.TransactionClient,
-    userId: bigint,
-  ): Promise<EmployeeEntity | null>;
+    contract: GetEmployeesContract
+  ): Promise<{
+    data: EmployeeEntity[];
+    total: number;
+  }>;
 
-  existsByEmployeeNo(
+   existsByEmployeeNo(
     db: PrismaClient | Prisma.TransactionClient,
     employeeNo: string,
   ): Promise<boolean>;
 
-  create(
-    db: PrismaClient | Prisma.TransactionClient,
-    contract: CreateEmployeeRepoContract,
-  ): Promise<EmployeeEntity>;
 
-  update(
-    db: PrismaClient | Prisma.TransactionClient,
-    employeeId: bigint,
-    contract: UpdateEmployeeContract,
-  ): Promise<EmployeeEntity>;
+  softDelete( db: PrismaClient | Prisma.TransactionClient, id: bigint): Promise<void>;
 
-  updateUserId(
-    db: PrismaClient | Prisma.TransactionClient,
-    employeeId: bigint,
-    userId: bigint,
-  ): Promise<void>;
-
-  delete(
-    db: PrismaClient | Prisma.TransactionClient,
-    employeeId: bigint,
-  ): Promise<void>;
-
+  // restore( db: PrismaClient | Prisma.TransactionClient, id: bigint): Promise<void>;
 }

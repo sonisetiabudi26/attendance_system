@@ -7,9 +7,6 @@ service EmployeeService {
   rpc CreateEmployee(CreateEmployeeRequest)
       returns (CreateEmployeeResponse);
 
-  rpc GetEmployee(GetEmployeeRequest)
-      returns (EmployeeResponse);
-
   rpc ListEmployee(ListEmployeeRequest)
       returns (ListEmployeeResponse);
 
@@ -24,6 +21,12 @@ service EmployeeService {
 
   rpc ListLocation(ListLocationRequest)
       returns (ListLocationResponse);
+  
+  rpc GetEmployee(GetEmployeeRequest)
+      returns(EmployeeResponse);
+
+  rpc GetEmployees(GetEmployeesRequest)
+      returns(GetEmployeesResponse);
 }
 
 message CreateEmployeeRequest {
@@ -74,23 +77,36 @@ message ListEmployeeRequest {
 
 }
 
+message GetEmployeesResponse {
+
+  repeated EmployeeResponse data = 1;
+
+  int32 page = 2;
+
+  int32 limit = 3;
+
+  int32 total = 4;
+
+}
+
 message EmployeeResponse {
 
   string employeeId = 1;
 
-  string userId = 2;
+  string employeeNo = 2;
 
-  string employeeNo = 3;
+  string fullName = 3;
 
-  string fullName = 4;
+  string phone = 4;
 
-  string phone = 5;
+  string photoUrl = 5;
 
-  string photoUrl = 6;
+  string positionId = 6;
 
-  PositionResponse position = 7;
+  string positionName = 7;
 
-  repeated LocationResponse locations = 8;
+  repeated EmployeeLocationResponse locations = 8;
+
 }
 
 message ListEmployeeResponse {
@@ -167,5 +183,50 @@ message UpdateEmployeeRequest {
 message UpdateEmployeeResponse {
 
   string employeeId = 1;
+
+}
+
+
+message EmployeeLocation {
+
+    int64 employeeId = 1;
+
+    int64 locationId = 2;
+
+    bool isDefault = 3;
+
+    Location location = 4;
+
+}
+
+message GetEmployeesRequest {
+
+  int32 page = 1;
+
+  int32 limit = 2;
+
+  string search = 3;
+
+  string positionId = 4;
+
+}
+
+message Location {
+
+    int64 id = 1;
+
+    string locationName = 2;
+
+    bool isDefault = 3;
+
+}
+
+message EmployeeLocationResponse {
+
+  string locationId = 1;
+
+  string locationName = 2;
+
+  bool isDefault = 3;
 
 }

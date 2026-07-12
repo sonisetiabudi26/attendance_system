@@ -33,42 +33,37 @@ export class AuthGrpcClient
   ) { }
 
   onModuleInit() {
-    this.authService =
-      this.client.getService<IAuthGrpcService>(
-        AUTH_SERVICE_NAME,
-      );
+    this.authService = this.client.getService<IAuthGrpcService>(AUTH_SERVICE_NAME);
   }
 
-  async createUser(
-    request: CreateUserRequest,
-  ): Promise<CreateUserResponse> {
+  async createUser(request: CreateUserRequest): Promise<CreateUserResponse> {
     try {
-
       return await firstValueFrom(
         this.authService.createUser(request),
       );
 
     } catch (error: any) {
+      if (error.code === status.ALREADY_EXISTS) {
+        throw new EmailAlreadyExistsException();
+      }
+      throw error;
+    }
 
-      console.log(error);
-
+  }
+  async updateCredential(request: UpdateCredentialRequest): Promise<UpdateCredentialResponse> {
+    try {
+      return await firstValueFrom(
+        this.authService.updateCredential(
+          request,
+        ),
+      );
+    } catch (error: any) {
       if (error.code === status.ALREADY_EXISTS) {
         throw new EmailAlreadyExistsException();
       }
 
       throw error;
     }
-
-  }
-  async updateCredential(
-    request: UpdateCredentialRequest,
-  ): Promise<UpdateCredentialResponse> {
-
-    return firstValueFrom(
-      this.authService.updateCredential(
-        request,
-      ),
-    );
 
   }
   //   async updateCredential(

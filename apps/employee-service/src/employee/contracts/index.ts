@@ -6,3 +6,5 @@ export * from './update-employee.contract';
 export * from './create-employee-location.contract';
 export * from './update-employee-location.contract';
 export * from './create-employee-repo.contract';
+export * from './get-employee.contract';
+export * from './get-employees.contract';

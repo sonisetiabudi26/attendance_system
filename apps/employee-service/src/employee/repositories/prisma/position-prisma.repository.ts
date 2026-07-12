@@ -1,81 +1,81 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from "@nestjs/common";
 
-import {
-  Prisma,
-  PrismaClient,
-} from '../../../../prisma/generated/client';
+import { PrismaClient,Prisma } from "../../../../prisma/generated/client";
 
-import {
-  PositionEntity,
-} from '../../entites/position.entity';
+import { POSITION_REPOSITORY, MASTER_POSITION_MAPPER } from "../../constants/employee.constant";
 
-import {
-  MASTER_POSITION_MAPPER,
-} from '../../constants/employee.constant';
+import { IPositionRepository } from "../interface/position.repository";
 
-import {
-  PositionMapper,
-} from '../../mappers';
+import { PositionEntity } from "../../entites/position.entity";
 
-import {
-  IPositionRepository,
-} from '../interface';
+import { MasterPositionMapper } from "../../mappers";
 
 @Injectable()
-export class PositionPrismaRepository
-  implements IPositionRepository
-{
+export class PositionPrismaRepository implements IPositionRepository {
   constructor(
-    // @Inject(MASTER_POSITION_MAPPER)
-    private readonly mapper: PositionMapper,
+    @Inject(MASTER_POSITION_MAPPER)
+    private readonly mapper: MasterPositionMapper
   ) {}
+
+  async create(
+    db: PrismaClient | Prisma.TransactionClient,
+    entity: PositionEntity
+  ): Promise<PositionEntity> {
+    const created = await db.masterPosition.create({
+      data: this.mapper.toCreatePersistence(entity),
+    });
+
+    return this.mapper.toDomain(created);
+  }
+
+  async update(
+    db: PrismaClient | Prisma.TransactionClient,
+    entity: PositionEntity
+  ): Promise<PositionEntity> {
+    const updated = await db.masterPosition.update({
+      where: {
+        id: entity.id,
+      },
+
+      data: this.mapper.toUpdatePersistence(entity),
+    });
+
+    return this.mapper.toDomain(updated);
+  }
 
   async findById(
     db: PrismaClient | Prisma.TransactionClient,
-    id: bigint,
+    id: bigint
   ): Promise<PositionEntity | null> {
-    const row =
-      await db.masterPosition.findUnique({
-        where: {
-          id,
-        },
-      });
+    const position = await db.masterPosition.findUnique({
+      where: {
+        id,
+      },
+    });
 
-    if (!row) {
-      return null;
-    }
-
-    return this.mapper.toEntity(row);
+    return position ? this.mapper.toDomain(position) : null;
   }
 
   async findByCode(
     db: PrismaClient | Prisma.TransactionClient,
-    code: string,
+    code: string
   ): Promise<PositionEntity | null> {
-    const row =
-      await db.masterPosition.findUnique({
-        where: {
-          code,
-        },
-      });
+    const position = await db.masterPosition.findUnique({
+      where: {
+        code,
+      },
+    });
 
-    if (!row) {
-      return null;
-    }
-
-    return this.mapper.toEntity(row);
+    return position ? this.mapper.toDomain(position) : null;
   }
 
-  async findAll(
-    db: PrismaClient | Prisma.TransactionClient,
-  ): Promise<PositionEntity[]> {
-    const rows =
-      await db.masterPosition.findMany({
-        orderBy: {
-          name: 'asc',
-        },
-      });
+  async findAll(db: PrismaClient | Prisma.TransactionClient): Promise<PositionEntity[]> {
+    const positions = await db.masterPosition.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
 
-    return this.mapper.toEntities(rows);
+    return positions.map((position) => this.mapper.toDomain(position));
   }
 }
