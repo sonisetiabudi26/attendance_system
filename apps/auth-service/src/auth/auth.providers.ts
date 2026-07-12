@@ -14,6 +14,7 @@ import { LoginResponseMapper } from './mappers/login-resp.mapper';
 import { AuthGrpcMapper } from './grpc/authgrpc.mapper';
 import { CreateUserService } from './services';
 import { UpdateCredentialService } from './services/update-credential.service';
+import { VerifyAccessTokenService } from './services/verify-token.service';
 
 
 
@@ -21,7 +22,7 @@ export const authProviders: Provider[] = [
     LoginService,
     //   LogoutService,
     //   RefreshTokenService,
-    //   VerifyAccessTokenService,
+    VerifyAccessTokenService,
     CreateUserService,
     //   ChangePasswordService,
     UpdateCredentialService,
@@ -57,5 +58,9 @@ export const authProviders: Provider[] = [
     {
         provide: REFRESH_TOKEN_REPOSITORY,
         useClass: RefreshTokenPrismaRepository,
+    },
+    {
+        provide: JWT_SERVICE,
+        useClass: JwtService,
     },
 ]

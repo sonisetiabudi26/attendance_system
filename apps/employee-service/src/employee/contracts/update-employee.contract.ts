@@ -1,6 +1,6 @@
 export interface UpdateEmployeeContract {
 
-    employeeId: bigint;
+    employeeId: number;
 
     fullName: string;
 

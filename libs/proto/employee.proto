@@ -56,7 +56,7 @@ message CreateEmployeeResponse {
 
 message GetEmployeeRequest {
 
-  string employeeId = 1;
+  int32 userId = 1;
 
 }
 
@@ -164,7 +164,7 @@ message ListLocationResponse {
 
 message UpdateEmployeeRequest {
 
-  string employeeId = 1;
+  int32 employeeId = 1;
 
   string fullName = 2;
 

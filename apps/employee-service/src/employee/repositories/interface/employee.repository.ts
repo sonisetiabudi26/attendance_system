@@ -17,7 +17,7 @@ export interface IEmployeeRepository {
 
   findById(
     db: PrismaClient | Prisma.TransactionClient,
-    id: bigint
+    id: number
   ): Promise<EmployeeEntity | null>;
 
   findByEmployeeNo(
@@ -39,7 +39,7 @@ export interface IEmployeeRepository {
   ): Promise<boolean>;
 
 
-  softDelete( db: PrismaClient | Prisma.TransactionClient, id: bigint): Promise<void>;
+  softDelete( db: PrismaClient | Prisma.TransactionClient, employeeId: bigint): Promise<void>;
 
   // restore( db: PrismaClient | Prisma.TransactionClient, id: bigint): Promise<void>;
 }

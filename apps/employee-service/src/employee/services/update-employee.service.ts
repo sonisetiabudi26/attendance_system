@@ -84,7 +84,7 @@ export class UpdateEmployeeService {
     await this.prisma.$transaction(async (tx) => {
       const employee = await this.employeeRepository.findById(
         tx,
-        BigInt(contract.employeeId)
+        contract.employeeId
       );
 
       if (!employee) {
@@ -96,9 +96,6 @@ export class UpdateEmployeeService {
       employee.phone = contract.phone??"";
       employee.photoUrl = contract.photoUrl??"";
       employee.positionId = BigInt(contract.positionId);
-
-      // kalau userId ikut berubah nanti
-      // employee.userId = ...
 
       await this.employeeRepository.update(tx, employee);
 
@@ -128,6 +125,6 @@ export class UpdateEmployeeService {
         );
       }
     });
-    return (await this.employeeRepository.findById(this.prisma, employee.id))!;
+    return (await this.employeeRepository.findById(this.prisma, Number(employee.id)))!;
   }
 }

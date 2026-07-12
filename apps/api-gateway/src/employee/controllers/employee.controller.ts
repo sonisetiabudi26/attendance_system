@@ -1,38 +1,50 @@
 import {
-    Body,
-    Controller,
-    Get,
-    Post,
-    Req,
-    UseGuards,
-} from '@nestjs/common';
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
+import { EmployeeService } from "../services/employee.service";
+import { JwtAuthGuard } from "../../jwt/jwt-auth.guard";
+import type { Request } from "express";
+import { Public } from "../decorators/public.decorator";
+import { UpdateEmployeeRequest } from "@attendance/proto/generated/employee";
+import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 
-import { EmployeeService } from '../services/employee.service';
+@Controller("api/v1/employee")
+export class EmployeeController {
+  constructor(private readonly employeeService: EmployeeService) {}
 
-import { LoginDto } from '../dto/login.dto';
-import { Public } from '../decorators/public.decorator';
-import { RefreshTokenDto } from '../dto/refresh-token.dto';
-import { CurrentUser } from '../decorators/current-user.decorator';
-import { UserClaims } from '@attendance/proto/generated/auth';
-import { ChangePasswordDto } from '../dto/change-password.dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import type { Request } from 'express';
+  @Get("profile")
+  @UseGuards(JwtAuthGuard)
+  profile(@Req() req: any) {
+    return this.employeeService.getEmployeeByUserId(req.user.userId);
+  }
 
-@Controller('employee')
-export class AuthController {
-    constructor(
-        private readonly employeeService: EmployeeService,
-    ) { }
+  @Put("update-employee/:employeeId")
+  // @ApiOperation({
+  //   summary: 'Update Employee',
+  // })
+  // @ApiBearerAuth('access-token')
+  async update(
+    @Param("employeeId") employeeId: number,
+    @Body() dto: UpdateEmployeeDto
+  ) {
+    return this.employeeService.updateEmployee({
+      employeeId,
+      ...dto,
+    });
+  }
 
-@Get("profile")
-@UseGuards(JwtAuthGuard)
-profile(
-    @Req() req:any,
-){
-
-    return this.employeeService.getEmployeeByUserId(
-         req.user.userId
-    );
-
-}
+  @Delete("delete-employee/:employeeId")
+  async delete(@Param("employeeId") employeeId: string) {
+    return this.employeeService.deleteEmployee({
+      employeeId,
+    });
+  }
 }

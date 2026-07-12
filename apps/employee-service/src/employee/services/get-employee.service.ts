@@ -18,7 +18,7 @@ export class GetEmployeeService {
      private readonly employeeMapper: EmployeeGrpcMapper
   ) {}
 
-  async execute(id: bigint): Promise<EmployeeResponse> {
+  async execute(id: number): Promise<EmployeeResponse> {
     const employee = await this.employeeRepository.findById(this.prisma, id);
 
     if (!employee) {

@@ -8,11 +8,12 @@ import { EmployeeLocationMapper, EmployeeMapper, LocationMapper, MasterPositionM
 import { EmployeeGrpcMapper } from './grpc/employee.grpc.mapper';
 import { UpdateEmployeeService } from './services/update-employee.service';
 import { GetEmployeeService } from './services/get-employee.service';
+import { DeleteEmployeeService } from './services/delete-employee.service';
 
 
 
 export const employeeProviders: Provider[] = [
-    CreateEmployeeService,EmployeeGrpcMapper,AuthGrpcClient,UpdateEmployeeService,
+    CreateEmployeeService,EmployeeGrpcMapper,AuthGrpcClient,UpdateEmployeeService,DeleteEmployeeService,
     LocationMapper,EmployeeLocationMapper,MasterPositionMapper,EmployeeMapper,GetEmployeeService,
     {
       provide: EMPLOYEE_REPOSITORY,

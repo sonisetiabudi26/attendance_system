@@ -14,7 +14,7 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { UserClaims } from '@attendance/proto/generated/auth';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 
-@Controller('auth')
+@Controller('api/v1/auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,

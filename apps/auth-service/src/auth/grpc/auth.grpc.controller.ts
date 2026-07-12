@@ -6,11 +6,12 @@ import { AuthGrpcMapper } from './authgrpc.mapper';
 
 import { CreateUserService, LoginService } from '../services';
 import { UpdateCredentialService } from '../services/update-credential.service';
+import { VerifyAccessTokenService } from '..//services/verify-token.service';
 
 @Controller()
 export class AuthGrpcController {
   constructor(
-    // private readonly authService: AuthService,
+    private readonly verifyTokenService: VerifyAccessTokenService,
     private readonly loginService: LoginService,
     private readonly createUserService: CreateUserService,
     private readonly updateCredentialService: UpdateCredentialService,
@@ -100,14 +101,14 @@ export class AuthGrpcController {
   //   return {};
   // }
 
-  // @GrpcMethod('AuthService', 'VerifyAccessToken')
-  // async verifyAccessToken(
-  //   request: VerifyAccessTokenRequest,
-  // ): Promise<VerifyAccessTokenResponse> {
-  //   return this.authService.verifyAccessToken(
-  //     request.accessToken,
-  //   );
-  // }
+  @GrpcMethod('AuthService', 'VerifyAccessToken')
+  async verifyAccessToken(
+    request: VerifyAccessTokenRequest,
+  ): Promise<VerifyAccessTokenResponse> {
+    return this.verifyTokenService.execute(
+      request.accessToken,
+    );
+  }
   // @GrpcMethod(
   //   'AuthService',
   //   'ChangePassword',

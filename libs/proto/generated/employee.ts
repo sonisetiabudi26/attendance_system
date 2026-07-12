@@ -27,7 +27,7 @@ export interface CreateEmployeeResponse {
 }
 
 export interface GetEmployeeRequest {
-  employeeId: string;
+  userId: number;
 }
 
 export interface DeleteEmployeeRequest {
@@ -93,7 +93,7 @@ export interface ListLocationResponse {
 }
 
 export interface UpdateEmployeeRequest {
-  employeeId: string;
+  employeeId: number;
   fullName: string;
   email: string;
   password: string;
@@ -296,13 +296,13 @@ export const CreateEmployeeResponse: MessageFns<CreateEmployeeResponse> = {
 };
 
 function createBaseGetEmployeeRequest(): GetEmployeeRequest {
-  return { employeeId: "" };
+  return { userId: 0 };
 }
 
 export const GetEmployeeRequest: MessageFns<GetEmployeeRequest> = {
   encode(message: GetEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.employeeId !== "") {
-      writer.uint32(10).string(message.employeeId);
+    if (message.userId !== 0) {
+      writer.uint32(8).int32(message.userId);
     }
     return writer;
   },
@@ -315,11 +315,11 @@ export const GetEmployeeRequest: MessageFns<GetEmployeeRequest> = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 10) {
+          if (tag !== 8) {
             break;
           }
 
-          message.employeeId = reader.string();
+          message.userId = reader.int32();
           continue;
         }
       }
@@ -941,7 +941,7 @@ export const ListLocationResponse: MessageFns<ListLocationResponse> = {
 
 function createBaseUpdateEmployeeRequest(): UpdateEmployeeRequest {
   return {
-    employeeId: "",
+    employeeId: 0,
     fullName: "",
     email: "",
     password: "",
@@ -954,8 +954,8 @@ function createBaseUpdateEmployeeRequest(): UpdateEmployeeRequest {
 
 export const UpdateEmployeeRequest: MessageFns<UpdateEmployeeRequest> = {
   encode(message: UpdateEmployeeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.employeeId !== "") {
-      writer.uint32(10).string(message.employeeId);
+    if (message.employeeId !== 0) {
+      writer.uint32(8).int32(message.employeeId);
     }
     if (message.fullName !== "") {
       writer.uint32(18).string(message.fullName);
@@ -989,11 +989,11 @@ export const UpdateEmployeeRequest: MessageFns<UpdateEmployeeRequest> = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 10) {
+          if (tag !== 8) {
             break;
           }
 
-          message.employeeId = reader.string();
+          message.employeeId = reader.int32();
           continue;
         }
         case 2: {

@@ -11,6 +11,7 @@ import type {
 import { CreateEmployeeContract, UpdateEmployeeContract } from "../contracts";
 
 import { EmployeeEntity } from "../entites/employee.entity";
+import { number } from "joi";
 
 @Injectable()
 export class EmployeeGrpcMapper {
@@ -41,7 +42,7 @@ export class EmployeeGrpcMapper {
     request: UpdateEmployeeRequest
   ): UpdateEmployeeContract {
     return {
-      employeeId: BigInt(request.employeeId),
+      employeeId: Number(request.employeeId),
       fullName: request.fullName,
       email: request.email,
       password: request.password || undefined,

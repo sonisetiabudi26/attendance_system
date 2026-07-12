@@ -4,37 +4,58 @@ import type { ClientGrpc } from "@nestjs/microservices";
 
 import { firstValueFrom } from "rxjs";
 
-import { AUTH_GRPC } from "../../grpc/grpc.constant";
+import { EMPLOYEE_GRPC } from "../../grpc/grpc.constant";
 
 import { EmployeeGrpcClient } from "../../grpc/interfaces/employee.interface";
 
-// import { LoginDto } from "../dto/login.dto";
-
-import { AuthMapper } from "../mappers/auth.mapper";
-import { VerifyAccessTokenResponse } from "@attendance/proto/generated/auth";
-import { ChangePasswordDto } from "../dto/change-password.dto";
-import { EmployeeResponse, GetEmployeeRequest } from "@attendance/proto/generated/employee";
+import {
+  DeleteEmployeeRequest,
+  DeleteEmployeeResponse,
+  EmployeeResponse,
+  GetEmployeeRequest,
+  UpdateEmployeeRequest,
+  UpdateEmployeeResponse,
+} from "@attendance/proto/generated/employee";
+import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 
 @Injectable()
 export class EmployeeService implements OnModuleInit {
   constructor(
-    @Inject(AUTH_GRPC)
+    @Inject(EMPLOYEE_GRPC)
     private readonly client: ClientGrpc
   ) {}
 
   private employeeGrpcService: EmployeeGrpcClient;
 
   onModuleInit() {
-    this.employeeGrpcService = this.client.getService<EmployeeGrpcClient>("EmployeeService");
+    this.employeeGrpcService =
+      this.client.getService<EmployeeGrpcClient>("EmployeeService");
   }
 
-async getEmployeeByUserId(
-  request: GetEmployeeRequest,
-): Promise<EmployeeResponse> {
+  async getEmployeeByUserId(
+    request: GetEmployeeRequest
+  ): Promise<EmployeeResponse> {
+    try {
+     
+      return await firstValueFrom(
+        this.employeeGrpcService.getEmployee({ userId: request.userId })
+      );
+    } catch (e) {
+      console.error(e);
 
-  return firstValueFrom(
-    this.employeeGrpcService.getEmployeeByUserId(request),
-  );
+      throw e;
+    }
+  }
 
-}
+  async updateEmployee(
+    request: UpdateEmployeeRequest
+  ): Promise<UpdateEmployeeResponse> {
+    return firstValueFrom(this.employeeGrpcService.updateEmployee(request));
+  }
+
+  async deleteEmployee(
+    request: DeleteEmployeeRequest
+  ): Promise<DeleteEmployeeResponse> {
+    return firstValueFrom(this.employeeGrpcService.deleteEmployee(request));
+  }
 }

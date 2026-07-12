@@ -23,7 +23,7 @@ export class EmployeePrismaRepository implements IEmployeeRepository {
   constructor(
     @Inject(EMPLOYEE_MAPPER)
     private readonly mapper: EmployeeMapper,
-    
+
     private readonly prisma: PrismaService
   ) {}
 
@@ -57,7 +57,7 @@ export class EmployeePrismaRepository implements IEmployeeRepository {
 
   async findById(
     db: PrismaClient | Prisma.TransactionClient,
-    id: bigint
+    id: number
   ): Promise<EmployeeEntity | null> {
     const employee = await db.employee.findFirst({
       where: {
