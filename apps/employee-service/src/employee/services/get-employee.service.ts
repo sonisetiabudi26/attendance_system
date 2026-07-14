@@ -27,4 +27,14 @@ export class GetEmployeeService {
 
     return this.employeeMapper.toResponse(employee);
   }
+   async getByID(id: number): Promise<EmployeeResponse> {
+    const employee = await this.employeeRepository.findByUserId(this.prisma, id);
+
+    if (!employee) {
+      throw new EmployeeNotFoundException();
+    }
+
+    return this.employeeMapper.toResponse(employee);
+  }
 }
+ 

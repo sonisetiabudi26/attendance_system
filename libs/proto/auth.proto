@@ -89,6 +89,56 @@ message UserClaims {
     string role = 3;
 }
 
+message MeResponse {
+
+    string userId = 1;
+
+    string username = 2;
+
+    string role = 3;
+
+    EmployeeProfile employee = 4;
+
+}
+
+message EmployeeProfile {
+
+    string employeeId = 1;
+
+    string employeeNo = 2;
+
+    string fullName = 3;
+
+    string phone = 4;
+
+    string photoUrl = 5;
+
+    string positionId = 6;
+
+    string positionName = 7;
+
+    repeated EmployeeLocationResponse locations = 8;
+
+}
+
+message EmployeeLocationResponse {
+
+    string locationId = 1;
+
+    string locationName = 2;
+
+    bool isDefault = 3;
+
+    string address = 4;
+
+    double latitude = 5;
+
+    double longitude = 6;
+
+    int32 radius = 7;
+
+}
+
 message VerifyAccessTokenResponse {
     UserClaims user = 1;
 }

@@ -15,6 +15,8 @@ import type { Request } from "express";
 import { Public } from "../decorators/public.decorator";
 import { UpdateEmployeeRequest } from "@attendance/proto/generated/employee";
 import { UpdateEmployeeDto } from "../dto/update-employee.dto";
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { UserClaims } from '@attendance/proto/generated/auth';
 
 @Controller("api/v1/employee")
 export class EmployeeController {
@@ -23,6 +25,7 @@ export class EmployeeController {
   @Get("profile")
   @UseGuards(JwtAuthGuard)
   profile(@Req() req: any) {
+   
     return this.employeeService.getEmployeeByUserId(req.user.userId);
   }
 
@@ -47,4 +50,14 @@ export class EmployeeController {
       employeeId,
     });
   }
+   @Get("me")
+      async me(
+      @CurrentUser() user: UserClaims,
+      ) {
+          console.log(user);
+          return this.employeeService.me(
+              user,
+          );
+  
+      }
 }

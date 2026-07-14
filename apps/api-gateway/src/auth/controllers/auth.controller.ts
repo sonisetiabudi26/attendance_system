@@ -38,13 +38,13 @@ export class AuthController {
         );
     }
 
-    @Get("me")
-    me(
-        @CurrentUser() user: UserClaims,
-    ) {
-        return user;
-    }
-
+    // @Get("me")
+    // me(
+    //     @CurrentUser() user: UserClaims,
+    // ) {
+    //     return user;
+    // }
+   
     @Post("logout")
     logout(
         @CurrentUser() user: UserClaims,

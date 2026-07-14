@@ -166,6 +166,41 @@ export class EmployeePrismaRepository implements IEmployeeRepository {
     return this.mapper.toDomain(employee);
   }
 
+  async findByUserId(
+    db: PrismaClient | Prisma.TransactionClient,
+    userId: number,
+): Promise<EmployeeEntity | null> {
+
+    const employee = await db.employee.findFirst({
+
+        where: {
+
+            userId,
+            isDeleted: false,
+
+        },
+
+        include: {
+
+            position: true,
+
+            employeeLocations: {
+                include: {
+                    location: true,
+                },
+            },
+
+        },
+
+    });
+
+    if (!employee) {
+        return null;
+    }
+
+    return this.mapper.toDomain(employee);
+
+}
   // async findByUserId(
   //   db: PrismaClient | Prisma.TransactionClient,
   //   userId: bigint

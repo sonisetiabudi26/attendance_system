@@ -1372,6 +1372,8 @@ export interface EmployeeServiceClient {
 
   getEmployee(request: GetEmployeeRequest): Observable<EmployeeResponse>;
 
+  getEmployeeByUserId(request: GetEmployeeRequest): Observable<EmployeeResponse>;
+
   getEmployees(request: GetEmployeesRequest): Observable<GetEmployeesResponse>;
 }
 
@@ -1402,6 +1404,10 @@ export interface EmployeeServiceController {
 
   getEmployee(request: GetEmployeeRequest): Promise<EmployeeResponse> | Observable<EmployeeResponse> | EmployeeResponse;
 
+  getEmployeeByUserId(
+    request: GetEmployeeRequest,
+  ): Promise<EmployeeResponse> | Observable<EmployeeResponse> | EmployeeResponse;
+
   getEmployees(
     request: GetEmployeesRequest,
   ): Promise<GetEmployeesResponse> | Observable<GetEmployeesResponse> | GetEmployeesResponse;
@@ -1417,6 +1423,7 @@ export function EmployeeServiceControllerMethods() {
       "listPosition",
       "listLocation",
       "getEmployee",
+      "getEmployeeByUserId",
       "getEmployees",
     ];
     for (const method of grpcMethods) {
@@ -1488,6 +1495,14 @@ export const EmployeeServiceDefinition = {
     },
     getEmployee: {
       name: "GetEmployee",
+      requestType: GetEmployeeRequest as typeof GetEmployeeRequest,
+      requestStream: false,
+      responseType: EmployeeResponse as typeof EmployeeResponse,
+      responseStream: false,
+      options: {},
+    },
+    getEmployeeByUserId: {
+      name: "GetEmployeeByUserId",
       requestType: GetEmployeeRequest as typeof GetEmployeeRequest,
       requestStream: false,
       responseType: EmployeeResponse as typeof EmployeeResponse,

@@ -17,6 +17,7 @@ import {
   UpdateEmployeeResponse,
 } from "@attendance/proto/generated/employee";
 import { UpdateEmployeeDto } from "../dto/update-employee.dto";
+import { UserClaims } from "@attendance/proto/generated/auth";
 
 @Injectable()
 export class EmployeeService implements OnModuleInit {
@@ -36,7 +37,6 @@ export class EmployeeService implements OnModuleInit {
     request: GetEmployeeRequest
   ): Promise<EmployeeResponse> {
     try {
-     
       return await firstValueFrom(
         this.employeeGrpcService.getEmployee({ userId: request.userId })
       );
@@ -58,4 +58,35 @@ export class EmployeeService implements OnModuleInit {
   ): Promise<DeleteEmployeeResponse> {
     return firstValueFrom(this.employeeGrpcService.deleteEmployee(request));
   }
+async me(
+       user
+    ){
+      try {
+        console.log(user.userId);
+         const employee =  
+           await firstValueFrom(this.employeeGrpcService.getEmployeeByUserId({
+                userId: user.userId,
+            }));
+console.log(employee);
+        return {
+            userId: user.userId,
+            username: user.username,
+            role: user.role,
+            employee,
+        };
+      } catch (error) {
+        console.log('Error: ' +  error);
+        throw error;
+        
+      }
+       
+    }
+  //  async getEmployee(
+  //   request: GetEmployeeRequest,
+  // ): Promise<EmployeeResponse> {
+
+  //   return firstValueFrom(
+  //     this.employeeGrpcService.getEmployee({userId:request.userId}),
+  //   );
+  // }
 }

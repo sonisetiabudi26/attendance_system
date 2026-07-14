@@ -62,4 +62,11 @@ export class EmployeeGrpcController {
       success: true,
     };
   }
+
+  @GrpcMethod("EmployeeService", "GetEmployeeByUserId")
+  async getEmployeeByUserId(request: GetEmployeeRequest): Promise<EmployeeResponse> {
+    return this.getEmployeeService.getByID(request.userId);
+  }
+
+  
 }

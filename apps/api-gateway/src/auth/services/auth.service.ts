@@ -11,20 +11,25 @@ import { AuthGrpcService } from "../../grpc/interfaces/auth.interface";
 import { LoginDto } from "../dto/login.dto";
 
 import { AuthMapper } from "../mappers/auth.mapper";
-import { VerifyAccessTokenResponse } from "@attendance/proto/generated/auth";
+import { MeResponse, UserClaims, VerifyAccessTokenResponse } from "@attendance/proto/generated/auth";
 import { ChangePasswordDto } from "../dto/change-password.dto";
+import { EmployeeService } from "../../employee/services/employee.service";
+// import { EmployeeGrpcClient } from "../../grpc/interfaces/employee.interface";
 
 @Injectable()
 export class AuthService implements OnModuleInit {
   constructor(
     @Inject(AUTH_GRPC)
-    private readonly client: ClientGrpc
+    private readonly client: ClientGrpc,
+     private readonly employeeGrpcService: EmployeeService
   ) {}
 
   private authService: AuthGrpcService;
+  
 
   onModuleInit() {
     this.authService = this.client.getService<AuthGrpcService>("AuthService");
+    // this.employeeGrpcService = this.client.getService<EmployeeGrpcClient>("EmployeeService");
   }
 
   async login(dto: LoginDto) {
@@ -66,4 +71,6 @@ export class AuthService implements OnModuleInit {
       })
     );
   }
+
+  
 }

@@ -38,6 +38,10 @@ export interface IEmployeeRepository {
     employeeNo: string,
   ): Promise<boolean>;
 
+findByUserId(
+    db: PrismaClient | Prisma.TransactionClient, 
+    userId: number,
+): Promise<EmployeeEntity | null>;
 
   softDelete( db: PrismaClient | Prisma.TransactionClient, employeeId: bigint): Promise<void>;
 

@@ -70,6 +70,34 @@ export interface UserClaims {
   role: string;
 }
 
+export interface MeResponse {
+  userId: string;
+  username: string;
+  role: string;
+  employee?: EmployeeProfile | undefined;
+}
+
+export interface EmployeeProfile {
+  employeeId: string;
+  employeeNo: string;
+  fullName: string;
+  phone: string;
+  photoUrl: string;
+  positionId: string;
+  positionName: string;
+  locations: EmployeeLocationResponse[];
+}
+
+export interface EmployeeLocationResponse {
+  locationId: string;
+  locationName: string;
+  isDefault: boolean;
+  address: string;
+  latitude: number;
+  longitude: number;
+  radius: number;
+}
+
 export interface VerifyAccessTokenResponse {
   user?: UserClaims | undefined;
 }
@@ -564,6 +592,302 @@ export const UserClaims: MessageFns<UserClaims> = {
           }
 
           message.role = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseMeResponse(): MeResponse {
+  return { userId: "", username: "", role: "" };
+}
+
+export const MeResponse: MessageFns<MeResponse> = {
+  encode(message: MeResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.username !== "") {
+      writer.uint32(18).string(message.username);
+    }
+    if (message.role !== "") {
+      writer.uint32(26).string(message.role);
+    }
+    if (message.employee !== undefined) {
+      EmployeeProfile.encode(message.employee, writer.uint32(34).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MeResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMeResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.username = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.role = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.employee = EmployeeProfile.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEmployeeProfile(): EmployeeProfile {
+  return {
+    employeeId: "",
+    employeeNo: "",
+    fullName: "",
+    phone: "",
+    photoUrl: "",
+    positionId: "",
+    positionName: "",
+    locations: [],
+  };
+}
+
+export const EmployeeProfile: MessageFns<EmployeeProfile> = {
+  encode(message: EmployeeProfile, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.employeeId !== "") {
+      writer.uint32(10).string(message.employeeId);
+    }
+    if (message.employeeNo !== "") {
+      writer.uint32(18).string(message.employeeNo);
+    }
+    if (message.fullName !== "") {
+      writer.uint32(26).string(message.fullName);
+    }
+    if (message.phone !== "") {
+      writer.uint32(34).string(message.phone);
+    }
+    if (message.photoUrl !== "") {
+      writer.uint32(42).string(message.photoUrl);
+    }
+    if (message.positionId !== "") {
+      writer.uint32(50).string(message.positionId);
+    }
+    if (message.positionName !== "") {
+      writer.uint32(58).string(message.positionName);
+    }
+    for (const v of message.locations) {
+      EmployeeLocationResponse.encode(v!, writer.uint32(66).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EmployeeProfile {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEmployeeProfile();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.employeeId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.employeeNo = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.fullName = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.phone = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.photoUrl = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.positionId = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.positionName = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.locations.push(EmployeeLocationResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseEmployeeLocationResponse(): EmployeeLocationResponse {
+  return { locationId: "", locationName: "", isDefault: false, address: "", latitude: 0, longitude: 0, radius: 0 };
+}
+
+export const EmployeeLocationResponse: MessageFns<EmployeeLocationResponse> = {
+  encode(message: EmployeeLocationResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.locationId !== "") {
+      writer.uint32(10).string(message.locationId);
+    }
+    if (message.locationName !== "") {
+      writer.uint32(18).string(message.locationName);
+    }
+    if (message.isDefault !== false) {
+      writer.uint32(24).bool(message.isDefault);
+    }
+    if (message.address !== "") {
+      writer.uint32(34).string(message.address);
+    }
+    if (message.latitude !== 0) {
+      writer.uint32(41).double(message.latitude);
+    }
+    if (message.longitude !== 0) {
+      writer.uint32(49).double(message.longitude);
+    }
+    if (message.radius !== 0) {
+      writer.uint32(56).int32(message.radius);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EmployeeLocationResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEmployeeLocationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.locationId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.locationName = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isDefault = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 41) {
+            break;
+          }
+
+          message.latitude = reader.double();
+          continue;
+        }
+        case 6: {
+          if (tag !== 49) {
+            break;
+          }
+
+          message.longitude = reader.double();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.radius = reader.int32();
           continue;
         }
       }

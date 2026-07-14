@@ -24,6 +24,9 @@ service EmployeeService {
   
   rpc GetEmployee(GetEmployeeRequest)
       returns(EmployeeResponse);
+  
+  rpc GetEmployeeByUserId(GetEmployeeRequest)
+      returns(EmployeeResponse);
 
   rpc GetEmployees(GetEmployeesRequest)
       returns(GetEmployeesResponse);

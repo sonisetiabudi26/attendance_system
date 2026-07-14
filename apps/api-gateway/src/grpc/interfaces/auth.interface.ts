@@ -34,4 +34,8 @@ export interface AuthGrpcService {
         request: ChangePasswordRequest,
     ): Observable<Empty>;
 
+     ChangePassword(
+        request: ChangePasswordRequest,
+    ): Observable<Empty>;
+
 }
