@@ -64,9 +64,25 @@ export interface VerifyAccessTokenRequest {
   accessToken: string;
 }
 
+export interface UserLite {
+  userId: string;
+  email: string;
+  role: string;
+  status: string;
+}
+
+export interface GetUsersByIdsRequest {
+  userIds: string[];
+}
+
+export interface GetUsersByIdsResponse {
+  users: UserLite[];
+}
+
 export interface UserClaims {
   sub: string;
   username: string;
+  email: string;
   role: string;
 }
 
@@ -545,8 +561,152 @@ export const VerifyAccessTokenRequest: MessageFns<VerifyAccessTokenRequest> = {
   },
 };
 
+function createBaseUserLite(): UserLite {
+  return { userId: "", email: "", role: "", status: "" };
+}
+
+export const UserLite: MessageFns<UserLite> = {
+  encode(message: UserLite, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.email !== "") {
+      writer.uint32(18).string(message.email);
+    }
+    if (message.role !== "") {
+      writer.uint32(26).string(message.role);
+    }
+    if (message.status !== "") {
+      writer.uint32(34).string(message.status);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): UserLite {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUserLite();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.email = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.role = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.status = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetUsersByIdsRequest(): GetUsersByIdsRequest {
+  return { userIds: [] };
+}
+
+export const GetUsersByIdsRequest: MessageFns<GetUsersByIdsRequest> = {
+  encode(message: GetUsersByIdsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.userIds) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetUsersByIdsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUsersByIdsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userIds.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
+function createBaseGetUsersByIdsResponse(): GetUsersByIdsResponse {
+  return { users: [] };
+}
+
+export const GetUsersByIdsResponse: MessageFns<GetUsersByIdsResponse> = {
+  encode(message: GetUsersByIdsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.users) {
+      UserLite.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetUsersByIdsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetUsersByIdsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.users.push(UserLite.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+};
+
 function createBaseUserClaims(): UserClaims {
-  return { sub: "", username: "", role: "" };
+  return { sub: "", username: "", email: "", role: "" };
 }
 
 export const UserClaims: MessageFns<UserClaims> = {
@@ -557,8 +717,11 @@ export const UserClaims: MessageFns<UserClaims> = {
     if (message.username !== "") {
       writer.uint32(18).string(message.username);
     }
+    if (message.email !== "") {
+      writer.uint32(26).string(message.email);
+    }
     if (message.role !== "") {
-      writer.uint32(26).string(message.role);
+      writer.uint32(34).string(message.role);
     }
     return writer;
   },
@@ -588,6 +751,14 @@ export const UserClaims: MessageFns<UserClaims> = {
         }
         case 3: {
           if (tag !== 26) {
+            break;
+          }
+
+          message.email = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
             break;
           }
 
@@ -1073,6 +1244,8 @@ export interface AuthServiceClient {
   createUser(request: CreateUserRequest): Observable<CreateUserResponse>;
 
   updateCredential(request: UpdateCredentialRequest): Observable<UpdateCredentialResponse>;
+
+  getUsersByIds(request: GetUsersByIdsRequest): Observable<GetUsersByIdsResponse>;
 }
 
 export interface AuthServiceController {
@@ -1095,6 +1268,10 @@ export interface AuthServiceController {
   updateCredential(
     request: UpdateCredentialRequest,
   ): Promise<UpdateCredentialResponse> | Observable<UpdateCredentialResponse> | UpdateCredentialResponse;
+
+  getUsersByIds(
+    request: GetUsersByIdsRequest,
+  ): Promise<GetUsersByIdsResponse> | Observable<GetUsersByIdsResponse> | GetUsersByIdsResponse;
 }
 
 export function AuthServiceControllerMethods() {
@@ -1107,6 +1284,7 @@ export function AuthServiceControllerMethods() {
       "verifyAccessToken",
       "createUser",
       "updateCredential",
+      "getUsersByIds",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
@@ -1180,6 +1358,14 @@ export const AuthServiceDefinition = {
       requestType: UpdateCredentialRequest as typeof UpdateCredentialRequest,
       requestStream: false,
       responseType: UpdateCredentialResponse as typeof UpdateCredentialResponse,
+      responseStream: false,
+      options: {},
+    },
+    getUsersByIds: {
+      name: "GetUsersByIds",
+      requestType: GetUsersByIdsRequest as typeof GetUsersByIdsRequest,
+      requestStream: false,
+      responseType: GetUsersByIdsResponse as typeof GetUsersByIdsResponse,
       responseStream: false,
       options: {},
     },

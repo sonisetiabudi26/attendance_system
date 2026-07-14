@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Post,
+    Query,
 } from '@nestjs/common';
 
 import { AuthService } from '../services/auth.service';
@@ -13,6 +14,7 @@ import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { UserClaims } from '@attendance/proto/generated/auth';
 import { ChangePasswordDto } from '../dto/change-password.dto';
+
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -37,13 +39,6 @@ export class AuthController {
             dto.refreshToken,
         );
     }
-
-    // @Get("me")
-    // me(
-    //     @CurrentUser() user: UserClaims,
-    // ) {
-    //     return user;
-    // }
    
     @Post("logout")
     logout(
@@ -65,4 +60,6 @@ export class AuthController {
             dto,
         );
     }
+
+   
 }

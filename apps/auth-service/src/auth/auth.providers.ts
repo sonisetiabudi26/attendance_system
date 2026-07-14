@@ -17,6 +17,7 @@ import { LogoutService } from './services/logout.service';
 import { UpdateCredentialService } from './services/update-credential.service';
 import { VerifyAccessTokenService } from './services/verify-token.service';
 import { RefreshTokenService } from './services/refresh-token';
+import { GetUsersByIdsService } from './services/get-user-byid.service';
 
 
 
@@ -38,6 +39,7 @@ export const authProviders: Provider[] = [
     RefreshTokenMapper,
     MasterStatusMapper,
     LoginResponseMapper,
+    GetUsersByIdsService,
     AuthGrpcMapper,
     {
         provide: MASTER_STATUS_REPOSITORY,

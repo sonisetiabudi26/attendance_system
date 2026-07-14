@@ -8,6 +8,8 @@ import {
   DeleteEmployeeResponse,
   EmployeeResponse,
   GetEmployeeRequest,
+  GetEmployeesRequest,
+  ListPositionResponse,
   UpdateEmployeeRequest,
   UpdateEmployeeResponse,
 } from "@attendance/proto/generated/employee";
@@ -18,6 +20,7 @@ import { EmployeeGrpcMapper } from "./employee.grpc.mapper";
 import { UpdateEmployeeService } from "../services/update-employee.service";
 import { GetEmployeeService } from "../services/get-employee.service";
 import { DeleteEmployeeService } from "../services/delete-employee.service";
+import { ListPositionService } from "../services/list-position.service";
 
 @Controller()
 export class EmployeeGrpcController {
@@ -25,7 +28,9 @@ export class EmployeeGrpcController {
     private readonly createEmployeeService: CreateEmployeeService,
     private readonly updateEmployeeService: UpdateEmployeeService,
     private readonly getEmployeeService: GetEmployeeService,
-    private readonly deleteEmployeeService: DeleteEmployeeService
+    private readonly deleteEmployeeService: DeleteEmployeeService,
+    private readonly listPositionService: ListPositionService,
+    
   ) {}
 
   @GrpcMethod("EmployeeService", "CreateEmployee")
@@ -68,5 +73,17 @@ export class EmployeeGrpcController {
     return this.getEmployeeService.getByID(request.userId);
   }
 
+  @GrpcMethod('EmployeeService', 'GetEmployees')
+  getEmployees(request: GetEmployeesRequest) {
+    return this.getEmployeeService.findAll(request);
+  }
+
+  @GrpcMethod(
+    "EmployeeService",
+    "ListPosition",
+    )
+    listPosition(): Promise<ListPositionResponse> {
+        return this.listPositionService.execute();
+    }
   
 }

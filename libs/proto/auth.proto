@@ -35,6 +35,10 @@ service AuthService {
 
    rpc UpdateCredential(UpdateCredentialRequest)
        returns(UpdateCredentialResponse);
+
+    rpc GetUsersByIds(GetUsersByIdsRequest)
+    returns(GetUsersByIdsResponse);
+    
 }
 
 message CreateUserRequest {
@@ -83,20 +87,40 @@ message ChangePasswordRequest{
 message VerifyAccessTokenRequest {
     string accessToken = 1;
 }
+
+message UserLite {
+
+    string userId = 1;
+    string email = 2;
+    string role = 3;
+    string status = 4;
+
+}
+
+message GetUsersByIdsRequest {
+
+    repeated string userIds = 1;
+
+}
+
+message GetUsersByIdsResponse {
+
+    repeated UserLite users = 1;
+
+}
+
 message UserClaims {
     string sub = 1;
     string username = 2;
-    string role = 3;
+    string email = 3;
+    string role = 4;
 }
 
 message MeResponse {
 
     string userId = 1;
-
     string username = 2;
-
     string role = 3;
-
     EmployeeProfile employee = 4;
 
 }
@@ -104,19 +128,12 @@ message MeResponse {
 message EmployeeProfile {
 
     string employeeId = 1;
-
     string employeeNo = 2;
-
     string fullName = 3;
-
     string phone = 4;
-
     string photoUrl = 5;
-
     string positionId = 6;
-
     string positionName = 7;
-
     repeated EmployeeLocationResponse locations = 8;
 
 }

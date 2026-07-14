@@ -11,7 +11,7 @@ import { AuthGrpcService } from "../../grpc/interfaces/auth.interface";
 import { LoginDto } from "../dto/login.dto";
 
 import { AuthMapper } from "../mappers/auth.mapper";
-import { MeResponse, UserClaims, VerifyAccessTokenResponse } from "@attendance/proto/generated/auth";
+import { GetUsersByIdsResponse, MeResponse, UserClaims, VerifyAccessTokenResponse } from "@attendance/proto/generated/auth";
 import { ChangePasswordDto } from "../dto/change-password.dto";
 import { EmployeeService } from "../../employee/services/employee.service";
 // import { EmployeeGrpcClient } from "../../grpc/interfaces/employee.interface";
@@ -21,7 +21,7 @@ export class AuthService implements OnModuleInit {
   constructor(
     @Inject(AUTH_GRPC)
     private readonly client: ClientGrpc,
-     private readonly employeeGrpcService: EmployeeService
+    //  private readonly employeeGrpcService: EmployeeService
   ) {}
 
   private authService: AuthGrpcService;
@@ -79,5 +79,15 @@ export class AuthService implements OnModuleInit {
     );
   }
 
+
+async getUsersByIdsa(
+  userIds: string[],
+): Promise<GetUsersByIdsResponse> {
+  return firstValueFrom(
+    this.authService.GetUsersByIds({
+      userIds,
+    }),
+  );
+}
   
 }

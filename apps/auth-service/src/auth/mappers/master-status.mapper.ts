@@ -22,4 +22,25 @@ export class MasterStatusMapper {
   toEntities(models: MasterStatus[]): MasterStatusEntity[] {
     return models.map((model) =>this.toEntity(model));
   }
+  toDomain(
+        model: MasterStatus,
+    ): MasterStatusEntity {
+
+        return new MasterStatusEntity(
+
+            model.id,
+
+            model.code,
+
+            model.name,
+
+            model.isDefault,
+
+            model.createdAt,
+
+            model.updatedAt,
+
+        );
+
+    }
 }

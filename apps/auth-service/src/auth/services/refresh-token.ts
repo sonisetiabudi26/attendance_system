@@ -112,6 +112,7 @@ export class RefreshTokenService {
       await this.jwtService.generateAccessToken({
         sub: user.id.toString(),
         username: user.username,
+         email: user.email,
         role: role.code,
       });
 

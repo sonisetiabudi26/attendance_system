@@ -42,7 +42,7 @@ export interface ListEmployeeRequest {
 }
 
 export interface GetEmployeesResponse {
-  data: EmployeeResponse[];
+  employees: EmployeeResponse[];
   page: number;
   limit: number;
   total: number;
@@ -50,8 +50,12 @@ export interface GetEmployeesResponse {
 
 export interface EmployeeResponse {
   employeeId: string;
+  userId: string;
   employeeNo: string;
   fullName: string;
+  email: string;
+  role: string;
+  status: string;
   phone: string;
   photoUrl: string;
   positionId: string;
@@ -433,12 +437,12 @@ export const ListEmployeeRequest: MessageFns<ListEmployeeRequest> = {
 };
 
 function createBaseGetEmployeesResponse(): GetEmployeesResponse {
-  return { data: [], page: 0, limit: 0, total: 0 };
+  return { employees: [], page: 0, limit: 0, total: 0 };
 }
 
 export const GetEmployeesResponse: MessageFns<GetEmployeesResponse> = {
   encode(message: GetEmployeesResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.data) {
+    for (const v of message.employees) {
       EmployeeResponse.encode(v!, writer.uint32(10).fork()).join();
     }
     if (message.page !== 0) {
@@ -465,7 +469,7 @@ export const GetEmployeesResponse: MessageFns<GetEmployeesResponse> = {
             break;
           }
 
-          message.data.push(EmployeeResponse.decode(reader, reader.uint32()));
+          message.employees.push(EmployeeResponse.decode(reader, reader.uint32()));
           continue;
         }
         case 2: {
@@ -505,8 +509,12 @@ export const GetEmployeesResponse: MessageFns<GetEmployeesResponse> = {
 function createBaseEmployeeResponse(): EmployeeResponse {
   return {
     employeeId: "",
+    userId: "",
     employeeNo: "",
     fullName: "",
+    email: "",
+    role: "",
+    status: "",
     phone: "",
     photoUrl: "",
     positionId: "",
@@ -520,26 +528,38 @@ export const EmployeeResponse: MessageFns<EmployeeResponse> = {
     if (message.employeeId !== "") {
       writer.uint32(10).string(message.employeeId);
     }
+    if (message.userId !== "") {
+      writer.uint32(18).string(message.userId);
+    }
     if (message.employeeNo !== "") {
-      writer.uint32(18).string(message.employeeNo);
+      writer.uint32(26).string(message.employeeNo);
     }
     if (message.fullName !== "") {
-      writer.uint32(26).string(message.fullName);
+      writer.uint32(34).string(message.fullName);
+    }
+    if (message.email !== "") {
+      writer.uint32(42).string(message.email);
+    }
+    if (message.role !== "") {
+      writer.uint32(50).string(message.role);
+    }
+    if (message.status !== "") {
+      writer.uint32(58).string(message.status);
     }
     if (message.phone !== "") {
-      writer.uint32(34).string(message.phone);
+      writer.uint32(66).string(message.phone);
     }
     if (message.photoUrl !== "") {
-      writer.uint32(42).string(message.photoUrl);
+      writer.uint32(74).string(message.photoUrl);
     }
     if (message.positionId !== "") {
-      writer.uint32(50).string(message.positionId);
+      writer.uint32(82).string(message.positionId);
     }
     if (message.positionName !== "") {
-      writer.uint32(58).string(message.positionName);
+      writer.uint32(90).string(message.positionName);
     }
     for (const v of message.locations) {
-      EmployeeLocationResponse.encode(v!, writer.uint32(66).fork()).join();
+      EmployeeLocationResponse.encode(v!, writer.uint32(98).fork()).join();
     }
     return writer;
   },
@@ -564,7 +584,7 @@ export const EmployeeResponse: MessageFns<EmployeeResponse> = {
             break;
           }
 
-          message.employeeNo = reader.string();
+          message.userId = reader.string();
           continue;
         }
         case 3: {
@@ -572,7 +592,7 @@ export const EmployeeResponse: MessageFns<EmployeeResponse> = {
             break;
           }
 
-          message.fullName = reader.string();
+          message.employeeNo = reader.string();
           continue;
         }
         case 4: {
@@ -580,7 +600,7 @@ export const EmployeeResponse: MessageFns<EmployeeResponse> = {
             break;
           }
 
-          message.phone = reader.string();
+          message.fullName = reader.string();
           continue;
         }
         case 5: {
@@ -588,7 +608,7 @@ export const EmployeeResponse: MessageFns<EmployeeResponse> = {
             break;
           }
 
-          message.photoUrl = reader.string();
+          message.email = reader.string();
           continue;
         }
         case 6: {
@@ -596,7 +616,7 @@ export const EmployeeResponse: MessageFns<EmployeeResponse> = {
             break;
           }
 
-          message.positionId = reader.string();
+          message.role = reader.string();
           continue;
         }
         case 7: {
@@ -604,11 +624,43 @@ export const EmployeeResponse: MessageFns<EmployeeResponse> = {
             break;
           }
 
-          message.positionName = reader.string();
+          message.status = reader.string();
           continue;
         }
         case 8: {
           if (tag !== 66) {
+            break;
+          }
+
+          message.phone = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.photoUrl = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.positionId = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.positionName = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
             break;
           }
 

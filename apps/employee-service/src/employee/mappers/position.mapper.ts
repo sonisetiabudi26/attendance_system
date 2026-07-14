@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { MasterPosition } from "../../../prisma/generated/client";
 import { Prisma } from "../../../prisma/generated/client";
 import { PositionEntity } from "../entites/position.entity";
+import { PositionResponse } from "@attendance/proto/generated/employee";
 
 @Injectable()
 export class MasterPositionMapper {
@@ -44,4 +45,12 @@ export class MasterPositionMapper {
     updatedBy: entity.updatedBy,
   };
 }
+  toResponse(entity: PositionEntity): PositionResponse {
+        return {
+            id: entity.id.toString(),
+            code: entity.code,
+            name: entity.name,
+        };
+
+    }
 }

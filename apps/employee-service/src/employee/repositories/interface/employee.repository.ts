@@ -43,7 +43,9 @@ findByUserId(
     userId: number,
 ): Promise<EmployeeEntity | null>;
 
-  softDelete( db: PrismaClient | Prisma.TransactionClient, employeeId: bigint): Promise<void>;
+  softDelete( db: PrismaClient | Prisma.TransactionClient, 
+    employeeId: bigint): Promise<void>;
+  
 
   // restore( db: PrismaClient | Prisma.TransactionClient, id: bigint): Promise<void>;
 }

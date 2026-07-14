@@ -9,6 +9,8 @@ import {
     VerifyAccessTokenRequest,
     VerifyAccessTokenResponse,
     ChangePasswordRequest,
+    GetUsersByIdsRequest,
+    GetUsersByIdsResponse,
 } from '@attendance/proto/generated/auth';
 
 export interface AuthGrpcService {
@@ -37,5 +39,9 @@ export interface AuthGrpcService {
      ChangePassword(
         request: ChangePasswordRequest,
     ): Observable<Empty>;
+
+    GetUsersByIds(
+        request: GetUsersByIdsRequest,
+    ): Observable<GetUsersByIdsResponse>;
 
 }

@@ -53,4 +53,9 @@ export interface IUserRepository {
     email?: string,
     passwordHash?: string,
 ): Promise<UserEntity>;
+
+findByIds(
+     db: PrismaClient | Prisma.TransactionClient,
+    ids: bigint[],
+): Promise<UserEntity[]>;
 }

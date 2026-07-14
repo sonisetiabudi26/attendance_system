@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from "@nestjs/common";
@@ -17,8 +18,9 @@ import { UpdateEmployeeRequest } from "@attendance/proto/generated/employee";
 import { UpdateEmployeeDto } from "../dto/update-employee.dto";
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { UserClaims } from '@attendance/proto/generated/auth';
+import { ListEmployeeDto } from "../../auth/dto/list-employee.dto";
 
-@Controller("api/v1/employee")
+@Controller("api/v1/employee/")
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
@@ -50,6 +52,7 @@ export class EmployeeController {
       employeeId,
     });
   }
+
    @Get("me")
       async me(
       @CurrentUser() user: UserClaims,
@@ -60,4 +63,37 @@ export class EmployeeController {
           );
   
       }
+
+    @Get()
+    // @ApiBearerAuth("access-token")
+    findAll(
+        @Query() dto: ListEmployeeDto,
+    ) {
+          return this.employeeService.findAll({
+
+                page: dto.page ?? 1,
+
+                limit: dto.limit ?? 10,
+
+                search: dto.search ?? "",
+
+                positionId: dto.positionId ?? "",
+
+            });
+        
+
+    }
+
+    @Get("employeebyID/:employeeId")
+    async getEmployeeById(@Param("employeeId") employeeId: number) {
+    return this.employeeService.getEmployeeByUserId({
+      userId:employeeId,
+    });
+  }
+    @Get("positions")
+    async getPosition() {
+    return this.employeeService.listPosition();
+  }
+
+  
 }

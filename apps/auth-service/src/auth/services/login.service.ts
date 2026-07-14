@@ -81,6 +81,7 @@ export class LoginService {
             await this.jwtTokenService.generateAccessToken({
                 sub: user.id.toString(),
                 username: user.username,
+                 email: user.email,
                 role: role.code,
             });
  

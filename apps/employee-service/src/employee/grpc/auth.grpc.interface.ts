@@ -2,7 +2,7 @@ import { UpdateCredentialRequest, UpdateCredentialResponse } from '@attendance/p
 import { Observable } from 'rxjs';
 
 export interface CreateUserRequest {
-  username: string;
+  employeeNo: string;
   email: string;
   password: string;
   role: string;

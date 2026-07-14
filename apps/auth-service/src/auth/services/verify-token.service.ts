@@ -16,9 +16,8 @@ export class VerifyAccessTokenService {
     return {
       user: {
         sub: payload.sub,
-
         username: payload.username,
-
+        email: payload.email,
         role: payload.role,
       },
     };

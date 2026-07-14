@@ -4,8 +4,12 @@ import { AuthService } from "../auth/services/auth.service";
 import { JwtAuthGuard } from "../jwt/jwt-auth.guard";
 import { EmployeeController } from "./controllers/employee.controller";
 import { EmployeeService } from "./services/employee.service";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
+   imports: [
+    AuthModule,  
+  ],
   controllers: [
     EmployeeController
   ],

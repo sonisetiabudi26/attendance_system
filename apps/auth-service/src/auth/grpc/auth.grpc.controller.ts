@@ -8,7 +8,11 @@ import { CreateUserService, LoginService, LogoutService } from '../services';
 import { UpdateCredentialService } from '../services/update-credential.service';
 import { VerifyAccessTokenService } from '..//services/verify-token.service';
 import { RefreshTokenService } from '../services/refresh-token';
-
+import { GetUsersByIdsService } from '../services/get-user-byid.service';
+import {
+    GetUsersByIdsRequest,
+    GetUsersByIdsResponse,
+} from "@attendance/proto/generated/auth";
 @Controller()
 export class AuthGrpcController {
   constructor(
@@ -18,6 +22,7 @@ export class AuthGrpcController {
     private readonly updateCredentialService: UpdateCredentialService,
     private readonly logoutService: LogoutService,
     private readonly refreshTokenService: RefreshTokenService,
+    private readonly getUsersByIdsService:GetUsersByIdsService,
 
   ) { }
 
@@ -114,6 +119,20 @@ export class AuthGrpcController {
       request.accessToken,
     );
   }
+
+  @GrpcMethod(
+    "AuthService",
+    "GetUsersByIds",
+)
+GetUsersByIds(
+    request: GetUsersByIdsRequest,
+): Promise<GetUsersByIdsResponse> {
+
+    return this.getUsersByIdsService.execute(
+        request,
+    );
+
+}
   // @GrpcMethod(
   //   'AuthService',
   //   'ChangePassword',

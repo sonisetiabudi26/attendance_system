@@ -95,7 +95,7 @@ export class CreateEmployeeService {
     // ==========================================================
 
     const authUser = await this.authGrpcClient.createUser({
-      username: contract.employeeNo,
+      employeeNo: contract.employeeNo,
       email: contract.email,
       password: contract.password,
       role: "EMPLOYEE",

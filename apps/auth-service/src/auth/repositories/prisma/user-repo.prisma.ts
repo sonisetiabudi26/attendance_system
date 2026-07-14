@@ -1,154 +1,155 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { Prisma, PrismaClient } from "@prisma/client";
 
-import { IUserRepository } from '../interface/user-repo.interface';
+import { IUserRepository } from "../interface/user-repo.interface";
 
-import {
-    CreateUserContract,
-    UpdateUserContract,
-} from '../../contracts';
+import { CreateUserContract, UpdateUserContract } from "../../contracts";
 
-import { UserEntity } from '../../entities';
+import { UserEntity } from "../../entities";
 
-import { UserMapper } from '../../mappers';
+import { UserMapper } from "../../mappers";
 const USER_INCLUDE = {
-    role: true,
-    status: true,
+  role: true,
+  status: true,
 } as const;
 @Injectable()
-export class UserPrismaRepository
-    implements IUserRepository {
+export class UserPrismaRepository implements IUserRepository {
+  constructor(private readonly mapper: UserMapper) {}
 
-    constructor(
-        private readonly mapper: UserMapper,
-    ) { }
+  async findById(
+    db: PrismaClient | Prisma.TransactionClient,
+    id: bigint
+  ): Promise<UserEntity | null> {
+    const user = await db.user.findUnique({
+      where: { id },
+      include: USER_INCLUDE,
+    });
 
-    async findById(
-        db: PrismaClient | Prisma.TransactionClient,
-        id: bigint,
-    ): Promise<UserEntity | null> {
-        const user = await db.user.findUnique({
-            where: { id },
-            include: USER_INCLUDE,
-        });
+    return this.mapper.toEntity(user);
+  }
 
-        return this.mapper.toEntity(user);
+  async findByUsername(
+    db: PrismaClient | Prisma.TransactionClient,
+    username: string
+  ): Promise<UserEntity | null> {
+    const user = await db.user.findUnique({
+      where: { username },
+      include: USER_INCLUDE,
+    });
+
+    return this.mapper.toEntity(user);
+  }
+
+  async findByEmail(
+    db: PrismaClient | Prisma.TransactionClient,
+    email: string
+  ): Promise<UserEntity | null> {
+    const user = await db.user.findUnique({
+      where: { email },
+      include: USER_INCLUDE,
+    });
+    if (!user) {
+      return null;
     }
 
-    async findByUsername(
-        db: PrismaClient | Prisma.TransactionClient,
-        username: string,
-    ): Promise<UserEntity | null> {
-        const user = await db.user.findUnique({
-            where: { username },
-            include: USER_INCLUDE,
-        });
+    return this.mapper.toEntity(user);
+  }
 
-        return this.mapper.toEntity(user);
-    }
+  async existsByUsername(
+    db: PrismaClient | Prisma.TransactionClient,
+    username: string
+  ): Promise<boolean> {
+    const count = await db.user.count({
+      where: {
+        username,
+      },
+    });
 
+    return count > 0;
+  }
 
-    async findByEmail(
-        db: PrismaClient | Prisma.TransactionClient,
-        email: string,
-    ): Promise<UserEntity | null> {
-        const user = await db.user.findUnique({
-            where: { email },
-            include: USER_INCLUDE,
-        });
-        if (!user) {
-            return null;
-        }
+  async existsByEmail(
+    db: PrismaClient | Prisma.TransactionClient,
+    email: string
+  ): Promise<boolean> {
+    const count = await db.user.count({
+      where: {
+        email,
+      },
+    });
 
-        return this.mapper.toEntity(user);
-    }
+    return count > 0;
+  }
 
-    async existsByUsername(
-        db: PrismaClient | Prisma.TransactionClient,
-        username: string,
-    ): Promise<boolean> {
-        const count = await db.user.count({
-            where: {
-                username,
-            },
-        });
+  async create(db, contract) {
+    const model = await db.user.create({
+      data: this.mapper.toCreateInput(contract),
 
-        return count > 0;
-    }
+      include: {
+        role: true,
+        status: true,
+      },
+    });
+    return this.mapper.toEntity(model);
+  }
 
-    async existsByEmail(
-        db: PrismaClient | Prisma.TransactionClient,
-        email: string,
-    ): Promise<boolean> {
-        const count = await db.user.count({
-            where: {
-                email,
-            },
-        });
+  async update(
+    db: PrismaClient | Prisma.TransactionClient,
+    userId: bigint,
+    input: UpdateUserContract
+  ): Promise<UserEntity> {
+    const model = await db.user.update({
+      where: {
+        id: userId,
+      },
+      include: USER_INCLUDE,
 
-        return count > 0;
-    }
+      data: this.mapper.toUpdateInput(input),
+    });
+    return this.mapper.toEntity(model);
+  }
 
-    async create(
-        db,
-        contract,
-    ) {
-        const model =
-            await db.user.create({
-                data: this.mapper.toCreateInput(contract),
-
-                include: {
-                    role: true,
-                    status: true,
-                },
-            });
-        return this.mapper.toEntity(model);
-    }
-
-    async update(
-        db: PrismaClient | Prisma.TransactionClient,
-        userId: bigint,
-        input: UpdateUserContract,
-    ): Promise<UserEntity> {
-        const model =
-            await db.user.update({
-                where: {
-                    id: userId,
-                }, include: USER_INCLUDE,
-
-                data: this.mapper.toUpdateInput(input),
-            });
-        return this.mapper.toEntity(model);
-
-    }
-
-    async updateCredential(
+  async updateCredential(
     db: PrismaClient | Prisma.TransactionClient,
     userId: bigint,
     email?: string,
-    passwordHash?: string,
-): Promise<UserEntity> {
+    passwordHash?: string
+  ): Promise<UserEntity> {
+    const user = await db.user.update({
+      where: {
+        id: userId,
+      },
 
-    const user =
-        await db.user.update({
+      data: this.mapper.toUpdateCredentialInput(email, passwordHash),
 
+      include: {
+        role: true,
+        status: true,
+      },
+    });
+
+    return this.mapper.toEntity(user);
+  }
+
+  async findByIds(
+    db: PrismaClient | Prisma.TransactionClient,
+    ids: bigint[],
+): Promise<UserEntity[]> {
+    const users =
+        await db.user.findMany({
             where: {
-                id: userId,
+                id: {
+                    in: ids,
+                },
             },
-
-            data:
-                this.mapper.toUpdateCredentialInput(
-                    email,
-                    passwordHash,
-                ),
-
             include: {
                 role: true,
                 status: true,
             },
-
         });
+    return this.mapper.toEntities(
+        users,
+    );
 
-    return this.mapper.toEntity(user);
 }
 }

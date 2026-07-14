@@ -66,9 +66,5 @@ export class AuthGrpcClient
     }
 
   }
-  //   async updateCredential(
-  //     request: UpdateCredentialRequest,
-  // ): Promise<UpdateCredentialResponse> {
-  //     throw new Error('Not implemented');
-  // }
+ 
 }

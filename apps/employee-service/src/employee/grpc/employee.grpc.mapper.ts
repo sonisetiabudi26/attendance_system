@@ -63,15 +63,16 @@ export class EmployeeGrpcMapper {
   toResponse(
     employee: EmployeeEntity,
 ): EmployeeResponse {
-
     return {
-
         employeeId: employee.id.toString(),
 
         employeeNo: employee.employeeNo,
 
         fullName: employee.fullName,
-
+        userId: employee.userId?employee.userId.toString():'',
+        email: '',
+        role: '',
+        status:'',
         phone: employee.phone ?? "",
 
         photoUrl: employee.photoUrl ?? "",

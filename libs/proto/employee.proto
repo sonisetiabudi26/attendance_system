@@ -83,7 +83,7 @@ message ListEmployeeRequest {
 
 message GetEmployeesResponse {
 
-  repeated EmployeeResponse data = 1;
+  repeated EmployeeResponse employees = 1;
 
   int32 page = 2;
 
@@ -94,22 +94,18 @@ message GetEmployeesResponse {
 }
 
 message EmployeeResponse {
-
   string employeeId = 1;
-
-  string employeeNo = 2;
-
-  string fullName = 3;
-
-  string phone = 4;
-
-  string photoUrl = 5;
-
-  string positionId = 6;
-
-  string positionName = 7;
-
-  repeated EmployeeLocationResponse locations = 8;
+  string userId = 2;
+  string employeeNo = 3;
+  string fullName = 4;
+   string email = 5;
+    string role = 6;
+     string status = 7;
+  string phone = 8;
+  string photoUrl = 9;
+  string positionId = 10;
+  string positionName = 11;
+  repeated EmployeeLocationResponse locations = 12;
 
 }
 

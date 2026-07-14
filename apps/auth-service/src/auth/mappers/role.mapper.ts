@@ -20,4 +20,15 @@ export class RoleMapper {
     ) {
       return models.map((x) => this.toEntity(x));
     }
+    toDomain(role: Role): RoleEntity {
+        return new RoleEntity(
+            role.id,
+            role.code,
+            role.name,
+            role.description,
+            role.createdAt,
+            role.updatedAt  
+        );
+
+    }
 }

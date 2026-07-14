@@ -1,3 +1,4 @@
+import { PositionResponse } from "@attendance/proto/generated/employee";
 import { PrismaClient, Prisma } from "../../../../prisma/generated/client";
 
 import { PositionEntity } from "../../entites/position.entity";
@@ -26,4 +27,5 @@ export interface IPositionRepository {
   findAll(
     db: PrismaClient | Prisma.TransactionClient
   ): Promise<PositionEntity[]>;
+
 }
