@@ -67,7 +67,7 @@ async me(
            await firstValueFrom(this.employeeGrpcService.getEmployeeByUserId({
                 userId: user.userId,
             }));
-console.log(employee);
+
         return {
             userId: user.userId,
             username: user.username,
