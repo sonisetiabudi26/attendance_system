@@ -21,6 +21,7 @@
     "prisma:validate:auth": "dotenv -e apps/auth-service/.env -- prisma validate --schema apps/auth-service/prisma/schema.prisma",
     "prisma:generate:auth": "dotenv -e apps/auth-service/.env -- prisma generate --schema apps/auth-service/prisma/schema.prisma",
     "prisma:migrate:auth": "dotenv -e apps/auth-service/.env -- prisma migrate dev --schema apps/auth-service/prisma/schema.prisma",
+    "prisma:migrate-reset:auth": "dotenv -e apps/auth-service/.env -- prisma migrate reset dev --schema apps/auth-service/prisma/schema.prisma",
     "prisma:seed:auth": "dotenv -e apps/auth-service/.env -- tsx apps/auth-service/prisma/seed.ts",
 
     "prisma:generate:employee": "dotenv -e apps/employee-service/.env -- prisma generate --schema apps/employee-service/prisma/schema.prisma",

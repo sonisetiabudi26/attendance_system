@@ -13,8 +13,10 @@ import { MasterStatusPrismaRepository } from './repositories/prisma/master-statu
 import { LoginResponseMapper } from './mappers/login-resp.mapper';
 import { AuthGrpcMapper } from './grpc/authgrpc.mapper';
 import { CreateUserService } from './services';
+import { LogoutService } from './services/logout.service';
 import { UpdateCredentialService } from './services/update-credential.service';
 import { VerifyAccessTokenService } from './services/verify-token.service';
+import { RefreshTokenService } from './services/refresh-token';
 
 
 
@@ -25,6 +27,8 @@ export const authProviders: Provider[] = [
     VerifyAccessTokenService,
     CreateUserService,
     //   ChangePasswordService,
+    RefreshTokenService,
+    LogoutService,
     UpdateCredentialService,
     PasswordService,
     JwtService,
@@ -63,4 +67,5 @@ export const authProviders: Provider[] = [
         provide: JWT_SERVICE,
         useClass: JwtService,
     },
+    { provide: PASSWORD_SERVICE, useClass: PasswordService },
 ]

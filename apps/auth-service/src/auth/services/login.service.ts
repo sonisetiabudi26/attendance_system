@@ -99,7 +99,7 @@ export class LoginService {
        await this.prisma.$transaction(
             async (tx) => {
 
-                await this.refreshTokenRepository.create(
+                await this.refreshTokenRepository.upsert(
                     tx,
                     {
                         userId: user.id,

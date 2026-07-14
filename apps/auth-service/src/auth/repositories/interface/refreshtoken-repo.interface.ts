@@ -17,7 +17,7 @@ export interface IRefreshTokenRepository {
   findByUserId(
     db: PrismaClient | Prisma.TransactionClient,
     userId: bigint,
-  ): Promise<RefreshTokenEntity[]>;
+  ): Promise<RefreshTokenEntity | null>;
 
   create(
     db: PrismaClient | Prisma.TransactionClient,
@@ -37,4 +37,9 @@ export interface IRefreshTokenRepository {
   deleteExpired(
     db: PrismaClient | Prisma.TransactionClient,
   ): Promise<number>;
+upsert(
+   db: PrismaClient | Prisma.TransactionClient,
+    contract: CreateRefreshTokenContract,
+  ): Promise<void>;
+  
 }

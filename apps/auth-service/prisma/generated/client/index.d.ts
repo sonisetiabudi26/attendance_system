@@ -8590,10 +8590,10 @@ export namespace Prisma {
 
   export type RefreshTokenWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
+    userId?: bigint | number
     AND?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
     OR?: RefreshTokenWhereInput[]
     NOT?: RefreshTokenWhereInput | RefreshTokenWhereInput[]
-    userId?: BigIntFilter<"RefreshToken"> | bigint | number
     tokenHash?: StringFilter<"RefreshToken"> | string
     deviceType?: EnumDeviceTypeFilter<"RefreshToken"> | $Enums.DeviceType
     deviceName?: StringNullableFilter<"RefreshToken"> | string | null
@@ -8603,7 +8603,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
     updatedAt?: DateTimeFilter<"RefreshToken"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
+  }, "id" | "userId">
 
   export type RefreshTokenOrderByWithAggregationInput = {
     id?: SortOrder

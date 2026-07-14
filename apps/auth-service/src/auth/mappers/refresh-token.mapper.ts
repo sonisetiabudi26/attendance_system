@@ -53,6 +53,23 @@ export class RefreshTokenMapper {
       },
     };
   }
+
+  toDomain(
+    model: RefreshToken,
+  ): RefreshTokenEntity {
+    return new RefreshTokenEntity(
+      model.id,
+      model.userId,
+      model.tokenHash,
+      model.deviceType,
+      model.deviceName,
+      model.ipAddress,
+      model.userAgent,
+      model.expiresAt,
+      model.createdAt,
+      model.updatedAt,
+    );
+  }
   // toUpdateInput(
   //   contract: UpdateRefreshTokenContract,
   // ): Prisma.RefreshTokenUpdateInput {

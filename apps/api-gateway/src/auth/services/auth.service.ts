@@ -54,12 +54,19 @@ export class AuthService implements OnModuleInit {
     );
   }
 
-  async logout(userId: bigint): Promise<void> {
-    await firstValueFrom(
+  async logout(userId): Promise<void> {
+   try {
+      console.log('Logging out user with IDs:', userId);
+        await firstValueFrom(
       this.authService.Logout({
-        userId: Number(userId),
+        userId: Number(userId.userId),
       })
     );
+      } catch (error) {
+        console.log('Error: ' +  error);
+        throw error;
+        
+      }
   }
 
   async changePassword(userId: number, dto: ChangePasswordDto): Promise<void> {

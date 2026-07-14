@@ -49,8 +49,9 @@ export class AuthController {
     logout(
         @CurrentUser() user: UserClaims,
     ) {
+        console.log('Logging out user with ID:', user.sub);
         return this.authService.logout(
-            BigInt(user.sub),
+            user,
         );
     }
 

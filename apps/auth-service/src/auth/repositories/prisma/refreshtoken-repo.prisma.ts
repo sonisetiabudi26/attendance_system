@@ -33,23 +33,26 @@ export class RefreshTokenPrismaRepository
       : null;
   }
 
-  async findByUserId(
-    db: PrismaClient | Prisma.TransactionClient,
+ async findByUserId(
+     db: PrismaClient | Prisma.TransactionClient,
     userId: bigint,
-  ): Promise<RefreshTokenEntity[]> {
-    const models =
-      await db.refreshToken.findMany({
+): Promise<RefreshTokenEntity | null> {
+
+    const token = await db.refreshToken.findUnique({
+
         where: {
-          userId,
+            userId,
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
 
-    return this.mapper.toEntities(models);
-  }
+    });
 
+    if (!token) {
+        return null;
+    }
+
+    return this.mapper.toDomain(token);
+
+}
   async create(
     db: PrismaClient | Prisma.TransactionClient,
     input: CreateRefreshTokenContract,
@@ -98,4 +101,36 @@ export class RefreshTokenPrismaRepository
 
     return result.count;
   }
+
+  async upsert(
+   db: PrismaClient | Prisma.TransactionClient,
+  contract: CreateRefreshTokenContract,
+): Promise<void> {
+
+  await db.refreshToken.upsert({
+    where: {
+      userId: contract.userId,
+    },
+    update: {
+      tokenHash: contract.tokenHash,
+      deviceType: contract.deviceType,
+      deviceName: contract.deviceName,
+      ipAddress: contract.ipAddress,
+      userAgent: contract.userAgent,
+      expiresAt: contract.expiresAt,
+    },
+    create: {
+      userId: contract.userId,
+      tokenHash: contract.tokenHash,
+      deviceType: contract.deviceType,
+      deviceName: contract.deviceName,
+      ipAddress: contract.ipAddress,
+      userAgent: contract.userAgent,
+      expiresAt: contract.expiresAt,
+
+    },
+
+  });
+
+}
 }
